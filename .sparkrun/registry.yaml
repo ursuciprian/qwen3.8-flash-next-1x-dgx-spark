@@ -1,0 +1,4 @@
+registries:
+  - name: qwen38-flashnext-1x
+    description: Qwen3.8-Flash-Next NVFP4 on one DGX Spark (TP=1), vLLM + b12x
+    recipes: recipes

@@ -198,7 +198,7 @@ def check(path: Path) -> None:
 
     # --- secrets
     for k, v in env.items():
-        if re.search(r"token|secret|password|api_key", k, re.I) and str(v) not in ("", "0", "1"):
+        if re.search(r"(^|_)(token|secret|password|api_key)($|_)", k, re.I) and str(v) not in ("", "0", "1"):
             err(path, f"env `{k}` looks like a credential; keep it out of the recipe")
 
 

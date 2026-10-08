@@ -1,0 +1,24 @@
+# Recipe and docs checks on every push and PR: scripts/validate_recipes.py (rules from failures this project hit) and
+# scripts/check_links.py (relative links and backticked repo paths in the markdown).
+name: Validate
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyyaml
+      - run: python3 scripts/validate_recipes.py
+      - run: python3 scripts/validate_recipes.py archive/recipes
+      - run: python3 scripts/check_links.py

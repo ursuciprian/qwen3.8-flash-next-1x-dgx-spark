@@ -1,23 +1,18 @@
 # Recipes
 
-What `sparkrun recipe list` shows for this registry. Both recipes are pinned
-to checkpoint revision `7c4f1bc1a2d6847e0cbc01ac6b823f00251de8dd`, use a public
-ghcr image, and need no mods, no host mounts and no `--trust`. Both run the
-model across two DGX Sparks (tensor parallel 2).
+What `sparkrun recipe list` shows for this registry. Both recipes run Qwen3.8-Flash-Next on one DGX Spark (TP=1),
+pin checkpoint `ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE` by revision, use a public ghcr image, and need no mods,
+no host mounts and no `--trust`.
 
-| recipe | image | use |
-|---|---|---|
-| [`qwen3.8-flash-next-2x-dgx-spark`](qwen3.8-flash-next/qwen3.8-flash-next-2x-dgx-spark.yaml) | `b1-20260925-b7fbaf96-14077fb3-warm` | **Recommended.** Current build (2026-09-25). |
-| [`qwen3.8-flash-next-2x-dgx-spark-previous`](qwen3.8-flash-next/qwen3.8-flash-next-2x-dgx-spark-previous.yaml) | `b0-20260918-a8333658-warm` | Fallback: the previous build (2026-09-23), about 10% slower with several users. |
+| recipe | checkpoint revision | image | use |
+|---|---|---|---|
+| [`qwen3.8-flash-next-1x-dgx-spark`](qwen3.8-flash-next/qwen3.8-flash-next-1x-dgx-spark.yaml) | `16c9bd54` | `tp1-v3e-hf-20261008-21e0b201-5dad364d-warm` | Current build, v3e (retrained MTP drafter). |
+| [`qwen3.8-flash-next-1x-dgx-spark-previous`](qwen3.8-flash-next/qwen3.8-flash-next-1x-dgx-spark-previous.yaml) | `244cb6fe` | `tp1-v3d-hf-20261005-21e0b201-5dad364d-warm` | Rollback: v3d, original drafter. |
 
-Renamed 2026-09-25; old names and where the one-hot draft recipe went: [RENAMES.md](RENAMES.md).
-
-```bash
-sparkrun run qwen3.8-flash-next-2x-dgx-spark --hosts <head-ip>,<worker-ip>
+```sh
+sparkrun run qwen3.8-flash-next-1x-dgx-spark --hosts <spark> --solo
 ```
 
-Every other recipe (bisection arms, rejected experiments, other checkpoints,
-the SGLang-era route) is in [`archive/recipes/`](../archive/recipes/README.md);
-sparkrun does not scan it. Where each file moved: [RENAMES.md](RENAMES.md).
-`scripts/validate_recipes.py` fails any recipe here that lacks `--revision`,
-uses an image without a registry host, or needs mods or volumes.
+Earlier builds (v2 to v3c) are in [`archive/recipes/`](../archive/recipes/README.md); sparkrun does not scan it. Name
+history: [RENAMES.md](RENAMES.md). `scripts/validate_recipes.py` fails any recipe here that lacks `--revision`, uses an
+image without a registry host, or needs mods or volumes.

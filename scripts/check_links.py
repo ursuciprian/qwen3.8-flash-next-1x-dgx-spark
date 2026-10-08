@@ -32,7 +32,7 @@ def targets(md: Path):
 
 def main() -> int:
     files = [Path(a).resolve() for a in sys.argv[1:]] or [
-        REPO / "README.md", REPO / "results/README.md", REPO / "mods/README.md",
+        REPO / "README.md", REPO / "results/README.md", REPO / "archive/recipes/README.md",
         *sorted((REPO / "docs").glob("*.md")), *sorted((REPO / "recipes").glob("*.md"))]
     bad = 0
     for md in files:
