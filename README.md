@@ -3,12 +3,16 @@
 A ready-made recipe that runs Qwen3.8-Flash-Next on one NVIDIA DGX Spark as a private, OpenAI-compatible
 server, for chat, coding and agents. Two commands to start.
 
-<img src="docs/img/hero.svg" alt="Qwen3.8-Flash-Next on one DGX Spark: answer speed for one chat, combined speed for many chats at once, context length and tool-calling score. Each number is measured; the release and date are in the small print of the card." width="100%">
+<!-- hero:start (scripts/make_charts.py writes this block) -->
+<img src="docs/img/hero.svg" alt="Four measured numbers for this setup: answer speed for one chat, combined speed for many chats at once, context length and tool-call score." width="100%">
+
+<sub>tok/s = tokens per second; a token is about 3/4 of a word. Speed: release v2.1.0, 2026-10-08, llama-benchy task mode, each chat sends 2,048 tokens and gets 512 back. Tool calls: TC-45, release v2.1.0, 2026-10-07. Context: recipe max_model_len 262,144. Details: [docs/BENCHMARKS.md](docs/BENCHMARKS.md).</sub>
+<!-- hero:end -->
 
 ## Quick start
 
-You need one DGX Spark with the model stored on its local NVMe, and [sparkrun](https://github.com/eugr/sparkrun)
-0.3.6 or newer.
+You need one DGX Spark with about 130 GB free on its internal SSD, and [sparkrun](https://github.com/eugr/sparkrun)
+0.3.6 or newer. Replace `<spark>` with the Spark's hostname or IP; `--solo` runs it on that one machine.
 
 ```sh
 sparkrun registry add https://github.com/ursuciprian/qwen3.8-flash-next-1x-dgx-spark
@@ -75,14 +79,22 @@ registries and does not refresh them on `run`.
 
 ## How fast is it?
 
-<img src="docs/img/speed-users.svg" alt="Line chart: tokens per second, all users together, against the number of people or agents using the server at the same time, for one Spark and for two Sparks (TP=2). Values are labelled on the chart." width="100%">
+<!-- speed-chart:start (scripts/make_charts.py writes this block) -->
+<img src="docs/img/speed-users.svg" alt="Line chart: tokens per second, all users together, against the number of people or agents using the server at the same time. Values are labelled on the chart." width="100%">
 
-The more people use it at once, the more text it writes in total, while each person's share gets slower. One Spark
-takes up to 8 chats at once, two Sparks up to 16.
+<sub>Each user sends a 2,048-token prompt and gets 512 tokens back; default sampling, thinking on. Total = all tokens written per second; each reply = how fast one answer streams.<br>One Spark: release v2.1.0, 2026-10-08, llama-benchy task mode<br>Two Sparks, TP=2: release v1.5.0, 2026-10-08, llama-benchy task mode; hollow point: older release v1.4.0, 2026-10-01, llama-benchy task mode<br>Two Sparks, DP=2: not measured on this test yet.<br>Versions are numbered per setup. Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.</sub>
+<!-- speed-chart:end -->
+
+The more people use it at once, the more text it writes in total, while each reply streams more slowly. One Spark
+runs up to 8 chats at once, two Sparks up to 16; more requests wait in line.
 
 ## How long until the first word?
 
-<img src="docs/img/first-token.svg" alt="Line chart: seconds until the answer starts against prompt length, for one Spark and two Sparks (TP=2), prompt not cached. Values are labelled on the chart." width="100%">
+<!-- first-token-chart:start (scripts/make_charts.py writes this block) -->
+<img src="docs/img/first-token.svg" alt="Line chart: seconds until the answer starts against prompt length, prompt not cached. Values are labelled on the chart." width="100%">
+
+<sub>One request with a prompt the server has not seen before. Later turns of a chat reuse the cached prompt and start sooner.<br>One Spark: release v2.0.0, 2026-10-05, llm-inference-bench 0.7.6<br>Two Sparks, TP=2: release v1.4.0, 2026-10-05, llm-inference-bench 0.7.6; v1.4.0, 2026-10-07, fidelity_probe.py<br>One Spark: not measured above 128K yet.<br>Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.</sub>
+<!-- first-token-chart:end -->
 
 Long prompts take a while to read the first time. In a running chat, only the new part of the prompt is read.
 
@@ -104,28 +116,28 @@ one server, so each chat gets faster and more long chats fit at once.
 
 **Two Sparks, many agents at once: DP=2.** Each Spark runs this recipe and a small
 [router](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/blob/main/tools/dp2/README.md) splits the
-chats between them. In my agent tests it finished the same work sooner than TP=2 ([chart](#more-charts)).
+chats between them. In my agent tests it finished the same work sooner than TP=2 ([chart](docs/img/agents.svg)).
 <br clear="left">
 
 ## What's inside
 
-- The model: Qwen3.8-Flash-Next, with its large expert layers and its linear-attention (GDN) projections in 4-bit
-  NVFP4 and the rest in 8-bit MXFP8, plus a draft head I retrained so more of its guesses are accepted.
-- Fitting on one Spark: a 26.8 GiB lookup table (PLE) is read from the NVMe through the page cache instead of
-  sitting in GPU memory, which leaves room for a 14 GiB KV cache.
-- Inference engine: vLLM with b12x kernels written for the Spark's GB10 chip, in a prebuilt image whose kernel tuning and
-  compilation are already done, so a start does not tune again.
-- Speculative decoding: the draft head proposes 4 tokens per step and the model checks them in one pass; the output
-  follows the same distribution as without it.
+- The model: Qwen3.8-Flash-Next, stored at 4 and 8 bits per weight so it fits (NVFP4 and MXFP8), plus a draft head I
+  retrained so more of its guesses are accepted.
+- Fitting on one Spark: a 26.8 GiB lookup table inside the model is read from the SSD instead of GPU memory, which
+  leaves room for more and longer chats.
+- Several tokens per step: the draft head guesses 4 tokens ahead and the model checks them in one pass; the output
+  follows the same distribution as without it (speculative decoding).
+- Software: vLLM with kernels written for the Spark's GB10 chip (b12x), in a prebuilt image with the kernel tuning
+  already done.
 - Thinking on by default at `medium` effort, tool calling, 262,144-token context, OpenAI-compatible API.
 
 ## Quality checks
 
 <!-- quality:start (scripts/make_charts.py writes this block) -->
-- ![tool calling](https://img.shields.io/badge/tool%20calling-100%2F100-2ea44f) When a request requires a tool call, the reply contains one (TC-45, 5 trials).
-- ![multi-step tools](https://img.shields.io/badge/multi--step%20tools-91%2F100-2ea44f) Score on 88 hard multi-step tool-use scenarios; a release ships only at 88/100 or more.
-- ![long prompts](https://img.shields.io/badge/long%20prompts-20%2F20%20up%20to%20~245K%20tokens-2ea44f) Finds 20 facts hidden in a long prompt and returns each through a tool call. (one of three ~245K prompts 19/20)
-- ![stalled requests](https://img.shields.io/badge/stalled%20requests-none-2ea44f) No request falls behind the others while 8 to 16 are sent at once.
+- ![tool calls](https://img.shields.io/badge/tool%20calls-100%2F100-2ea44f) When a request requires a tool call, the reply makes one (TC-45, 5 trials).
+- ![hard tool use](https://img.shields.io/badge/hard%20tool%20use-91%2F100-2ea44f) 91 out of 100 on 88 hard multi-step tool-use scenarios; the pass mark is 88.
+- ![long prompts](https://img.shields.io/badge/long%20prompts-19%2F20%20or%20better%20up%20to%20~245K%20tokens-2ea44f) Finds 20 facts hidden in a long prompt and returns each through a tool call: 20 of 20 in every run except one of three ~245K prompts (19 of 20).
+- ![stalled requests](https://img.shields.io/badge/stalled%20requests-none-2ea44f) No request falls behind the others when 8 to 16 are sent at once; it runs 8 at a time and queues the rest.
 
 Gate run: release v2.1.0, 2026-10-07. Every release passes this gate before it ships.
 <!-- quality:end -->
