@@ -1,0 +1,160 @@
+k74 2026-10-09 20:25:31 EEST: long-context prefill on the single Spark, v3e (registry recipe @qwen38-flashnext-1x/qwen3.8-flash-next-1x-dgx-spark)
+
+== phase 1, dgx-01 solo v3e: both prefill definitions from one boot (cold test first, then llm-inference-bench)
+boot 150 s, recipe @qwen38-flashnext-1x/qwen3.8-flash-next-1x-dgx-spark Directly load AOT compilation GPU KV cache size: 993,754 tokens ghcr.io/ursuciprian/spark-vllm-b12x:tp1-v3e-hf-20261008-21e0b201-5dad364d-warm 
+| prompt | cold TTFT mean s (3 fresh) | cold tok/s (prompt / mean TTFT) | each | standalone tok/s (llm-inference-bench) | samples |
+|---|---:|---:|---|---:|---:|
+| 128K | 72.95 | 1797 | [1807, 1810, 1774] | 0 |  |
+| 64K | 33.34 | 1966 | [1958, 1955, 1985] | 0 |  |
+| 16K | 8.00 | 2049 | [2053, 2075, 2020] | 0 |  |
+v3d reference (same bench, 2026-10-05): 2,182 / 2,066 / 1,880 tok/s at 16K / 64K / 128K
+
+== phase 1, dgx-02 v3e + torch profiler: one cold request per window
+boot 210 s, recipe /home/nvidia/GEN-AI/backlog/k74/prof.yaml Dynamo bytecode transform time GPU KV cache size: 993,754 tokens ghcr.io/ursuciprian/spark-vllm-b12x:tp1-v3e-hf-20261008-21e0b201-5dad364d-warm 
+  16K request: TTFT 8.10 s, 2022 tok/s (profiler on)
+  128K request: TTFT 73.39 s, 1786 tok/s (profiler on)
+
+-- window 1 (16K)
+
+=== label=k74-w1 rank=0 ===
+decode steps in window (by construction, VLLM_LOCAL_PROF_STEPS): 1
+wall per decode step: 8260.443 ms
+window wall: 8260.44 ms, CUDA busy (sum, streams overlap): 7518.65 ms, CUDA busy (union, non-overlapping): 7513.31 ms, idle fraction: 0.090
+kernel                                                          count   total_ms    mean_us   % cuda bucket
+kernel_cutlass_kernel_b12xmoe_sharedkernelssiluMoEDynamicKer      192   1970.141   10261.15   26.20% gemm
+kernel_cutlass_kernel_b12xattentionpaged_selected_forward_Se       64    839.443   13116.30   11.16% attention
+kernel_cutlass_kernel_b12xnormhyperconnection_cute_PackedCom      412    598.746    1453.27    7.96% gemm
+kernel_cutlass_kernel_b12x_libdense_gemmDenseGemmKernel_obje      436    530.891    1217.64    7.06% gemm
+kernel_cutlass_kernel_b12x_libdense_gemmDenseGemmKernel_obje      432    519.776    1203.18    6.91% gemm
+kernel_cutlass_kernel_b12x_libdense_gemmDenseGemmKernel_obje      192    408.228    2126.19    5.43% gemm
+_gate_mean_kernel                                                 436    334.500     767.20    4.45% other
+kernel_cutlass_kernel_b12xsequencemtp_feedback_cute_prefillM       16    234.151   14634.45    3.11% gemm
+kernel_cutlass_kernel_b12x_libdense_gemmDenseGemmKernel_obje      400    189.460     473.65    2.52% gemm
+void at::native::vectorized_gather_kernel<16, long>(char*, c     1156    185.298     160.29    2.46% other
+kernel_cutlass_kernel_b12xsequence_shareddelta_prefill_cute_      288    177.183     615.22    2.36% gemm
+kernel_cutlass_kernel_b12xsequence_shareddelta_prefill_cute_      288    173.415     602.13    2.31% gemm
+kernel_cutlass_kernel_b12xattentionqsa_score_cute_Representa       52    134.233    2581.41    1.79% attention
+_quantize                                                        1216    131.389     108.05    1.75% other
+Memcpy DtoD (Device -> Device)                                    976    120.852     123.82    1.61% memcpy/other
+_causal_conv1d_fwd_kernel                                         144    115.818     804.29    1.54% gdn/ssm
+layer_norm_fwd_kernel                                             144     90.795     630.52    1.21% other
+_scatter_b12x_gdn_output                                          288     71.010     246.56    0.94% gdn/ssm
+kernel_cutlass_kernel_b12xsequencemtp_feedback_cute_prefillM       16     49.344    3084.01    0.66% gemm
+kernel_cutlass_kernel_b12xmoe_sharedkernelsw4a16kernelW4A16F       16     45.859    2866.17    0.61% gemm
+kernel_cutlass_kernel_b12x_libdense_gemmDenseGemmKernel_obje      164     43.590     265.79    0.58% gemm
+void at::native::vectorized_elementwise_kernel<4, at::native      160     36.102     225.64    0.48% other
+void at::native::elementwise_kernel<128, 4, at::native::gpu_      208     33.817     162.58    0.45% other
+triton_poi_fused_add_hyperconnection_combine_norm_slice_0         140     32.411     231.51    0.43% other
+std::enable_if<!(false), void>::type internal::gemvx::kernel      220     31.859     144.81    0.42% gemm
+
+bucket shares (of total CUDA time):
+  gemm                   5077.761 ms   67.54%
+  other                  1064.738 ms   14.16%
+  attention              1006.818 ms   13.39%
+  gdn/ssm                 196.331 ms    2.61%
+  memcpy/other            121.559 ms    1.62%
+  sampler/argmax           51.344 ms    0.68%
+  mtp/draft                 0.064 ms    0.00%
+  all-reduce/nccl           0.036 ms    0.00%
+
+-- window 2 (128K)
+
+=== label=k74-w2 rank=0 ===
+decode steps in window (by construction, VLLM_LOCAL_PROF_STEPS): 1
+wall per decode step: 73696.884 ms
+window wall: 73696.88 ms, CUDA busy (sum, streams overlap): 69492.24 ms, CUDA busy (union, non-overlapping): 69454.71 ms, idle fraction: 0.058
+kernel                                                          count   total_ms    mean_us   % cuda bucket
+kernel_cutlass_kernel_b12xmoe_sharedkernelssiluMoEDynamicKer     1104  13324.241   12069.06   19.17% gemm
+kernel_cutlass_kernel_b12xattentionqsa_score_cute_Representa     2158   8663.912    4014.79   12.47% attention
+kernel_cutlass_kernel_b12xattentionpaged_selected_forward_Se      368   6833.433   18569.11    9.83% attention
+kernel_cutlass_kernel_b12xnormhyperconnection_cute_PackedCom     2369   4787.208    2020.77    6.89% gemm
+kernel_cutlass_kernel_b12x_libdense_gemmDenseGemmKernel_obje     2484   4089.109    1646.18    5.88% gemm
+kernel_cutlass_kernel_b12x_libdense_gemmDenseGemmKernel_obje     2507   4079.145    1627.10    5.87% gemm
+kernel_cutlass_kernel_b12x_libdense_gemmDenseGemmKernel_obje     1104   3732.434    3380.83    5.37% gemm
+_gate_mean_kernel                                                2507   2653.595    1058.47    3.82% other
+kernel_cutlass_kernel_b12xsequencemtp_feedback_cute_prefillM       92   1943.180   21121.52    2.80% gemm
+kernel_cutlass_kernel_b12x_libdense_gemmDenseGemmKernel_obje     2300   1509.371     656.25    2.17% gemm
+void at::native::vectorized_gather_kernel<16, long>(char*, c     6647   1447.908     217.83    2.08% other
+kernel_cutlass_kernel_b12xsequence_shareddelta_prefill_cute_     1656   1401.588     846.37    2.02% gemm
+kernel_cutlass_kernel_b12xattentiondsa_indexertiled_topkDSAT     2158   1319.332     611.37    1.90% attention
+kernel_cutlass_kernel_b12xsequence_shareddelta_prefill_cute_     1656   1308.794     790.33    1.88% gemm
+_emit_stable_topk_kernel                                         2158   1214.118     562.61    1.75% sampler/argmax
+_quantize                                                        6992   1133.569     162.12    1.63% other
+Memcpy DtoD (Device -> Device)                                   5612    948.404     169.00    1.36% memcpy/other
+_causal_conv1d_fwd_kernel                                         828    929.660    1122.78    1.34% gdn/ssm
+_count_stable_topk_candidates_kernel                             2158    755.482     350.08    1.09% sampler/argmax
+layer_norm_fwd_kernel                                             828    725.918     876.71    1.04% other
+_scatter_b12x_gdn_output                                         1656    554.693     334.96    0.80% gdn/ssm
+_copy_stable_topk_kernel                                         2158    493.551     228.71    0.71% sampler/argmax
+kernel_cutlass_kernel_b12xsequencemtp_feedback_cute_prefillM       92    490.180    5328.05    0.71% gemm
+kernel_cutlass_kernel_b12xmoe_sharedkernelsw4a16kernelW4A16F       92    327.160    3556.08    0.47% gemm
+_stable_topk_threshold_kernel                                    2158    306.402     141.98    0.44% sampler/argmax
+
+bucket shares (of total CUDA time):
+  gemm                  38342.464 ms   55.18%
+  attention             16867.576 ms   24.27%
+  other                  8572.579 ms   12.34%
+  sampler/argmax         3208.301 ms    4.62%
+  gdn/ssm                1547.909 ms    2.23%
+  memcpy/other            952.785 ms    1.37%
+  mtp/draft                 0.416 ms    0.00%
+  all-reduce/nccl           0.213 ms    0.00%
+
+== phase 2, thunderdome mnbt16k (max_num_batched_tokens 16384) vs v3e: exit 0, DONE: mnbt16k=KILL mnbt16k=KILL
+
+-- mnbt-01 (dgx-01)
+== acceptance per draft position (T=0 probe cells, pooled)
+== cells: arm vs control % (noise = the cell's noise band, %)
+  probe  fresh-c1     missing
+  probe  fresh-c4     missing
+  probe  fresh-c8     missing
+  probe  d16k-c4      missing
+  probe  count-c8     missing
+  wall   d16k-c8      missing
+  benchy pp2048 (c1)  missing
+  benchy tg512 (c1)   missing
+  benchy tg512 (c8)   missing
+== logits_equiv (reported, not judged)
+reason: arm-p1: boot failed
+reason: acceptance: no paired data
+reason: probe fresh-c1: missing
+reason: probe fresh-c4: missing
+reason: probe fresh-c8: missing
+reason: probe d16k-c4: missing
+reason: probe count-c8: missing
+reason: wall d16k-c8: missing
+reason: benchy pp2048 (c1): missing
+reason: benchy tg512 (c1): missing
+reason: benchy tg512 (c8): missing
+better: none
+VERDICT=KILL
+
+-- mnbt-02 (dgx-02)
+== acceptance per draft position (T=0 probe cells, pooled)
+== cells: arm vs control % (noise = the cell's noise band, %)
+  probe  fresh-c1     missing
+  probe  fresh-c4     missing
+  probe  fresh-c8     missing
+  probe  d16k-c4      missing
+  probe  count-c8     missing
+  wall   d16k-c8      missing
+  benchy pp2048 (c1)  missing
+  benchy tg512 (c1)   missing
+  benchy tg512 (c8)   missing
+== logits_equiv (reported, not judged)
+reason: arm-p1: boot failed
+reason: acceptance: no paired data
+reason: probe fresh-c1: missing
+reason: probe fresh-c4: missing
+reason: probe fresh-c8: missing
+reason: probe d16k-c4: missing
+reason: probe count-c8: missing
+reason: wall d16k-c8: missing
+reason: benchy pp2048 (c1): missing
+reason: benchy tg512 (c1): missing
+reason: benchy tg512 (c8): missing
+better: none
+VERDICT=KILL
+
+== mnbt-01: cold prefill tok/s per boot (hook, prompt tokens / mean TTFT, 3 reps)
+== mnbt-02: cold prefill tok/s per boot (hook, prompt tokens / mean TTFT, 3 reps)

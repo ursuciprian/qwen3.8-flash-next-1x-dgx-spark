@@ -1,0 +1,2 @@
+arm mnbt16k /home/nvidia/GEN-AI/backlog/k74/mnbt-01/mnbt16k.yaml
+ctl v3e /home/nvidia/GEN-AI/backlog/k74/v3e.yaml

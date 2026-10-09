@@ -1,0 +1,14 @@
+{"ttft_s": 7.978861570358276, "prompt_tokens": 16384, "len": 16384, "rep": 0}
+{"ttft_s": 7.895879030227661, "prompt_tokens": 16384, "len": 16384, "rep": 1}
+{"ttft_s": 8.112512826919556, "prompt_tokens": 16384, "len": 16384, "rep": 2}
+{"ttft_s": 33.47638535499573, "prompt_tokens": 65536, "len": 65536, "rep": 0}
+{"ttft_s": 33.53069067001343, "prompt_tokens": 65536, "len": 65536, "rep": 1}
+{"ttft_s": 33.0214147567749, "prompt_tokens": 65536, "len": 65536, "rep": 2}
+{"ttft_s": 72.55356240272522, "prompt_tokens": 131072, "len": 131072, "rep": 0}
+{"ttft_s": 72.40320134162903, "prompt_tokens": 131072, "len": 131072, "rep": 1}
+{"ttft_s": 73.8999605178833, "prompt_tokens": 131072, "len": 131072, "rep": 2}
+16384: n=3 prompt 16384 tok, TTFT mean 8.00 s min 7.90 s, 2049 tok/s (each [2053, 2075, 2020])
+65536: n=3 prompt 65536 tok, TTFT mean 33.34 s min 33.02 s, 1966 tok/s (each [1958, 1955, 1985])
+131072: n=3 prompt 131072 tok, TTFT mean 72.95 s min 72.40 s, 1797 tok/s (each [1807, 1810, 1774])
+cold exit=0
+lib exit=1
