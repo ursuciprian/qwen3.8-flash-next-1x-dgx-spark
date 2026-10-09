@@ -1,3 +1,4 @@
+# Release: v2.0.0 (old name v3d)
 # Rollback since 2026-10-08: the single-Spark v3d recipe that was the default from 2026-10-05 to 2026-10-08.
 # Superseded by v3e (v3d + the retrained MTP drafter, HF revision 16c9bd54). Serves
 # ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE @ 244cb6fe with the original drafter.
