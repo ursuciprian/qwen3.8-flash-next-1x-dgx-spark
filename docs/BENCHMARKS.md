@@ -1,6 +1,6 @@
 # Benchmarks: full tables
 
-Release names follow [VERSIONS.md](../VERSIONS.md). Section headings keep the old build names so existing links keep working; each build section opens with its release name. The current default is 1× v3.0.0 (old name v3e); every other section is history, kept for comparison. The README's capability table and charts read [`docs/data/capability.csv`](data/capability.csv).
+Release names follow [VERSIONS.md](../VERSIONS.md). Section headings keep the old build names so existing links keep working; each build section opens with its release name. The current default is 1× v2.1.0 (old name v3e); every other section is history, kept for comparison. The README's capability table and charts read [`docs/data/capability.csv`](data/capability.csv).
 
 
 Every single-Spark (TP=1) build, newest first, then the runs that compared the 1× and 2× setups side by side. The 2×
@@ -9,7 +9,7 @@ rows in those runs are kept for reference; the 2× builds have their own tables 
 
 ## Single Spark v3e: retrained MTP drafter (2026-10-08)
 
-Release 1× v3.0.0 (old name v3e), the current default.
+Release 1× v2.1.0 (old name v3e), the current default.
 
 v3e = v3d with the 24 dense BF16 `mtp.*` tensors retrained (#97 refit run 1). Checkpoint
 `ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE` @ `16c9bd54` (v3d: `244cb6fe`); only `model-00034-of-00036.safetensors`
