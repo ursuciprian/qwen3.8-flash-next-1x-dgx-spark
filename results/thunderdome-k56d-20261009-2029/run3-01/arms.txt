@@ -1,0 +1,2 @@
+arm k56c-run3 /home/nvidia/GEN-AI/backlog/k56c/k56c-run3.yaml
+ctl ctl-run1 /home/nvidia/GEN-AI/backlog/k56c/ctl-run1.yaml
