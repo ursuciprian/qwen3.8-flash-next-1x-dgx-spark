@@ -1,0 +1,35 @@
+r3data 2026-10-08 13:33:14 EEST: #97 run3 data, tools 9248831, image spark-vllm-b12x:mtpcap-21e0b201-fe5c57fb, budget 7200000, data /home/nvidia/.cache/huggingface/mtp-refit/r3-20261008
+
+== generation (response tokens; budget 7200000 over both Sparks)
+dgx-01: 1866 records, 3688278 tokens
+dgx-02: 1916 records, 3664867 tokens
+
+== capture + assemble per pass (docs, rows; anchors = generated tokens with context)
+data-s01-t18/train: 
+data-s01-t18/heldout: 
+data-s01-t3/train: 
+data-s01-t3/heldout: 0 anchors, 0 docs
+data-s01-t6/train: 
+data-s01-t6/heldout: 0 anchors, 0 docs
+data-s02-t18/train: 0 anchors, 0 docs
+data-s02-t18/heldout: 0 anchors, 0 docs
+data-s02-t3/train: 0 anchors, 0 docs
+data-s02-t3/heldout: 0 anchors, 0 docs
+data-s02-t6/train: 0 anchors, 0 docs
+data-s02-t6/heldout: 0 anchors, 0 docs
+s01-assemble-t18: {"docs": 437, "rows": 5096340, "no_manifest": 10, "incomplete": 0, "length_mismatch": 0, "manifest_unseen": 0}
+s01-assemble-t3: {"docs": 1139, "rows": 2092995, "no_manifest": 10, "incomplete": 0, "length_mismatch": 0, "manifest_unseen": 0}
+s01-assemble-t6: {"docs": 520, "rows": 1463254, "no_manifest": 10, "incomplete": 0, "length_mismatch": 0, "manifest_unseen": 0}
+s02-assemble-t18: {"docs": 213, "rows": 2316105, "no_manifest": 10, "incomplete": 0, "length_mismatch": 0, "manifest_unseen": 0}
+s02-assemble-t3: {"docs": 1177, "rows": 2205140, "no_manifest": 10, "incomplete": 0, "length_mismatch": 0, "manifest_unseen": 0}
+s02-assemble-t6: {"docs": 526, "rows": 1487037, "no_manifest": 10, "incomplete": 0, "length_mismatch": 0, "manifest_unseen": 0}
+
+dgx-01 pipeline: ok
+dgx-02 pipeline: ok
+train anchors: p2 captured 896564, new 0 (r3 gen + p2 long), total 896564
+
+== recovery 2026-10-09 04:20:32 EEST: the FAILED verdict above was a host read error, not missing data. The assemble container wrote root 0600 parts, so the host anchors() count read nothing and the dgx-02 rsync copied nothing. Parts chmod a+rX in the image on both Sparks, dgx-02 data copied (265 s). Fixed for later runs: assemble.py chmod 0644 (f4a5deb), r3data chmods after assemble (0233ed0).
+data-s01-t18: train 4668493 anchors / 423 docs (207 r3 + 216 p2 long), heldout 145983 / 14 (p2 long held-out, report-only eval)
+data-s01-t3: train 401690 / 1139; data-s01-t6: train 1032308 / 520
+data-s02-t18: train 2209345 / 213; data-s02-t3: train 402520 / 1177; data-s02-t6: train 1051086 / 526
+train anchors: p2 captured 896564, new 9765442 (r3 gen + p2 long), total 10662006
