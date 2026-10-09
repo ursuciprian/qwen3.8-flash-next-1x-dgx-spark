@@ -1,0 +1,53 @@
+[transformers] You tried to access the `ExpertsInterface` with a `config._experts_implementation` set to `None`. This is expected if you use an Expert Module as a standalone Module. If this is not the case, something went wrong with the dispatch of `config._experts_implementation`
+overlay: 26 tensors from /p3/runs/run1/mtp_refit.safetensors
+HC MXFP8 round trip: 8 tensors
+{
+ "anchors": [
+  145855,
+  145713,
+  145571,
+  145429,
+  145287,
+  145145
+ ],
+ "t1": {
+  "per_draft": [
+   0.8668,
+   0.8003,
+   0.7556,
+   0.722,
+   0.695,
+   0.671
+  ],
+  "per_position": [
+   0.8668,
+   0.6937,
+   0.5242,
+   0.3784,
+   0.263,
+   0.1765
+  ],
+  "tokens_per_step_d4": 3.463,
+  "tokens_per_step": 3.903
+ },
+ "t0": {
+  "per_draft": [
+   0.8965,
+   0.8709,
+   0.8636,
+   0.859,
+   0.8588,
+   0.8598
+  ],
+  "per_position": [
+   0.8965,
+   0.7808,
+   0.6743,
+   0.5792,
+   0.4974,
+   0.4277
+  ],
+  "tokens_per_step_d4": 3.931,
+  "tokens_per_step": 4.856
+ }
+}
