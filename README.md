@@ -4,9 +4,9 @@ A ready-made recipe that runs Qwen3.8-Flash-Next on one NVIDIA DGX Spark as a pr
 server, for chat, coding and agents. Two commands to start.
 
 <!-- hero:start (scripts/make_charts.py writes this block) -->
-<img src="docs/img/hero.svg" alt="Four measured numbers for this setup: answer speed for one chat, combined speed for many chats at once, context length and tool-call score." width="100%">
+<img src="docs/img/hero.svg" alt="Four numbers for this setup: answer speed for one chat and combined speed for many chats at once (measured), the context length setting, and the tool-call score (measured)." width="100%">
 
-<sub>tok/s = tokens per second; a token is about 3/4 of a word. Speed: release v2.1.0, 2026-10-08, llama-benchy task mode, each chat sends 2,048 tokens and gets 512 back. Tool calls: TC-45, release v2.1.0, 2026-10-07. Context: recipe max_model_len 262,144. Details: [docs/BENCHMARKS.md](docs/BENCHMARKS.md).</sub>
+<sub>tok/s = tokens per second; a token is about 3/4 of a word. Speed: release v2.1.0, 2026-10-08, each chat sends 2,048 tokens and gets 512 back. Tool calls: release v2.1.0, 2026-10-07. How each was measured: [docs/BENCHMARKS.md](docs/BENCHMARKS.md).</sub>
 <!-- hero:end -->
 
 ## Quick start
@@ -19,7 +19,7 @@ sparkrun registry add https://github.com/ursuciprian/qwen3.8-flash-next-1x-dgx-s
 sparkrun run qwen3.8-flash-next-1x-dgx-spark --hosts <spark> --solo
 ```
 
-The first start downloads the model and the image (about 128 GB on disk; on a slow link, fetch the model
+The first start downloads the model and the image (about 130 GB on disk; on a slow link, fetch the model
 beforehand, see below). Once it is on
 disk, a start takes about 3 minutes. `sparkrun run` returns before the server is ready. Once
 `http://<spark>:8000/health` answers, point any OpenAI client at `http://<spark>:8000/v1`, model `qwen3.8-flash-next`:
@@ -82,7 +82,7 @@ registries and does not refresh them on `run`.
 <!-- speed-chart:start (scripts/make_charts.py writes this block) -->
 <img src="docs/img/speed-users.svg" alt="Line chart: tokens per second, all users together, against the number of people or agents using the server at the same time. Values are labelled on the chart." width="100%">
 
-<sub>Each user sends a 2,048-token prompt and gets 512 tokens back; default sampling, thinking on. Total = all tokens written per second; each reply = how fast one answer streams.<br>One Spark: release v2.1.0, 2026-10-08, llama-benchy task mode<br>Two Sparks, TP=2: release v1.5.0, 2026-10-08, llama-benchy task mode; hollow point: older release v1.4.0, 2026-10-01, llama-benchy task mode<br>Two Sparks, DP=2: not measured on this test yet.<br>Versions are numbered per setup. Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.</sub>
+<sub>Each user sends a 2,048-token prompt and gets 512 tokens back; default sampling, thinking on. Total = all tokens written per second, including the time spent reading prompts; each reply = how fast one answer streams once it has started, so it is more than total / users.<br>One Spark: release v2.1.0, 2026-10-08, llama-benchy task mode<br>Two Sparks, TP=2: release v1.5.0, 2026-10-08, llama-benchy task mode; hollow point: older release v1.4.0, 2026-10-01, llama-benchy task mode<br>Two Sparks, DP=2: not measured on this test yet.<br>Versions are numbered per setup. Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.</sub>
 <!-- speed-chart:end -->
 
 The more people use it at once, the more text it writes in total, while each reply streams more slowly. One Spark
@@ -135,7 +135,7 @@ chats between them. In my agent tests it finished the same work sooner than TP=2
 
 <!-- quality:start (scripts/make_charts.py writes this block) -->
 - ![tool calls](https://img.shields.io/badge/tool%20calls-100%2F100-2ea44f) When a request requires a tool call, the reply makes one (TC-45, 5 trials).
-- ![hard tool use](https://img.shields.io/badge/hard%20tool%20use-91%2F100-2ea44f) 91 out of 100 on 88 hard multi-step tool-use scenarios; the pass mark is 88.
+- ![hard tool use](https://img.shields.io/badge/hard%20tool%20use-91%2F100-2ea44f) Score 91/100 on 88 hard multi-step tool-use scenarios (pass mark: 88/100).
 - ![long prompts](https://img.shields.io/badge/long%20prompts-19%2F20%20or%20better%20up%20to%20~245K%20tokens-2ea44f) Finds 20 facts hidden in a long prompt and returns each through a tool call: 20 of 20 in every run except one of three ~245K prompts (19 of 20).
 - ![stalled requests](https://img.shields.io/badge/stalled%20requests-none-2ea44f) No request falls behind the others when 8 to 16 are sent at once; it runs 8 at a time and queues the rest.
 
