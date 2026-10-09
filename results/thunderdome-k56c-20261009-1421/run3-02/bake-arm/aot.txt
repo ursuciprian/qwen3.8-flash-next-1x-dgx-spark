@@ -1,0 +1,4 @@
+(EngineCore pid=557) INFO 10-09 11:32:20 [backends.py:1155] Dynamo bytecode transform time: 8.85 s
+(EngineCore pid=557) INFO 10-09 11:32:48 [decorators.py:710] saved AOT compiled function to /cache/runtime/vllm-k56c-run3/torch_compile_cache/torch_aot_compile/fe1b801c4fce01de84d5e2397ed0cd647eada64f0c00f2298c00d3479cc21f27/rank_0_0/model
+(EngineCore pid=557) INFO 10-09 11:32:51 [backends.py:1155] Dynamo bytecode transform time: 0.40 s
+(EngineCore pid=557) INFO 10-09 11:32:57 [decorators.py:710] saved AOT compiled function to /cache/runtime/vllm-k56c-run3/torch_compile_cache/torch_aot_compile/30ad5a0eae6b241248f062c1996b312933e811d96fa0791a07e912047549bea0/rank_0_0/model
