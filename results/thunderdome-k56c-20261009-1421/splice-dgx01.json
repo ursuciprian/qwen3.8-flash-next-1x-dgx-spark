@@ -1,0 +1,10 @@
+{
+ "refit": "/home/nvidia/GEN-AI/refit-r3/runs/run3/mtp_refit.safetensors",
+ "refit_sha256": "25380ab8b7cfd0b6f1d6de71f74c09aebf59d6897f5d2bda60fb3e1f58994fcd",
+ "shards": {
+  "model-00034-of-00036.safetensors": {
+   "tensors": 26,
+   "sha256": "4d982c2a6b44ea793169e2ef3ce4a0ab56705c86fcb0ff4d55e1f93e69ca8c63"
+  }
+ }
+}

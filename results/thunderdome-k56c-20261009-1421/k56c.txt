@@ -1,0 +1,62 @@
+k56c 2026-10-09 14:21:45 EEST: refit run3 (run3a) vs refit run1 (shipped single-Spark drafter), offline T=0 gain +2.21 pts/pos [+0.0064 +0.0128 +0.0193 +0.0256 +0.0320 +0.0366]
+image spark-vllm-b12x:k56c-refit-run3-25380ab8, snapshot f4..63 on both Sparks, control spark-vllm-b12x:k56-refit-run1-c92ac62d (f4..61)
+thunderdome: exit 0, DONE: k56c-run3=INCONCLUSIVE k56c-run3=PROMOTE(gate ran)
+
+== run3-01 (dgx-01)
+== acceptance per draft position (T=0 probe cells, pooled)
+  pos 0: control 0.852 arm 0.866 shift +0.013
+  pos 1: control 0.709 arm 0.732 shift +0.023
+  pos 2: control 0.588 arm 0.613 shift +0.026
+  pos 3: control 0.486 arm 0.516 shift +0.030
+== cells: arm vs control % (noise = the cell's noise band, %)
+  probe  fresh-c1      +1.51%  noise  3.25%            n=4 CI [-1.4,+5.1] control boot-to-boot -0.46%, step +0.37%
+  probe  fresh-c4      +3.44%  noise  2.36%  better    n=16 CI [+1.1,+5.8] control boot-to-boot -0.78%, step -0.07%
+  probe  fresh-c8      +4.04%  noise  1.60%  better    n=32 CI [+2.5,+5.7] control boot-to-boot +0.07%, step -0.41%
+  probe  d16k-c4       +4.63%  noise  2.51%  better    n=16 CI [+2.2,+7.2] control boot-to-boot -1.48%, step -1.01%
+  probe  count-c8      +0.66%  noise  1.01%            n=32 CI [-0.3,+1.7] control boot-to-boot +0.93%, step -0.35%
+  wall   d16k-c8       +0.41%  noise  1.00%            wall s control 123/123 arm 122/123 (cut counts as the time)
+  benchy pp2048 (c1)   +0.34%  noise  1.40%            control 1819.0 arm 1825.2 t/s (boots 2/2)
+  benchy tg512 (c1)    -2.55%  noise 11.00%            control 57.9 arm 56.5 t/s (boots 2/2)
+  benchy tg512 (c8)    -3.79%  noise  3.05%  worse     control 134.8 arm 129.7 t/s (boots 2/2)
+== logits_equiv (reported, not judged)
+reason: benchy tg512 (c8) -3.79% (noise 3.05%)
+better: probe fresh-c4 +3.44% (noise 2.36%); probe fresh-c8 +4.04% (noise 1.60%); probe d16k-c4 +4.63% (noise 2.51%)
+VERDICT=INCONCLUSIVE
+
+== run3-02 (dgx-02)
+== acceptance per draft position (T=0 probe cells, pooled)
+  pos 0: control 0.860 arm 0.861 shift +0.001
+  pos 1: control 0.719 arm 0.724 shift +0.006
+  pos 2: control 0.596 arm 0.608 shift +0.012
+  pos 3: control 0.491 arm 0.508 shift +0.017
+== cells: arm vs control % (noise = the cell's noise band, %)
+  probe  fresh-c1      +1.62%  noise  8.29%            n=4 CI [-7.4,+9.2] control boot-to-boot +5.63%, step +0.41%
+  probe  fresh-c4      +1.93%  noise  4.77%            n=16 CI [-1.1,+5.0] control boot-to-boot -4.77%, step +0.63%
+  probe  fresh-c8      -0.33%  noise  2.76%            n=32 CI [-2.1,+1.9] control boot-to-boot -2.76%, step +0.30%
+  probe  d16k-c4       +1.98%  noise  3.93%            n=16 CI [+0.0,+4.2] control boot-to-boot -3.93%, step +1.39%
+  probe  count-c8      +1.04%  noise  1.90%            n=32 CI [-0.0,+2.1] control boot-to-boot -1.90%, step -1.07%
+  wall   d16k-c8       +0.42%  noise  1.00%            wall s control 123/122 arm 121/123 (cut counts as the time)
+  benchy pp2048 (c1)   -1.45%  noise  2.97%            control 1841.6 arm 1814.9 t/s (boots 2/2)
+  benchy tg512 (c1)   +11.01%  noise  2.39%  better    control 58.1 arm 64.5 t/s (boots 2/2)
+  benchy tg512 (c8)    -1.71%  noise  5.96%            control 135.3 arm 133.0 t/s (boots 2/2)
+== logits_equiv (reported, not judged)
+better: benchy tg512 (c1) +11.01% (noise 2.39%)
+VERDICT=PROMOTE
+-- gate
+gate k56c-run3 spark-vllm-b12x:k56c-refit-run3-25380ab8
+│    Quality:        93/100                                                    │
+│    Score:  100 / 100                                                         │
+│    Score:   100.0 ± 0.0 / 100                                                │
+depth    8000 | actual_tokens   15709 | exact  20 near   0 wrong   0 explore   0 no_call   0 | typo_rate 0.00 | ttft   0.94s | lat    2.6s
+depth   32000 | actual_tokens   61730 | exact  20 near   0 wrong   0 explore   0 no_call   0 | typo_rate 0.00 | ttft   2.50s | lat    4.4s
+depth   64000 | actual_tokens  122614 | exact  20 near   0 wrong   0 explore   0 no_call   0 | typo_rate 0.00 | ttft   4.72s | lat    6.8s
+depth  128000 | actual_tokens  245267 | exact  20 near   0 wrong   0 explore   0 no_call   0 | typo_rate 0.00 | ttft   8.66s | lat   10.7s
+depth  128000 | actual_tokens  244166 | exact  20 near   0 wrong   0 explore   0 no_call   0 | typo_rate 0.00 | ttft   9.88s | lat   11.7s
+depth  128000 | actual_tokens  244893 | exact  20 near   0 wrong   0 explore   0 no_call   0 | typo_rate 0.00 | ttft  10.39s | lat   12.5s
+c=8 round wall 6.5s | per request (submit order): #0:6.38s/320t #1:6.38s/320t #2:6.47s/320t #3:6.38s/320t #4:6.38s/320t #5:6.47s/320t #6:6.47s/320t #7:6.47s/320t
+      preemptions +0 | queue time total 0.92s over 8 req | prefill total 4.20s | decode total 47.2s | accept 4.00/draft
+c=12 round wall 11.2s | per request (submit order): #0:6.70s/320t #1:6.37s/320t #2:6.70s/320t #3:6.69s/320t #4:6.37s/320t #5:6.37s/320t #6:6.37s/320t #7:6.69s/320t #8:11.16s/320t #9:11.16s/320t #10:11.16s/320t #11:11.16s/320t
+      preemptions +0 | queue time total 26.20s over 12 req | prefill total 30.99s | decode total 65.9s | accept 4.00/draft
+c=16 round wall 12.8s | per request (submit order): #0:6.34s/320t #1:6.34s/320t #2:6.67s/320t #3:6.34s/320t #4:6.34s/320t #5:6.67s/320t #6:6.66s/320t #7:12.72s/320t #8:6.66s/320t #9:12.72s/320t #10:12.72s/320t #11:12.72s/320t #12:12.82s/320t #13:12.82s/320t #14:12.82s/320t #15:12.82s/320t
+      preemptions +0 | queue time total 52.49s over 16 req | prefill total 59.34s | decode total 94.8s | accept 4.00/draft
+min MemAvailable dgx01 16:10:03 14.58 dgx02 16:13:18 13.89

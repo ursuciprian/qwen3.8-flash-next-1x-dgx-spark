@@ -1,0 +1,6 @@
+teb       {"speed": 67.3, "spec": {"rounds": 103, "depth": 4.0, "share6": 0.0, "tok_step": 3.806, "acc_pos": [0.845, 0.738, 0.66, 0.563]}}
+teb-t1    {"speed": 61.1, "spec": {"rounds": 110, "depth": 4.0, "share6": 0.0, "tok_step": 3.527, "acc_pos": [0.845, 0.691, 0.564, 0.427]}}
+count-c1  {"speed": 84.0, "spec": {"rounds": 386, "depth": 4.0, "share6": 0.0, "tok_step": 5.0, "acc_pos": [1.0, 1.0, 1.0, 1.0]}}
+count-c2  {"speed": 153.3, "spec": {"rounds": 644, "depth": 4.0, "share6": 0.0, "tok_step": 5.0, "acc_pos": [1.0, 1.0, 1.0, 1.0]}}
+copy      {"speed": {"1": 80.89044264599828, "2": 123.27049059563024}, "spec": {"rounds": 3019, "depth": 4.0, "share6": 0.0, "tok_step": 4.972, "acc_pos": [0.998, 0.996, 0.99, 0.987]}}
+boot      {"rounds": 4262, "depth": 4.0, "share6": 0.0, "tok_step": 4.913, "acc_pos": [0.991, 0.983, 0.974, 0.965]}
