@@ -1,0 +1,25 @@
+== acceptance per draft position (T=0 probe cells, pooled)
+== cells: arm vs control % (noise = the cell's noise band, %)
+  probe  fresh-c1     missing
+  probe  fresh-c4     missing
+  probe  fresh-c8     missing
+  probe  d16k-c4      missing
+  probe  count-c8     missing
+  wall   d16k-c8      missing
+  benchy pp2048 (c1)  missing
+  benchy tg512 (c1)   missing
+  benchy tg512 (c8)   missing
+== logits_equiv (reported, not judged)
+reason: arm-p1: boot failed
+reason: acceptance: no paired data
+reason: probe fresh-c1: missing
+reason: probe fresh-c4: missing
+reason: probe fresh-c8: missing
+reason: probe d16k-c4: missing
+reason: probe count-c8: missing
+reason: wall d16k-c8: missing
+reason: benchy pp2048 (c1): missing
+reason: benchy tg512 (c1): missing
+reason: benchy tg512 (c8): missing
+better: none
+VERDICT=KILL

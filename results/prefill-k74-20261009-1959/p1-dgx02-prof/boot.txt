@@ -1,0 +1,4 @@
+boot 210 s, recipe /home/nvidia/GEN-AI/backlog/k74/prof.yaml
+Dynamo bytecode transform time
+GPU KV cache size: 993,754 tokens
+ghcr.io/ursuciprian/spark-vllm-b12x:tp1-v3e-hf-20261008-21e0b201-5dad364d-warm

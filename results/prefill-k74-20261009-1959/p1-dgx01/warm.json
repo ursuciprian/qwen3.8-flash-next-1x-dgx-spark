@@ -1,0 +1,24 @@
+{
+ "seed": "warm",
+ "corpus_tokens": 33528,
+ "rows": [
+  {
+   "ttft_s": 1.234534502029419,
+   "prompt_tokens": 2048,
+   "len": 2048,
+   "rep": 0
+  }
+ ],
+ "summary": {
+  "2048": {
+   "n": 1,
+   "prompt_tokens": 2048,
+   "ttft_mean_s": 1.234534502029419,
+   "ttft_min_s": 1.234534502029419,
+   "tok_s": 1658.924879485625,
+   "tok_s_each": [
+    1659
+   ]
+  }
+ }
+}
