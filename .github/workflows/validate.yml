@@ -19,6 +19,7 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install pyyaml
+      - run: python3 scripts/validate_recipes.py --selftest
       - run: python3 scripts/validate_recipes.py
       - run: python3 scripts/validate_recipes.py archive/recipes
       - run: python3 scripts/check_links.py
