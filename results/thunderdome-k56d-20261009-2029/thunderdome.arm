@@ -1,0 +1,4 @@
+# k56d arm on dgx-01: k56c's run3 recipe vs k56c's run1 control, warm (no bake), no hook
+name: run3-01
+recipe: /home/nvidia/GEN-AI/backlog/k56c/k56c-run3.yaml
+base: /home/nvidia/GEN-AI/backlog/k56c/ctl-run1.yaml

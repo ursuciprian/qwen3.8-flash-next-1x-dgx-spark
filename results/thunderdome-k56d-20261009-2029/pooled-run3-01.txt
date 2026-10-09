@@ -1,0 +1,56 @@
+== acceptance per draft position (T=0 probe cells, pooled)
+  pos 0: control 0.849 arm 0.860 shift +0.011
+  pos 1: control 0.699 arm 0.720 shift +0.021
+  pos 2: control 0.575 arm 0.598 shift +0.024
+  pos 3: control 0.472 arm 0.498 shift +0.026
+== cells: arm vs control % (noise = the cell's noise band, %)
+  probe  fresh-c1      +1.51%  noise  3.25%            n=4 CI [-1.4,+5.1] control boot-to-boot -0.46%, step +0.37%
+  probe  fresh-c4      +3.44%  noise  2.36%  better    n=16 CI [+1.1,+5.8] control boot-to-boot -0.78%, step -0.07%
+  probe  fresh-c8      +3.26%  noise  1.01%  better    n=96 CI [+2.3,+4.3] control boot-to-boot +0.07%, step -0.63%
+  probe  d16k-c4       +4.63%  noise  2.51%  better    n=16 CI [+2.2,+7.2] control boot-to-boot -1.48%, step -1.01%
+  probe  count-c8      +0.66%  noise  1.01%            n=32 CI [-0.3,+1.7] control boot-to-boot +0.93%, step -0.35%
+  wall   d16k-c8       +0.41%  noise  1.00%            wall s control 123/123/-/-/-/- arm 122/123/-/-/-/- (cut counts as the time)
+  benchy pp2048 (c1)   +0.46%  noise  2.86%            control 1799.1 arm 1807.4 t/s (boots 6/6)
+  benchy tg512 (c1)    +0.66%  noise 11.04%            control 57.7 arm 58.1 t/s (boots 6/6)
+  benchy tg512 (c8)    +1.22%  noise  8.74%            control 131.0 arm 132.6 t/s (boots 6/6)
+== logits_equiv (reported, not judged)
+  self  ctl-p1 a/b: 12/20 prompts identical, |dlogprob| mean 0.0358 max 0.5418
+  self  ctl-p2 a/b: 12/20 prompts identical, |dlogprob| mean 0.0362 max 0.4357
+  self  ctl-p3 a/b: 13/20 prompts identical, |dlogprob| mean 0.0327 max 0.4030
+  self  ctl-p4 a/b: 9/20 prompts identical, |dlogprob| mean 0.0320 max 0.3237
+  self  ctl-p5 a/b: 14/20 prompts identical, |dlogprob| mean 0.0339 max 0.3730
+  self  ctl-p6 a/b: 14/20 prompts identical, |dlogprob| mean 0.0330 max 0.3373
+  self  arm-p1 a/b: 11/20 prompts identical, |dlogprob| mean 0.0344 max 0.4506
+  self  arm-p2 a/b: 11/20 prompts identical, |dlogprob| mean 0.0406 max 0.5475
+  self  arm-p3 a/b: 11/20 prompts identical, |dlogprob| mean 0.0398 max 0.5269
+  self  arm-p4 a/b: 10/20 prompts identical, |dlogprob| mean 0.0414 max 0.4594
+  self  arm-p5 a/b: 9/20 prompts identical, |dlogprob| mean 0.0335 max 0.3211
+  self  arm-p6 a/b: 13/20 prompts identical, |dlogprob| mean 0.0353 max 0.3881
+  cross ctl-p1/arm-p1: 10/20 prompts identical, |dlogprob| mean 0.0373 max 0.5270
+  cross ctl-p2/arm-p2: 11/20 prompts identical, |dlogprob| mean 0.0364 max 0.4561
+  cross ctl-p3/arm-p3: 13/20 prompts identical, |dlogprob| mean 0.0398 max 0.4725
+  cross ctl-p4/arm-p4: 12/20 prompts identical, |dlogprob| mean 0.0421 max 0.4945
+  cross ctl-p5/arm-p5: 12/20 prompts identical, |dlogprob| mean 0.0437 max 0.5533
+  cross ctl-p6/arm-p6: 13/20 prompts identical, |dlogprob| mean 0.0273 max 0.2996
+better: probe fresh-c4 +3.44% (noise 2.36%); probe fresh-c8 +3.26% (noise 1.01%); probe d16k-c4 +4.63% (noise 2.51%)
+VERDICT=PROMOTE
+== boot-level Welch 95% CI, benchy cells (reported; the rule uses the noise bands above)
+  pp2048 (c1)   +0.46%  CI [-0.84,+1.76]  control 1831.8 1806.2 1791.1 1785.9 1780.4 1799.4 | arm 1816.7 1833.8 1795.7 1815.6 1793.4 1789.3
+  tg512 (c1)    +0.66%  CI [-5.25,+6.58]  control 54.7 61.1 60.2 56.5 56.9 56.7 | arm 58.3 54.6 58.6 56.8 57.2 63.0
+  tg512 (c8)    +1.22%  CI [-2.36,+4.80]  control 136.3 133.3 124.9 130.4 131.1 129.7 | arm 133.3 126.1 132.4 135.6 133.2 134.7
+== post checks per boot
+  ctl-p1 -> thunderdome-k56c-20261009-1421/run3-01/ctl-p1: kv 993,754 ok
+  ctl-p2 -> thunderdome-k56c-20261009-1421/run3-01/ctl-p2: kv 993,754 ok
+  ctl-p3 -> thunderdome-k56d-20261009-2029/run3-01/ctl-p1: kv 993,754 ok
+  ctl-p4 -> thunderdome-k56d-20261009-2029/run3-01/ctl-p2: kv 993,754 ok
+  ctl-p5 -> thunderdome-k56d-20261009-2029/run3-01/ctl-p3: kv 993,754 ok
+  ctl-p6 -> thunderdome-k56d-20261009-2029/run3-01/ctl-p4: kv 993,754 ok
+  arm-p1 -> thunderdome-k56c-20261009-1421/run3-01/arm-p1: kv 993,754 ok
+  arm-p2 -> thunderdome-k56c-20261009-1421/run3-01/arm-p2: kv 993,754 ok
+  arm-p3 -> thunderdome-k56d-20261009-2029/run3-01/arm-p1: kv 993,754 ok
+  arm-p4 -> thunderdome-k56d-20261009-2029/run3-01/arm-p2: kv 993,754 ok
+  arm-p5 -> thunderdome-k56d-20261009-2029/run3-01/arm-p3: kv 993,754 ok
+  arm-p6 -> thunderdome-k56d-20261009-2029/run3-01/arm-p4: kv 993,754 ok
+worse: none
+better: probe  fresh-c4      +3.44%  noise  2.36%  better    n=16 CI [+1.1,+5.8] control boot-to-boot -0.78%, step -0.07%; probe  fresh-c8      +3.26%  noise  1.01%  better    n=96 CI [+2.3,+4.3] control boot-to-boot +0.07%, step -0.63%; probe  d16k-c4       +4.63%  noise  2.51%  better    n=16 CI [+2.2,+7.2] control boot-to-boot -1.48%, step -1.01%
+RULE=PASS

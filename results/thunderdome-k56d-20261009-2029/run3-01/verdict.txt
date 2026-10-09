@@ -1,0 +1,35 @@
+== acceptance per draft position (T=0 probe cells, pooled)
+  pos 0: control 0.844 arm 0.852 shift +0.007
+  pos 1: control 0.686 arm 0.704 shift +0.018
+  pos 2: control 0.556 arm 0.577 shift +0.021
+  pos 3: control 0.451 arm 0.472 shift +0.021
+== cells: arm vs control % (noise = the cell's noise band, %)
+  probe  fresh-c1     missing
+  probe  fresh-c4     missing
+  probe  fresh-c8      +2.87%  noise  2.97%            n=64 CI [+1.6,+4.1] control boot-to-boot -2.97%, step -0.74%
+  probe  d16k-c4      missing
+  probe  count-c8     missing
+  wall   d16k-c8      missing
+  benchy pp2048 (c1)   +0.52%  noise  1.42%            control 1789.2 arm 1798.5 t/s (boots 4/4)
+  benchy tg512 (c1)    +2.28%  noise  6.46%            control 57.6 arm 58.9 t/s (boots 4/4)
+  benchy tg512 (c8)    +3.83%  noise  4.84%            control 129.0 arm 134.0 t/s (boots 4/4)
+== logits_equiv (reported, not judged)
+  self  ctl-p1 a/b: 13/20 prompts identical, |dlogprob| mean 0.0327 max 0.4030
+  self  ctl-p2 a/b: 9/20 prompts identical, |dlogprob| mean 0.0320 max 0.3237
+  self  ctl-p3 a/b: 14/20 prompts identical, |dlogprob| mean 0.0339 max 0.3730
+  self  ctl-p4 a/b: 14/20 prompts identical, |dlogprob| mean 0.0330 max 0.3373
+  self  arm-p1 a/b: 11/20 prompts identical, |dlogprob| mean 0.0398 max 0.5269
+  self  arm-p2 a/b: 10/20 prompts identical, |dlogprob| mean 0.0414 max 0.4594
+  self  arm-p3 a/b: 9/20 prompts identical, |dlogprob| mean 0.0335 max 0.3211
+  self  arm-p4 a/b: 13/20 prompts identical, |dlogprob| mean 0.0353 max 0.3881
+  cross ctl-p1/arm-p1: 13/20 prompts identical, |dlogprob| mean 0.0398 max 0.4725
+  cross ctl-p2/arm-p2: 12/20 prompts identical, |dlogprob| mean 0.0421 max 0.4945
+  cross ctl-p3/arm-p3: 12/20 prompts identical, |dlogprob| mean 0.0437 max 0.5533
+  cross ctl-p4/arm-p4: 13/20 prompts identical, |dlogprob| mean 0.0273 max 0.2996
+reason: probe fresh-c1: missing
+reason: probe fresh-c4: missing
+reason: probe d16k-c4: missing
+reason: probe count-c8: missing
+reason: wall d16k-c8: missing
+better: none
+VERDICT=INCONCLUSIVE
