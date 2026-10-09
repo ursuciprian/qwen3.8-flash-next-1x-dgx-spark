@@ -1,10 +1,15 @@
 # Benchmarks: full tables
 
+Release names follow [VERSIONS.md](../VERSIONS.md). Section headings keep the old build names so existing links keep working; each build section opens with its release name. The current default is 1× v3.0.0 (old name v3e); every other section is history, kept for comparison. The README's capability table and charts read [`docs/data/capability.csv`](data/capability.csv).
+
+
 Every single-Spark (TP=1) build, newest first, then the runs that compared the 1× and 2× setups side by side. The 2×
 rows in those runs are kept for reference; the 2× builds have their own tables in
 [qwen3.8-flash-next-dgx-spark-tp-2](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/blob/main/docs/BENCHMARKS.md).
 
 ## Single Spark v3e: retrained MTP drafter (2026-10-08)
+
+Release 1× v3.0.0 (old name v3e), the current default.
 
 v3e = v3d with the 24 dense BF16 `mtp.*` tensors retrained (#97 refit run 1). Checkpoint
 `ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE` @ `16c9bd54` (v3d: `244cb6fe`); only `model-00034-of-00036.safetensors`
@@ -57,6 +62,8 @@ REFIT, fresh c4 acceptance 0.846 / 0.691 / 0.566 / 0.462. Its llama-benchy codin
 132.9 t/s at c8 (depth 0). Raw files: [`results/tp1-v3e-hf-20261008/`](../results/tp1-v3e-hf-20261008/).
 
 ## Single Spark v3d (2026-10-05)
+
+Release 1× v2.0.0 (old name v3d), the default from 2026-10-06 to 2026-10-08.
 
 Recipe `qwen3.8-flash-next-1x-dgx-spark` (one GB10, TP=1), image
 `ghcr.io/ursuciprian/spark-vllm-b12x:tp1-v3d-hf-20261005-21e0b201-5dad364d-warm`
@@ -167,6 +174,8 @@ Files: `gate-*` in the results directory.
 
 ## Single Spark v3c (2026-10-05)
 
+Release 1× v1.3.0 (old name v3c), history.
+
 Recipe `qwen3.8-flash-next-1x-dgx-spark` (one GB10, TP=1), image
 `ghcr.io/ursuciprian/spark-vllm-b12x:tp1-v3c-20261005-21e0b201-50330171-warm`
 (digest `sha256:ba140406cabf0fbbbd13d0f605c42881c2442079619aa2fa7297eed2e0e31bff`), checkpoint revision `7c4f1bc1`.
@@ -240,6 +249,8 @@ per 4 drafts), min MemAvailable 15.62 GiB (dgx-01) / 15.01 GiB (dgx-02). Files: 
 
 ## Single Spark v3b (2026-10-04)
 
+Release 1× v1.2.0 (old name v3b), history.
+
 Recipe `qwen3.8-flash-next-1x-dgx-spark` (one GB10, TP=1), image
 `ghcr.io/ursuciprian/spark-vllm-b12x:tp1-v3b-20261004-5bf24021-0632e506-warm`
 (digest `sha256:7308411dca81d1454cfc84725f87c9db80a6963ad7d4568a0255a046d51b90fa`), checkpoint revision `7c4f1bc1`.
@@ -281,6 +292,8 @@ total per run before and 17-18 s after.
 draft), min MemAvailable 14.01 GiB.
 
 ## Single Spark v3a (2026-10-04)
+
+Release 1× v1.1.0 (old name v3a), history.
 
 Recipe `qwen3.8-flash-next-1x-dgx-spark` (one GB10, TP=1), image
 `ghcr.io/ursuciprian/spark-vllm-b12x:tp1-v3a-20261004-5bf24021-7fa812b3-warm`, checkpoint revision `7c4f1bc1`.
