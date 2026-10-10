@@ -1,0 +1,34 @@
+== acceptance per draft position (T=0 probe cells, pooled)
+  pos 0: control 0.841 arm 0.852 shift +0.011
+  pos 1: control 0.683 arm 0.704 shift +0.021
+  pos 2: control 0.554 arm 0.577 shift +0.023
+  pos 3: control 0.445 arm 0.469 shift +0.024
+== cells: arm vs control % (noise = the cell's noise band, %)
+  probe  fresh-c1     missing
+  probe  fresh-c4      +1.79%  noise  2.19%            n=32 CI [+0.1,+3.5] control boot-to-boot -2.19%, step +0.02%
+  probe  fresh-c8      +2.10%  noise  1.84%  better    n=64 CI [+0.8,+3.5] control boot-to-boot +1.84%, step -0.31%
+  probe  d16k-c4      missing
+  probe  count-c8     missing
+  wall   d16k-c8      missing
+  benchy pp2048 (c1)   -0.09%  noise  1.06%            control 1795.0 arm 1793.5 t/s (boots 4/4)
+  benchy tg512 (c1)    +7.94%  noise  9.63%            control 55.5 arm 59.9 t/s (boots 4/4)
+  benchy tg512 (c8)    +3.41%  noise  6.01%            control 131.8 arm 136.3 t/s (boots 4/4)
+== logits_equiv (reported, not judged)
+  self  ctl-p1 a/b: 13/20 prompts identical, |dlogprob| mean 0.0384 max 0.5925
+  self  ctl-p2 a/b: 12/20 prompts identical, |dlogprob| mean 0.0426 max 0.4752
+  self  ctl-p3 a/b: 12/20 prompts identical, |dlogprob| mean 0.0414 max 0.5792
+  self  ctl-p4 a/b: 11/20 prompts identical, |dlogprob| mean 0.0396 max 0.5496
+  self  arm-p1 a/b: 12/20 prompts identical, |dlogprob| mean 0.0410 max 0.4489
+  self  arm-p2 a/b: 11/20 prompts identical, |dlogprob| mean 0.0311 max 0.2863
+  self  arm-p3 a/b: 14/20 prompts identical, |dlogprob| mean 0.0369 max 0.5824
+  self  arm-p4 a/b: 9/20 prompts identical, |dlogprob| mean 0.0353 max 0.3222
+  cross ctl-p1/arm-p1: 11/20 prompts identical, |dlogprob| mean 0.0292 max 0.4839
+  cross ctl-p2/arm-p2: 8/20 prompts identical, |dlogprob| mean 0.0394 max 0.3729
+  cross ctl-p3/arm-p3: 12/20 prompts identical, |dlogprob| mean 0.0324 max 0.5554
+  cross ctl-p4/arm-p4: 10/20 prompts identical, |dlogprob| mean 0.0337 max 0.3803
+reason: probe fresh-c1: missing
+reason: probe d16k-c4: missing
+reason: probe count-c8: missing
+reason: wall d16k-c8: missing
+better: probe fresh-c8 +2.10% (noise 1.84%)
+VERDICT=INCONCLUSIVE

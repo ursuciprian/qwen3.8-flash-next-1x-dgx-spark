@@ -1,0 +1,4 @@
+# k80 arm on dgx-01: v2.2.0 (D3, HF 03f4a057) vs the shipped v2.1.0 (D1, HF 16c9bd54), warm, no hook
+name: d3-01
+recipe: /home/nvidia/GEN-AI/backlog/k80/arm-v2.2.0.yaml
+base: /home/nvidia/GEN-AI/backlog/k80/ctl-v2.1.0.yaml
