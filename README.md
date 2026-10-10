@@ -7,7 +7,7 @@
 <!-- numbers:start (scripts/make_charts.py writes this block) -->
 <table align="center">
   <tr>
-    <td align="center"><h2>73 tok/s</h2><b>TG, coding c1</b><br><sub>median of 36 prompts · T=0, thinking off · max 81.8 · v2.0.0</sub></td>
+    <td align="center"><h2>77 tok/s</h2><b>TG, coding c1</b><br><sub>median of 36 prompts · T=0, thinking off · max 87.0</sub></td>
     <td align="center"><h2>133 tok/s</h2><b>TG, aggregate c8</b><br><sub>ISL/OSL 2048/512 · defaults</sub></td>
     <td align="center"><h2>57 tok/s</h2><b>TG c1, defaults</b><br><sub>ISL/OSL 2048/512 · T=1.0, thinking on</sub></td>
     <td align="center"><h2>100/100</h2><b>TC-45</b><br><sub>tool calls · 5 of 5 trials</sub></td>
@@ -16,17 +16,17 @@
 
 <p align="center"><sub>262K context · max_num_seqs 8 · MTP ×4 · OpenAI-compatible API · quality-gated releases</sub></p>
 
-<sub>TG tok/s. Coding: median, n=36, T=0, thinking off, OSL ≤768, v2.0.0. Chat: ISL/OSL 2048/512, server defaults (T=1.0, thinking on), v2.1.0.</sub>
+<sub>TG tok/s. Coding: median, n=36, T=0, thinking off, OSL ≤768, v2.1.0. Chat: ISL/OSL 2048/512, server defaults (T=1.0, thinking on), v2.1.0.</sub>
 
 <details>
 <summary><sub>Measurement details</sub></summary>
 
 | Metric | Value | Workload | Sampling | n | Release (date) | Source |
 |---|--:|---|---|---|---|---|
-| TG, coding c1 | 72.9 tok/s median, max 81.8 | 36 prompts (Python, C++, Rust, Go), OSL ≤768 | T=0, thinking off | 36 prompts, median | v2.0.0 (2026-10-06) | [results](results/coding-probe-k55-20261006/1x-v3d-dgx02-multilang/) |
-| TG, coding c1, defaults | 59.7 tok/s median | 36 prompts, OSL ≤768 | server defaults, thinking on | 36 prompts, median | v2.0.0 (2026-10-06) | [results](results/coding-probe-k55-20261006/1x-v3d-dgx02-multilang/) |
-| TG, aggregate c8 | 132.9 ± 3.4 tok/s | llama-benchy task mode, ISL/OSL 2048/512 | T=1.0, top-p 0.95, top-k 20, thinking on | 1 boot, mean | v2.1.0 (2026-10-08) | [results](results/tp1-v3e-hf-20261008/bench/) |
-| TG c1 | 56.9 ± 1.6 tok/s | llama-benchy task mode, ISL/OSL 2048/512 | T=1.0, top-p 0.95, top-k 20, thinking on | 1 boot, mean | v2.1.0 (2026-10-08) | [results](results/tp1-v3e-hf-20261008/bench/) |
+| TG, coding c1 | 77.0 tok/s median, max 87.0 | 36 prompts (Python, C++, Rust, Go), OSL ≤768 | T=0, thinking off | 36 prompts, median | v2.1.0 (2026-10-10) | [results](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k76-capability-matrix-20261010-1059/1x-dgx0{1,2}/) |
+| TG, coding c1, defaults | 60.9 tok/s median | 36 prompts, OSL ≤768 | server defaults, thinking on | 36 prompts, median | v2.1.0 (2026-10-10) | [results](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k76-capability-matrix-20261010-1059/1x-dgx0{1,2}/) |
+| TG, aggregate c8 | 132.9 ± 7.1 tok/s | llama-benchy task mode, ISL/OSL 2048/512 | T=1.0, top-p 0.95, top-k 20, thinking on | 3 runs, 1 boot, mean | v2.1.0 (2026-10-10) | [results](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k76-capability-matrix-20261010-1059/1x-dgx0{1,2}/) |
+| TG c1 | 56.9 ± 4.1 tok/s | llama-benchy task mode, ISL/OSL 2048/512 | T=1.0, top-p 0.95, top-k 20, thinking on | 3 runs, 1 boot, mean | v2.1.0 (2026-10-10) | [results](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k76-capability-matrix-20261010-1059/1x-dgx0{1,2}/) |
 | TC-45 | 100/100 | tool call required by the request | – | 5 trials | v2.1.0 (2026-10-07) | [BENCHMARKS](docs/BENCHMARKS.md) |
 
 Method and full tables: [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
@@ -145,12 +145,12 @@ requests hit the prefix cache and run PP only on the new tokens.
 <picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/latency-dark.svg"><img src="docs/img/latency-light.svg" alt="TTFT in seconds vs ISL, c1, cold prefix, per setup. End values labelled." width="420"></picture>
 </p>
 
-<sub>Left: 1x Spark v2.1.0 · 2x Spark TP=2 v2.0.0; llama-benchy task mode. Right: 1x Spark v2.0.0 · 2x Spark TP=2 v1.4.0; c1, cold prefix.</sub>
+<sub>Left: 1x Spark v2.1.0 · 2x Spark TP=2 v2.0.0 · 2x Spark DP=2 v2.1.0; llama-benchy task mode. Right: 1x Spark v2.1.0 · 2x Spark TP=2 v1.4.0; c1, cold prefix.</sub>
 
 <details>
 <summary><sub>Runs, method and raw data</sub></summary>
 
-<sub>Left: llama-benchy task mode (agent coding turn), ISL/OSL 2048/512, T=1.0, top-p 0.95, top-k 20, thinking on, prefix caching. Aggregate = all output tokens / wall time, PP included; per request = TG rate of one stream after its first token.<br>1x Spark: release v2.1.0, 2026-10-08, llama-benchy task mode, mean ± sd over runs, one boot<br>2x Spark TP=2: release v2.0.0, 2026-10-09, llama-benchy task mode, mean of 2 boots x 4 runs, sd between boots; v2.0.0, 2026-10-09, llama-benchy task mode, mean of 4 runs, one boot, sd between runs<br>2x Spark DP=2: not measured on this test yet.<br>Versions are numbered per setup. Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.<br><br>Right: c1, cold prefix (no cache hit). Each point: mean of 1 to 4 samples of one run (n per point in the CSV).<br>1x Spark: release v2.0.0, 2026-10-05, llm-inference-bench 0.7.6<br>2x Spark TP=2: release v1.4.0, 2026-10-05, llm-inference-bench 0.7.6; v1.4.0, 2026-10-07, fidelity_probe.py<br>1x Spark: not measured above 128K yet.<br>Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.</sub>
+<sub>Left: llama-benchy task mode (agent coding turn), ISL/OSL 2048/512, T=1.0, top-p 0.95, top-k 20, thinking on, prefix caching. Aggregate = all output tokens / wall time, PP included; per request = TG rate of one stream after its first token.<br>1x Spark: release v2.1.0, 2026-10-08, llama-benchy task mode, mean ± sd over runs, one boot<br>2x Spark TP=2: release v2.0.0, 2026-10-09, llama-benchy task mode, mean of 2 boots x 4 runs, sd between boots; v2.0.0, 2026-10-09, llama-benchy task mode, mean of 4 runs, one boot, sd between runs<br>2x Spark DP=2: release v2.1.0, 2026-10-10, llama-benchy 0.4.1.dev4+g0d4de4271, mean ± sd of 3 runs, one boot<br>Versions are numbered per setup. Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.<br><br>Right: c1, cold prefix (no cache hit). Each point: mean of 1 to 4 samples of one run (n per point in the CSV).<br>1x Spark: release v2.1.0, 2026-10-10, llama-benchy 0.4.1.dev4+g0d4de4271<br>2x Spark TP=2: release v1.4.0, 2026-10-05, llm-inference-bench 0.7.6; v1.4.0, 2026-10-07, fidelity_probe.py<br>1x Spark: not measured above 128K yet.<br>Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.</sub>
 
 </details>
 <!-- speed:end -->
@@ -161,12 +161,12 @@ requests hit the prefix cache and run PP only on the new tokens.
 <picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/depth-dark.svg"><img src="docs/img/depth-light.svg" alt="TG aggregate tok/s at context depth 0, 16K and 64K, c1/c4/c8. End values labelled." width="420"></picture>
 </p>
 
-<sub>Left: 1x Spark v2.0.0 · 2x Spark TP=2 v1.4.0; c1, cold prefix. Right: 1x Spark v2.0.0; llm-inference-bench, 30 s sustained TG.</sub>
+<sub>Left: 1x Spark v2.1.0 · 2x Spark TP=2 v1.4.0; c1, cold prefix. Right: 1x Spark v2.1.0/v2.0.0; llm-inference-bench, 30 s sustained TG.</sub>
 
 <details>
 <summary><sub>Runs, method and raw data</sub></summary>
 
-<sub>Left: c1, cold prefix (no cache hit). Each point: mean of 1 to 4 samples of one run (n per point in the CSV).<br>1x Spark: release v2.0.0, 2026-10-05, llm-inference-bench 0.7.6<br>2x Spark TP=2: release v1.4.0, 2026-10-05, llm-inference-bench 0.7.6<br>Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.<br><br>Right: 1x Spark: release v2.0.0, 2026-10-05, llm-inference-bench 0.7.6, 30 s sustained TG, one boot (older release; shipped v2.1.0 not measured on this test yet). Server default sampling, 30 s steady-state TG window; it reads 10-30% above the OSL-512 runs of the concurrency chart, so compare points within this chart.<br>Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.</sub>
+<sub>Left: c1, cold prefix (no cache hit). Each point: mean of 1 to 4 samples of one run (n per point in the CSV).<br>1x Spark: release v2.1.0, 2026-10-10, llama-benchy 0.4.1.dev4+g0d4de4271<br>2x Spark TP=2: release v1.4.0, 2026-10-05, llm-inference-bench 0.7.6<br>Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.<br><br>Right: 1x Spark: release v2.1.0, 2026-10-10, llama-benchy 0.4.1.dev4+g0d4de4271, mean ± sd of 2 Sparks x 3 runs, one boot each; v2.0.0, 2026-10-05, llm-inference-bench 0.7.6, 30 s sustained TG, one boot (older release; shipped v2.1.0 not measured on this test yet). Server default sampling, 30 s steady-state TG window; it reads 10-30% above the OSL-512 runs of the concurrency chart, so compare points within this chart.<br>Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.</sub>
 
 </details>
 <!-- context:end -->
@@ -179,12 +179,12 @@ requests hit the prefix cache and run PP only on the new tokens.
 <picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/perchat-dark.svg"><img src="docs/img/perchat-light.svg" alt="TG per-request tok/s vs concurrency c1-c16 per setup, ISL/OSL 2048/512, server defaults. End values labelled." width="420"></picture>
 </p>
 
-<sub>1x Spark v2.1.0 · 2x Spark TP=2 v2.0.0; llama-benchy task mode.</sub>
+<sub>1x Spark v2.1.0 · 2x Spark TP=2 v2.0.0 · 2x Spark DP=2 v2.1.0; llama-benchy task mode.</sub>
 
 <details>
 <summary><sub>Runs, method and raw data</sub></summary>
 
-<sub>llama-benchy task mode (agent coding turn), ISL/OSL 2048/512, T=1.0, top-p 0.95, top-k 20, thinking on, prefix caching. Aggregate = all output tokens / wall time, PP included; per request = TG rate of one stream after its first token.<br>1x Spark: release v2.1.0, 2026-10-08, llama-benchy task mode, mean ± sd over runs, one boot<br>2x Spark TP=2: release v2.0.0, 2026-10-09, llama-benchy task mode, mean of 2 boots x 4 runs, sd between boots; v2.0.0, 2026-10-09, llama-benchy task mode, mean of 4 runs, one boot, sd between runs<br>2x Spark DP=2: not measured on this test yet.<br>Versions are numbered per setup. Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.</sub>
+<sub>llama-benchy task mode (agent coding turn), ISL/OSL 2048/512, T=1.0, top-p 0.95, top-k 20, thinking on, prefix caching. Aggregate = all output tokens / wall time, PP included; per request = TG rate of one stream after its first token.<br>1x Spark: release v2.1.0, 2026-10-08, llama-benchy task mode, mean ± sd over runs, one boot<br>2x Spark TP=2: release v2.0.0, 2026-10-09, llama-benchy task mode, mean of 2 boots x 4 runs, sd between boots; v2.0.0, 2026-10-09, llama-benchy task mode, mean of 4 runs, one boot, sd between runs<br>2x Spark DP=2: release v2.1.0, 2026-10-10, llama-benchy 0.4.1.dev4+g0d4de4271, mean ± sd of 3 runs, one boot<br>Versions are numbered per setup. Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.</sub>
 
 </details>
 <!-- perchat:end -->
@@ -192,21 +192,22 @@ requests hit the prefix cache and run PP only on the new tokens.
 <!-- matrix:start (scripts/make_charts.py writes this block) -->
 | Concurrency | TG tok/s, aggregate | TG tok/s, per request | Release, run |
 |--:|--:|--:|---|
-| 1 | 56.9 ± 1.6 | 56.9 ± 1.6 | [v2.1.0, 2026-10-08](results/tp1-v3e-hf-20261008/bench/) |
-| 2 | 80.4 ± 8.2 | 44.8 ± 3.9 | [v2.1.0, 2026-10-08](results/tp1-v3e-hf-20261008/bench/) |
-| 4 | 106.2 ± 4.5 | 32.2 ± 4.2 | [v2.1.0, 2026-10-08](results/tp1-v3e-hf-20261008/bench/) |
-| 8 | 132.9 ± 3.4 | 22.6 ± 3.2 | [v2.1.0, 2026-10-08](results/tp1-v3e-hf-20261008/bench/) |
+| 1 | 56.9 ± 4.1 | 56.9 ± 4.1 | [v2.1.0, 2026-10-10](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k76-capability-matrix-20261010-1059/1x-dgx0{1,2}/) |
+| 2 | 76.2 ± 10.5 | 43.0 ± 3.5 | [v2.1.0, 2026-10-10](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k76-capability-matrix-20261010-1059/1x-dgx0{1,2}/) |
+| 4 | 111.4 ± 7.6 | 32.4 ± 2.0 | [v2.1.0, 2026-10-10](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k76-capability-matrix-20261010-1059/1x-dgx0{1,2}/) |
+| 8 | 132.9 ± 7.1 | 22.0 ± 0.5 | [v2.1.0, 2026-10-10](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k76-capability-matrix-20261010-1059/1x-dgx0{1,2}/) |
 
 llama-benchy task mode, ISL/OSL 2048/512, T=1.0, thinking on; mean ± sd per run.
 
 | ISL | PP tok/s | TTFT s | Release, run |
 |--:|--:|--:|---|
-| 2K | 1,782 ± 63 | 1.2 ± 0.0 | [v2.1.0, 2026-10-08, llama-benchy task mode](results/tp1-v3e-hf-20261008/bench/) |
-| 8K | 2,137 | 3.8 | [v2.0.0, 2026-10-05, llm-inference-bench 0.7.6](results/tp1-v3d-20261005/bench/) |
-| 16K | 2,079 ± 10 | 7.9 ± 0.0 | [v2.1.0, 2026-10-08, llama-benchy task mode](results/tp1-v3e-hf-20261008/bench/) |
-| 32K | 2,147 | 15.0 | [v2.0.0, 2026-10-05, llm-inference-bench 0.7.6](results/tp1-v3d-20261005/bench/) |
-| 64K | 2,066 | 31.2 | [v2.0.0, 2026-10-05, llm-inference-bench 0.7.6](results/tp1-v3d-20261005/bench/) |
-| 128K | 1,880 | 68.4 | [v2.0.0, 2026-10-05, llm-inference-bench 0.7.6](results/tp1-v3d-20261005/bench/) |
+| 512 | 1,099 ± 58 | 0.5 ± 0.0 | [v2.1.0, 2026-10-10, llama-benchy 0.4.1.dev4+g0d4de4271](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k76-capability-matrix-20261010-1059/1x-dgx0{1,2}/) |
+| 2K | 1,760 ± 11 | 1.2 ± 0.0 | [v2.1.0, 2026-10-10, llama-benchy 0.4.1.dev4+g0d4de4271](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k76-capability-matrix-20261010-1059/1x-dgx0{1,2}/) |
+| 8K | 1,923 ± 38 | 4.3 ± 0.1 | [v2.1.0, 2026-10-10, llama-benchy 0.4.1.dev4+g0d4de4271](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k76-capability-matrix-20261010-1059/1x-dgx0{1,2}/) |
+| 16K | 1,866 ± 322 | 9.1 ± 2.0 | [v2.1.0, 2026-10-10, llama-benchy 0.4.1.dev4+g0d4de4271](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k76-capability-matrix-20261010-1059/1x-dgx0{1,2}/) |
+| 32K | 2,028 ± 57 | 16.2 ± 0.5 | [v2.1.0, 2026-10-10, llama-benchy 0.4.1.dev4+g0d4de4271](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k76-capability-matrix-20261010-1059/1x-dgx0{1,2}/) |
+| 64K | 1,993 ± 39 | 32.9 ± 0.6 | [v2.1.0, 2026-10-10, llama-benchy 0.4.1.dev4+g0d4de4271](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k76-capability-matrix-20261010-1059/1x-dgx0{1,2}/) |
+| 128K | 1,812 ± 92 | 72.5 ± 4.0 | [v2.1.0, 2026-10-10, llama-benchy 0.4.1.dev4+g0d4de4271](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k76-capability-matrix-20261010-1059/1x-dgx0{1,2}/) |
 
 c1, cold prefix.
 <!-- matrix:end -->
@@ -225,7 +226,7 @@ c1, cold prefix.
 <details>
 <summary><sub>Runs, method and raw data</sub></summary>
 
-<sub>TG, coding c1 (median, n=36, T=0): 1x v2.0.0, 2026-10-06, coding_probe.py, up to 768 tokens out; TP=2 v1.4.0, 2026-10-06, coding_probe.py, up to 768 tokens out; not measured: 2x Spark DP=2.<br>TG c1, defaults: 1x v2.1.0, 2026-10-08, llama-benchy task mode; TP=2 v2.0.0, 2026-10-09, llama-benchy task mode; not measured: 2x Spark DP=2.<br>TG, aggregate c8, defaults: 1x v2.1.0, 2026-10-08, llama-benchy task mode; TP=2 v2.0.0, 2026-10-09, llama-benchy task mode; not measured: 2x Spark DP=2.<br>TTFT, ISL 16K, cold prefix: 1x v2.0.0, 2026-10-05, llm-inference-bench 0.7.6; TP=2 v1.4.0, 2026-10-05, llm-inference-bench 0.7.6; not measured: 2x Spark DP=2.<br>KV cache: concurrent 262K-token requests: 1x v2.1.0, 2026-10-08, serve log; TP=2 v2.0.0, 2026-10-09, serve log; DP=2 v2.1.0, 2026-10-08, serve log.<br>TG c1/c8: llama-benchy task mode, ISL/OSL 2048/512, server defaults. KV row: vLLM's 'Maximum concurrency for 262,144 tokens per request' at boot (DP=2: two replicas, one pool each).<br>Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.</sub>
+<sub>TG, coding c1 (median, n=36, T=0): 1x v2.1.0, 2026-10-10, coding_probe.py, up to 768 tokens out; TP=2 v1.4.0, 2026-10-06, coding_probe.py, up to 768 tokens out; not measured: 2x Spark DP=2.<br>TG c1, defaults: 1x v2.1.0, 2026-10-10, llama-benchy 0.4.1.dev4+g0d4de4271; TP=2 v2.0.0, 2026-10-09, llama-benchy task mode; DP=2 v2.1.0, 2026-10-10, llama-benchy 0.4.1.dev4+g0d4de4271.<br>TG, aggregate c8, defaults: 1x v2.1.0, 2026-10-10, llama-benchy 0.4.1.dev4+g0d4de4271; TP=2 v2.0.0, 2026-10-09, llama-benchy task mode; DP=2 v2.1.0, 2026-10-10, llama-benchy 0.4.1.dev4+g0d4de4271.<br>TTFT, ISL 16K, cold prefix: 1x v2.1.0, 2026-10-10, llama-benchy 0.4.1.dev4+g0d4de4271; TP=2 v1.4.0, 2026-10-05, llm-inference-bench 0.7.6; not measured: 2x Spark DP=2.<br>KV cache: concurrent 262K-token requests: 1x v2.1.0, 2026-10-08, serve log; TP=2 v2.0.0, 2026-10-09, serve log; DP=2 v2.1.0, 2026-10-08, serve log.<br>TG c1/c8: llama-benchy task mode, ISL/OSL 2048/512, server defaults. KV row: vLLM's 'Maximum concurrency for 262,144 tokens per request' at boot (DP=2: two replicas, one pool each).<br>Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.</sub>
 
 </details>
 <!-- setups:end -->
@@ -316,41 +317,46 @@ its raw file (`1x:` paths are in this repo, `2x:` paths in the
 <!-- capability-table:start (scripts/make_charts.py writes this block) -->
 | | 1x Spark | 2x Spark TP=2 | 2x Spark DP=2 |
 |---|---|---|---|
-| TG c1, tok/s | 56.9 <sup>a</sup> | 89.3 <sup>b</sup> | not measured |
-| TG c4, tok/s: per request / aggregate | 32.2 <sup>a</sup> / 106.2 <sup>a</sup> | 50.2 <sup>b</sup> / 161.4 <sup>b</sup> | not measured |
-| TG c8, tok/s: per request / aggregate | 22.6 <sup>a</sup> / 132.9 <sup>a</sup> | 33.1 <sup>b</sup> / 187.9 <sup>b</sup> | not measured |
-| TG c16, tok/s: per request / aggregate | > max_num_seqs 8 | 22.1 <sup>c</sup> / 236.6 <sup>c</sup> | not measured |
-| TG, coding c1 (36 prompts), tok/s median (max): T=0 / defaults | 73 <sup>d</sup> (82) <sup>d</sup> / 60 <sup>d</sup> (67) <sup>d</sup> | 106 <sup>e</sup> (121) <sup>e</sup> / 88 <sup>e</sup> (97) <sup>e</sup> | not measured |
-| Copy-heavy (MTP acceptance near 1), aggregate tok/s c1 / c4 / c8, max of 3 rounds | 81 <sup>f</sup> / 188 <sup>f</sup> / 282 <sup>f</sup> | 117 <sup>g</sup> / 290 <sup>g</sup> / 439 <sup>g</sup> | not measured |
-| PP tok/s, ISL 2K / 16K / 64K / 128K, c1 | 1,782 <sup>a</sup> / 2,079 <sup>a</sup> / 2,066 <sup>h</sup> / 1,880 <sup>h</sup> | 2,831 <sup>b</sup> / 2,931 <sup>i</sup> / 2,664 <sup>i</sup> / 2,384 <sup>i</sup> | not measured |
-| TTFT s, ISL 2K / 16K / 64K / 128K, cold prefix | 1.2 <sup>a</sup> / 7.9 <sup>a</sup> / 31.2 <sup>h</sup> / 68.4 <sup>h</sup> | 0.7 <sup>b</sup> / 5.5 <sup>i</sup> / 24.2 <sup>i</sup> / 54.0 <sup>i</sup> | not measured |
-| ITL p50, ms, c1 / c8 (MTP emits several tokens per step) | 20 <sup>h</sup> / 46 <sup>h</sup> | 15 <sup>i</sup> / 31 <sup>i</sup> | not measured |
-| Stream chunk gap p50, ms, c1 / c8 | 56 <sup>h</sup> / 143 <sup>h</sup> | 41 <sup>i</sup> / 90 <sup>i</sup> | not measured |
-| TG aggregate tok/s, depth 0 → 64K, c1 / c4 | 47.4 <sup>h</sup> → 56.9 <sup>h</sup> / 116.6 <sup>h</sup> → 111.8 <sup>h</sup> | 64.8 <sup>i</sup> → 77.8 <sup>i</sup> / 171.2 <sup>i</sup> → 165.4 <sup>i</sup> | not measured |
+| TG c1, tok/s | 56.9 <sup>a</sup> | 89.3 <sup>b</sup> | 57.5 <sup>c</sup> |
+| TG c4, tok/s: per request / aggregate | 32.4 <sup>a</sup> / 111.4 <sup>a</sup> | 50.2 <sup>b</sup> / 161.4 <sup>b</sup> | 43.4 <sup>c</sup> / 137.5 <sup>c</sup> |
+| TG c8, tok/s: per request / aggregate | 22.0 <sup>a</sup> / 132.9 <sup>a</sup> | 33.1 <sup>b</sup> / 187.9 <sup>b</sup> | 32.5 <sup>c</sup> / 203.6 <sup>c</sup> |
+| TG c16, tok/s: per request / aggregate | > max_num_seqs 8 | 22.1 <sup>d</sup> / 236.6 <sup>d</sup> | 21.7 <sup>c</sup> / 240.9 <sup>c</sup> |
+| TG, coding c1 (36 prompts), tok/s median (max): T=0 / defaults | 77 <sup>e</sup> (87) <sup>e</sup> / 61 <sup>e</sup> (74) <sup>e</sup> | 106 <sup>f</sup> (121) <sup>f</sup> / 88 <sup>f</sup> (97) <sup>f</sup> | not measured |
+| Copy-heavy (MTP acceptance near 1), aggregate tok/s c1 / c4 / c8, max of 3 rounds | 81 <sup>g</sup> / 193 <sup>g</sup> / 283 <sup>g</sup> | 117 <sup>h</sup> / 290 <sup>h</sup> / 439 <sup>h</sup> | not measured |
+| PP tok/s, ISL 2K / 16K / 64K / 128K, c1 | 1,760 <sup>a</sup> / 1,866 <sup>a</sup> / 1,993 <sup>a</sup> / 1,812 <sup>a</sup> | 2,831 <sup>b</sup> / 2,931 <sup>i</sup> / 2,664 <sup>i</sup> / 2,384 <sup>i</sup> | not measured |
+| TTFT s, ISL 2K / 16K / 64K / 128K, cold prefix | 1.2 <sup>a</sup> / 9.1 <sup>a</sup> / 32.9 <sup>a</sup> / 72.5 <sup>a</sup> | 0.7 <sup>b</sup> / 5.5 <sup>i</sup> / 24.2 <sup>i</sup> / 54.0 <sup>i</sup> | not measured |
+| ITL p50, ms, c1 / c8 (MTP emits several tokens per step) | 19 <sup>j</sup> / 47 <sup>j</sup> | 15 <sup>i</sup> / 31 <sup>i</sup> | 19 <sup>k</sup> / 48 <sup>k</sup> |
+| Stream chunk gap p50, ms, c1 / c8 | 56 <sup>l</sup> / 143 <sup>l</sup> | 41 <sup>i</sup> / 90 <sup>i</sup> | not measured |
+| TG aggregate tok/s, depth 0 → 64K, c1 / c4 | 56.9 <sup>a</sup> → 55.6 <sup>a</sup> / 111.4 <sup>a</sup> → 98.4 <sup>a</sup> | 64.8 <sup>i</sup> → 77.8 <sup>i</sup> / 171.2 <sup>i</sup> → 165.4 <sup>i</sup> | 57.5 <sup>c</sup> → – / 137.5 <sup>c</sup> → – |
 | max_model_len | 262,144 (recipe) | 262,144 (recipe) | 262,144 (recipe) |
-| KV cache, tokens | 993,754 <sup>j</sup> | 3,527,297 <sup>k</sup> | 2 × 993,754, one pool per replica <sup>l</sup> |
-| Concurrent 262K requests in KV (vLLM count) | 3.79 <sup>j</sup> | 13.46 <sup>k</sup> | 2 × 3.79 <sup>l</sup> |
-| Requests that fit KV at 16K / 64K / 128K | 39.7 <sup>m</sup> / 14.1 <sup>m</sup> / 7.5 <sup>m</sup> | not measured | not measured |
-| Gate: hardmode / TC-45 / fidelity to ~245K / stragglers | 91 <sup>n</sup> / 100 <sup>n</sup> / 20/20 (one of three ~245K seeds 19/20) <sup>n</sup> / none, c8-c16 <sup>n</sup> | 90 <sup>o</sup> / 100 <sup>o</sup> / 20/20 <sup>o</sup> / none, c8-c16 <sup>o</sup> | 93 <sup>p</sup> / 100 <sup>p</sup> / 20/20 <sup>p</sup> / none, c5-c16 <sup>p</sup> |
+| KV cache, tokens | 993,754 <sup>m</sup> | 3,527,297 <sup>n</sup> | 1,987,508 <sup>o</sup> |
+| Concurrent 262K requests in KV (vLLM count) | 3.79 <sup>p</sup> | 13.46 <sup>n</sup> | 2 × 3.79 <sup>q</sup> |
+| Requests that fit KV at 16K / 64K / 128K | 39.7 <sup>r</sup> / 14.1 <sup>r</sup> / 7.5 <sup>r</sup> | not measured | not measured |
+| Gate: hardmode / TC-45 / fidelity to ~245K / stragglers | 91 <sup>s</sup> / 100 <sup>s</sup> / 20/20 (one of three ~245K seeds 19/20) <sup>s</sup> / none, c8-c16 <sup>s</sup> | 90 <sup>t</sup> / 100 <sup>t</sup> / 20/20 <sup>t</sup> / none, c8-c16 <sup>t</sup> | 93 <sup>u</sup> / 100 <sup>u</sup> / 20/20 <sup>u</sup> / none, c5-c16 <sup>u</sup> |
 
 Releases and runs behind the numbers:
 
-- <sup>a</sup> one-Spark v2.1.0 (old name v3e), 2026-10-08, shipped-image check, llama-benchy task mode ([files](results/tp1-v3e-hf-20261008/bench/))
+- <sup>a</sup> one-Spark v2.1.0 (old name v3e), 2026-10-10, k76-capability-matrix, llama-benchy 0.4.1.dev4+g0d4de4271 ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k76-capability-matrix-20261010-1059/1x-dgx0{1,2}/))
 - <sup>b</sup> two-Spark v2.0.0, 2026-10-09, promotion A/B, llama-benchy task mode ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k73-tp2-gdnmse-dispatch-20261009-1621/screen/))
-- <sup>c</sup> two-Spark v2.0.0, 2026-10-09, check boot, llama-benchy task mode ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k77-2x-ship-check-20261009-2149/))
-- <sup>d</sup> one-Spark v2.0.0 (old name v3d), 2026-10-06, coding probe, coding_probe.py, up to 768 tokens out ([files](results/coding-probe-k55-20261006/1x-v3d-dgx02-multilang/))
-- <sup>e</sup> two-Spark v1.4.0 (old name b1.4), 2026-10-06, coding probe, coding_probe.py, up to 768 tokens out ([files](results/coding-probe-k55-20261006/2x/))
-- <sup>f</sup> one-Spark v2.0.0 (old name v3d), 2026-10-05, copy-heavy run, copy-heavy benchmark, 1,500 tokens out ([files](results/tp1-v3d-20261005/bench/))
-- <sup>g</sup> two-Spark v1.4.0 (old name b1.4), 2026-10-04, copy-heavy run, copy-heavy benchmark, 1,500 tokens out ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/showcase-20261004/A/))
-- <sup>h</sup> one-Spark v2.0.0 (old name v3d), 2026-10-05, depth and PP sweep, llm-inference-bench 0.7.6 ([files](results/tp1-v3d-20261005/bench/))
+- <sup>c</sup> DP=2 on one-Spark v2.1.0 (old name v3e), 2026-10-10, k76-capability-matrix, llama-benchy 0.4.1.dev4+g0d4de4271 ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k76-capability-matrix-20261010-1059/dp2/))
+- <sup>d</sup> two-Spark v2.0.0, 2026-10-09, check boot, llama-benchy task mode ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k77-2x-ship-check-20261009-2149/))
+- <sup>e</sup> one-Spark v2.1.0 (old name v3e), 2026-10-10, k76-capability-matrix, coding_probe.py, up to 768 tokens out ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k76-capability-matrix-20261010-1059/1x-dgx0{1,2}/))
+- <sup>f</sup> two-Spark v1.4.0 (old name b1.4), 2026-10-06, coding probe, coding_probe.py, up to 768 tokens out ([files](results/coding-probe-k55-20261006/2x/))
+- <sup>g</sup> one-Spark v2.1.0 (old name v3e), 2026-10-10, k76-capability-matrix, copy-heavy benchmark, 1,500 tokens out ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k76-capability-matrix-20261010-1059/1x-dgx0{1,2}/))
+- <sup>h</sup> two-Spark v1.4.0 (old name b1.4), 2026-10-04, copy-heavy run, copy-heavy benchmark, 1,500 tokens out ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/showcase-20261004/A/))
 - <sup>i</sup> two-Spark v1.4.0 (old name b1.4), 2026-10-05, depth and PP sweep, llm-inference-bench 0.7.6 ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/lib-bench-20261005/tp2-b1.4/))
-- <sup>j</sup> one-Spark v2.1.0 (old name v3e), 2026-10-08, serve log ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/dp2-gate-k72-20261008-1135/))
-- <sup>k</sup> two-Spark v2.0.0, 2026-10-09, serve log ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k77-2x-ship-check-20261009-2149/check/))
-- <sup>l</sup> DP=2 on one-Spark v2.1.0 (old name v3e), 2026-10-08, serve log ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/dp2-gate-k72-20261008-1135/))
-- <sup>m</sup> one-Spark v1.3.0 (old name v3c), 2026-10-05, kv-capacity page accounting, same 14 GiB pool in 1× v2.0.0 and v2.1.0 ([files](results/tp1-v3c-20261005/))
-- <sup>n</sup> one-Spark v2.1.0 (old name v3e), 2026-10-07, promotion gate ([files](docs/BENCHMARKS.md))
-- <sup>o</sup> two-Spark v2.0.0, 2026-10-09, promotion gate ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/blob/main/docs/BENCHMARKS.md))
-- <sup>p</sup> DP=2 on one-Spark v2.1.0 (old name v3e), 2026-10-08, quality gate through the router ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/dp2-gate-k72-20261008-1135/))
+- <sup>j</sup> one-Spark v2.1.0 (old name v3e), 2026-10-10, k76-capability-matrix, llm-inference-bench 0.7.6 ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k76-capability-matrix-20261010-1059/1x-dgx0{1,2}/))
+- <sup>k</sup> DP=2 on one-Spark v2.1.0 (old name v3e), 2026-10-10, k76-capability-matrix, llm-inference-bench 0.7.6 ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k76-capability-matrix-20261010-1059/dp2/))
+- <sup>l</sup> one-Spark v2.0.0 (old name v3d), 2026-10-05, depth and PP sweep, llm-inference-bench 0.7.6 ([files](results/tp1-v3d-20261005/bench/))
+- <sup>m</sup> one-Spark v2.1.0 (old name v3e), 2026-10-10, k76-capability-matrix, vLLM serve log ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k76-capability-matrix-20261010-1059/1x-dgx0{1,2}/))
+- <sup>n</sup> two-Spark v2.0.0, 2026-10-09, serve log ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k77-2x-ship-check-20261009-2149/check/))
+- <sup>o</sup> DP=2 on one-Spark v2.1.0 (old name v3e), 2026-10-10, k76-capability-matrix, vLLM serve log ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k76-capability-matrix-20261010-1059/1x-dgx0{1,2}/))
+- <sup>p</sup> one-Spark v2.1.0 (old name v3e), 2026-10-08, serve log ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/dp2-gate-k72-20261008-1135/))
+- <sup>q</sup> DP=2 on one-Spark v2.1.0 (old name v3e), 2026-10-08, serve log ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/dp2-gate-k72-20261008-1135/))
+- <sup>r</sup> one-Spark v1.3.0 (old name v3c), 2026-10-05, kv-capacity page accounting, same 14 GiB pool in 1× v2.0.0 and v2.1.0 ([files](results/tp1-v3c-20261005/))
+- <sup>s</sup> one-Spark v2.1.0 (old name v3e), 2026-10-07, promotion gate ([files](docs/BENCHMARKS.md))
+- <sup>t</sup> two-Spark v2.0.0, 2026-10-09, promotion gate ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/blob/main/docs/BENCHMARKS.md))
+- <sup>u</sup> DP=2 on one-Spark v2.1.0 (old name v3e), 2026-10-08, quality gate through the router ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/dp2-gate-k72-20261008-1135/))
 <!-- capability-table:end -->
 
 </details>
