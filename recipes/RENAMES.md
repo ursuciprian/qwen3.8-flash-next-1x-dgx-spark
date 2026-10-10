@@ -4,6 +4,14 @@ The single-Spark recipe names over time. The recipes moved here from
 [qwen3.8-flash-next-dgx-spark-tp-2](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2) on 2026-10-08
 with the same names; that repo keeps a copy of both for existing `sparkrun run` users.
 
+## 2026-10-10: single-Spark v2.2.0 promoted
+
+| name | content now |
+|---|---|
+| `qwen3.8-flash-next-1x-dgx-spark` | v2.2.0: v2.1.0 with MTP drafter D3, checkpoint `ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE` @ `03f4a057`, image `tp1-d3-hf-20261010-21e0b201-5dad364d-warm` (experimental) |
+| `qwen3.8-flash-next-1x-dgx-spark-previous` | v2.1.0 (old name v3e), the default from 2026-10-08 to 2026-10-10 |
+| (was `-previous`, v2.0.0, old name v3d) | `archive/recipes/qwen3.8-flash-next/qwen3.8-flash-next-1x-dgx-spark-v2.0.0-20261008.yaml` (not listed; run by path) |
+
 ## 2026-10-08: single-Spark v3e promoted
 
 | name | content now |
