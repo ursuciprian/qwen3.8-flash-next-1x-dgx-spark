@@ -7,14 +7,14 @@
 <!-- numbers:start (scripts/make_charts.py writes this block) -->
 <table align="center">
   <tr>
-    <td align="center"><h2>57 · 77 tok/s</h2><b>TG c1</b><br><sub>defaults (ISL/OSL 2048/512) · T=0, thinking off (coding, median of 36)</sub></td>
-    <td align="center"><h2>133 · 188 tok/s</h2><b>TG aggregate c8</b><br><sub>defaults (ISL/OSL 2048/512) · T=0, thinking off (coding)</sub></td>
+    <td align="center"><h2>57 / 77 tok/s</h2><b>TG c1</b><br><sub>defaults (ISL/OSL 2048/512)<br>/ T=0, thinking off (coding, median of 36)</sub></td>
+    <td align="center"><h2>133 / 188 tok/s</h2><b>TG aggregate c8</b><br><sub>defaults (ISL/OSL 2048/512)<br>/ T=0, thinking off (coding)</sub></td>
     <td align="center"><h2>9.1 s</h2><b>TTFT, ISL 16K</b><br><sub>c1, cold prefix</sub></td>
     <td align="center"><h2>91/100</h2><b>Hardmode</b><br><sub>pass ≥ 88, T=0, thinking on</sub></td>
   </tr>
 </table>
 
-<p align="center"><sub>262K context · max_num_seqs 8 · MTP ×4 · OpenAI-compatible API · quality-gated releases</sub></p>
+<p align="center"><sub>262K context, max_num_seqs 8, MTP ×4, OpenAI-compatible API, quality-gated releases</sub></p>
 
 <sub>TG cells: server defaults (ISL/OSL 2048/512, T=1.0, thinking on) first, T=0 coding (36 prompts, thinking off) second. Means and medians only. Release v2.1.0.</sub>
 
@@ -38,7 +38,7 @@ Method and full tables: [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
 
 <!-- badges:start (scripts/make_charts.py writes this block) -->
 <p align="center">
-  <img alt="release: v2.2.0" src="https://img.shields.io/badge/release-v2.2.0-0969da?style=flat-square">
+  <img alt="release: v2.1.0" src="https://img.shields.io/badge/release-v2.1.0-0969da?style=flat-square">
   <img alt="hardware: 1× DGX Spark" src="https://img.shields.io/badge/hardware-1%C3%97%20DGX%20Spark-555555?style=flat-square">
   <img alt="quality gate: passed" src="https://img.shields.io/badge/quality%20gate-passed-2ea44f?style=flat-square">
   <img alt="license: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-555555?style=flat-square">
@@ -151,7 +151,7 @@ requests hit the prefix cache and run PP only on the new tokens.
 <picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/latency-dark.svg"><img src="docs/img/latency-light.svg" alt="TTFT in seconds vs ISL, c1, cold prefix, per setup. End values labelled." width="420"></picture>
 </p>
 
-<sub>Left: 1x Spark v2.1.0 · 2x Spark TP=2 v2.0.0 · 2x Spark DP=2 v2.1.0; llama-benchy task mode. Right: 1x Spark v2.1.0 · 2x Spark TP=2 v2.0.0/v1.4.0; c1, cold prefix.</sub>
+<sub>Left: 1x Spark v2.1.0, 2x Spark TP=2 v2.0.0, 2x Spark DP=2 v2.1.0; llama-benchy task mode. Right: 1x Spark v2.1.0, 2x Spark TP=2 v2.0.0/v1.4.0; c1, cold prefix.</sub>
 
 <details>
 <summary><sub>Runs, method and raw data</sub></summary>
@@ -167,7 +167,7 @@ requests hit the prefix cache and run PP only on the new tokens.
 <picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/depth-dark.svg"><img src="docs/img/depth-light.svg" alt="TG aggregate tok/s at context depth 0, 16K and 64K, c1/c4/c8. End values labelled." width="420"></picture>
 </p>
 
-<sub>Left: 1x Spark v2.1.0 · 2x Spark TP=2 v2.0.0; c1, cold prefix. Right: 1x Spark v2.1.0; llama-benchy, ISL/OSL 2048/512 at depth.</sub>
+<sub>Left: 1x Spark v2.1.0, 2x Spark TP=2 v2.0.0; c1, cold prefix. Right: 1x Spark v2.1.0; llama-benchy, ISL/OSL 2048/512 at depth.</sub>
 
 <details>
 <summary><sub>Runs, method and raw data</sub></summary>
@@ -185,7 +185,7 @@ requests hit the prefix cache and run PP only on the new tokens.
 <picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/perchat-dark.svg"><img src="docs/img/perchat-light.svg" alt="TG per-request tok/s vs concurrency c1-c16 per setup, ISL/OSL 2048/512, server defaults. End values labelled." width="420"></picture>
 </p>
 
-<sub>1x Spark v2.1.0 · 2x Spark TP=2 v2.0.0 · 2x Spark DP=2 v2.1.0; llama-benchy task mode.</sub>
+<sub>1x Spark v2.1.0, 2x Spark TP=2 v2.0.0, 2x Spark DP=2 v2.1.0; llama-benchy task mode.</sub>
 
 <details>
 <summary><sub>Runs, method and raw data</sub></summary>
