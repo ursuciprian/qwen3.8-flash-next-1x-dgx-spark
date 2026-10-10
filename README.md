@@ -10,13 +10,12 @@
     <td align="center"><h2>60 / 75 tok/s</h2><b>TG c1</b><br><sub>defaults (ISL/OSL 2048/512)<br>/ T=0, thinking off (coding)</sub></td>
     <td align="center"><h2>137 / 192 tok/s</h2><b>TG aggregate c8</b><br><sub>defaults (ISL/OSL 2048/512)<br>/ T=0, thinking off (coding)</sub></td>
     <td align="center"><h2>93/100</h2><b>Hardmode</b><br><sub>pass ≥ 88, T=0, thinking on</sub></td>
-    <td align="center"><h2>4.7 tok/s/W</h2><b>TG per GPU watt, c8</b><br><sub>defaults, 29 W GPU only<br>(nvidia-smi, not wall)</sub></td>
   </tr>
 </table>
 
 <p align="center"><sub>262K context, max_num_seqs 8, MTP ×4, OpenAI-compatible API, quality-gated releases</sub></p>
 
-<sub>GPU power (nvidia-smi, GPU only, not wall): idle 9.7 W, c1 24.2 W, c8 28.9 W; TG per GPU watt 2.49 (c1) and 4.73 (c8) tok/s/W at server defaults.</sub>
+<sub>GPU power, GPU only (nvidia-smi), not wall power: idle 9.7 W, c1 24.2 W, c8 28.9 W; TG per GPU watt 2.49 (c1) and 4.73 (c8) tok/s/W at server defaults.</sub>
 
 <sub>TG cells: server defaults (ISL/OSL 2048/512, T=1.0, thinking on) first, T=0 coding (36 prompts, thinking off) second, both aggregate output tok/s. Means over 6 boots where measured; sd between boots in the details. Release v2.2.0.</sub>
 
@@ -34,9 +33,9 @@
 | TTFT, ISL 16K | 9.09 s | – | 1 | c1, cold prefix | – | v2.1.0 (2026-10-10) | [results](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k76-capability-matrix-20261010-1059/) |
 | Hardmode | 93/100 | – | 1 | 88 multi-step tool-use scenarios; pass ≥ 88 | T=0, thinking on | v2.2.0 (2026-10-09) | [results](results/thunderdome-k56c-20261009-1421/run3-02/gate/) |
 | GPU power, idle | 9.7 W | – | 6 | server up, no requests, 120 s | – | v2.2.0 (2026-10-10) | [results](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k86-boot-noise-power-20261010-1704/) |
-| GPU power, TG c1 defaults | 24.2 W | – | 6 | nvidia-smi power.draw, GPU only (not wall), mean over the cell | T=1.0, top-p 0.95, top-k 20, thinking on | v2.2.0 (2026-10-10) | [results](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k86-boot-noise-power-20261010-1704/) |
+| GPU power, TG c1 defaults | 24.2 W | – | 6 | power.draw, GPU only (nvidia-smi), not wall power, mean over the cell | T=1.0, top-p 0.95, top-k 20, thinking on | v2.2.0 (2026-10-10) | [results](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k86-boot-noise-power-20261010-1704/) |
 | TG per GPU watt, c1 defaults | 2.49 tok/s/W | – | 6 | TG aggregate / GPU W | T=1.0, top-p 0.95, top-k 20, thinking on | v2.2.0 (2026-10-10) | [results](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k86-boot-noise-power-20261010-1704/) |
-| GPU power, TG c8 defaults | 28.9 W | – | 6 | nvidia-smi power.draw, GPU only (not wall), mean over the cell | T=1.0, top-p 0.95, top-k 20, thinking on | v2.2.0 (2026-10-10) | [results](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k86-boot-noise-power-20261010-1704/) |
+| GPU power, TG c8 defaults | 28.9 W | – | 6 | power.draw, GPU only (nvidia-smi), not wall power, mean over the cell | T=1.0, top-p 0.95, top-k 20, thinking on | v2.2.0 (2026-10-10) | [results](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k86-boot-noise-power-20261010-1704/) |
 | TG per GPU watt, c8 defaults | 4.73 tok/s/W | – | 6 | TG aggregate / GPU W | T=1.0, top-p 0.95, top-k 20, thinking on | v2.2.0 (2026-10-10) | [results](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k86-boot-noise-power-20261010-1704/) |
 
 Method and full tables: [docs/BENCHMARKS.md](docs/BENCHMARKS.md).

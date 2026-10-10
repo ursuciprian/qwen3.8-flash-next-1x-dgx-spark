@@ -1,6 +1,6 @@
 {
  "args": {
-  "base": "http://192.168.100.53:8000",
+  "base": "http://<cx7-ip-b>:8000",
   "model": "qwen3.8-flash-next",
   "depths": "128000",
   "k": 5,
