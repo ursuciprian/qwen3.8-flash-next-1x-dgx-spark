@@ -38,7 +38,7 @@ Method and full tables: [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
 
 <!-- badges:start (scripts/make_charts.py writes this block) -->
 <p align="center">
-  <img alt="release: v2.1.0" src="https://img.shields.io/badge/release-v2.1.0-0969da?style=flat-square">
+  <img alt="release: v2.2.0" src="https://img.shields.io/badge/release-v2.2.0-0969da?style=flat-square">
   <img alt="hardware: 1× DGX Spark" src="https://img.shields.io/badge/hardware-1%C3%97%20DGX%20Spark-555555?style=flat-square">
   <img alt="quality gate: passed" src="https://img.shields.io/badge/quality%20gate-passed-2ea44f?style=flat-square">
   <img alt="license: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-555555?style=flat-square">
@@ -120,8 +120,8 @@ registries and does not refresh them on `run`.
 
 | | |
 |---|---|
-| **Model** | [`ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE`](https://huggingface.co/ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE) @ `16c9bd54`: NVFP4 experts, MXFP8 dense and attention, GDN projections NVFP4 for TG and MXFP8 for PP |
-| **MTP** | MTP ×4, probabilistic drafts, rejection sampling; drafter D1 refit on the served model's outputs |
+| **Model** | [`ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE`](https://huggingface.co/ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE) @ `03f4a057`: NVFP4 experts, MXFP8 dense and attention, GDN projections NVFP4 for TG and MXFP8 for PP |
+| **MTP** | MTP ×4, probabilistic drafts, rejection sampling; drafter D3 refit on the served model's outputs (v2.1.0: D1) |
 | **Hardware** | 1x DGX Spark (GB10, 128 GB unified), checkpoint on local NVMe |
 | **Parallelism / memory** | TP=1; 26.8 GiB PLE table paged from NVMe (`VLLM_PLE_MMAP=1`), 14 GiB KV pool |
 | **Engine** | vLLM + b12x (NVFP4 MoE, MXFP8 linears, GDN, QSA), plan and compile caches baked into the image |
@@ -299,7 +299,7 @@ Full gate tables: [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
 - **KV:** one GDN PP staging buffer shared by all 36 GDN layers (~8.8 GiB freed) and compact MTP draft records;
   14 GiB KV pool.
 - **MTP:** 4 probabilistic drafts per step over a 131k-id draft vocabulary, rejection sampling (output
-  distribution unchanged); drafter D1 refit on the served model's outputs.
+  distribution unchanged); drafter D3 refit on the served model's outputs (D1 in v2.1.0).
 - **Kernels:** b12x for GB10 (NVFP4 MoE, MXFP8 linears, 36 GDN layers, 12 QSA sparse-attention layers), autotuned
   plan cache and compile cache baked into the image.
 - **Serving defaults:** reasoning on at `reasoning_effort` medium, tool calling, max_model_len 262,144.
