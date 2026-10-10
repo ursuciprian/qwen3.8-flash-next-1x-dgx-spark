@@ -1,12 +1,33 @@
-# Qwen3.8-Flash-Next on one DGX Spark
+<h1 align="center">Qwen3.8-Flash-Next on one DGX Spark</h1>
 
-A ready-made recipe that runs Qwen3.8-Flash-Next on one NVIDIA DGX Spark as a private, OpenAI-compatible
-server, for chat, coding and agents. Two commands to start.
+<p align="center">A sparkrun recipe that serves Qwen3.8-Flash-Next on one NVIDIA DGX Spark as a private,<br>OpenAI-compatible server for chat, coding and agents. Two commands to start.</p>
+
+<!-- numbers:start (scripts/make_charts.py writes this block) -->
+<table align="center">
+  <tr>
+    <td align="center"><h2>73 tok/s</h2><b>coding, one chat</b><br><sub>median of 36 prompts, T=0, thinking off; fastest prompt 81.8 · release v2.0.0</sub></td>
+    <td align="center"><h2>133 tok/s</h2><b>8 chats at once, combined</b><br><sub>512-token replies, default settings</sub></td>
+    <td align="center"><h2>57 tok/s</h2><b>one chat, default settings</b><br><sub>temperature 1.0, thinking on</sub></td>
+    <td align="center"><h2>100/100</h2><b>tool calls when required</b><br><sub>TC-45, 5 trials</sub></td>
+  </tr>
+</table>
+
+<p align="center"><b>262,144-token context</b> · <b>8 requests at once</b> · <b>OpenAI-compatible API</b> · <b>quality-gated releases</b></p>
+
+<sub>tok/s = tokens per second; a token is about 3/4 of a word. Coding: median decode speed of 36 coding prompts (Python, C++, Rust, Go) sent one at a time, temperature 0, thinking off, up to 768 tokens out, release v2.0.0, 2026-10-06; at the server defaults the same prompts give 60 tok/s. Chat: each chat sends a 2,048-token prompt and gets 512 tokens back at the server defaults (temperature 1.0, thinking on), release v2.1.0, 2026-10-08, mean ± sd over runs, one boot. Tool calls: TC-45, 5 trials, release v2.1.0, 2026-10-07. Method: [docs/BENCHMARKS.md](docs/BENCHMARKS.md).</sub>
+<!-- numbers:end -->
+
+<!-- badges:start (scripts/make_charts.py writes this block) -->
+<p align="center">
+  <img alt="release: v2.1.0" src="https://img.shields.io/badge/release-v2.1.0-0969da?style=flat-square">
+  <img alt="hardware: 1× DGX Spark" src="https://img.shields.io/badge/hardware-1%C3%97%20DGX%20Spark-555555?style=flat-square">
+  <img alt="quality gate: passed" src="https://img.shields.io/badge/quality%20gate-passed-2ea44f?style=flat-square">
+  <img alt="license: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-555555?style=flat-square">
+</p>
+<!-- badges:end -->
 
 <!-- hero:start (scripts/make_charts.py writes this block) -->
-<img src="docs/img/hero.svg" alt="Four measured numbers for this setup: answer speed for one chat on coding prompts (temperature 0, thinking off) and at the default settings, combined speed for many chats at once, and the tool-call score." width="100%">
-
-<sub>tok/s = tokens per second; a token is about 3/4 of a word. Coding: coding_probe.py, up to 768 tokens out, median decode speed of 36 prompts (Python, C++, Rust, Go) sent one at a time, temperature 0, thinking off, release v2.0.0, 2026-10-06; coding replies repeat code and names, so the built-in draft model guesses more tokens right; at the server defaults (thinking on) the same prompts give 60 tok/s. Chat: release v2.1.0, 2026-10-08, each chat sends 2,048 tokens and gets 512 back at the server defaults (temperature 1.0, thinking on), the everyday floor. Tool calls: release v2.1.0, 2026-10-07. How each was measured: [docs/BENCHMARKS.md](docs/BENCHMARKS.md).</sub>
+<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/hero-dark.svg"><img src="docs/img/hero-light.svg" alt="Qwen3.8-Flash-Next on one DGX Spark, release v2.1.0: vLLM, NVFP4, MTP speculative decoding, OpenAI API." width="640"></picture></p>
 <!-- hero:end -->
 
 ## Quick start
@@ -20,9 +41,9 @@ sparkrun run qwen3.8-flash-next-1x-dgx-spark --hosts <spark> --solo
 ```
 
 The first start downloads the model and the image (about 130 GB on disk; on a slow link, fetch the model
-beforehand, see below). Once it is on
-disk, a start takes about 3 minutes. `sparkrun run` returns before the server is ready. Once
-`http://<spark>:8000/health` answers, point any OpenAI client at `http://<spark>:8000/v1`, model `qwen3.8-flash-next`:
+beforehand, see below). Once it is on disk, a start takes about 3 minutes. `sparkrun run` returns before the server
+is ready. Once `http://<spark>:8000/health` answers, point any OpenAI client at `http://<spark>:8000/v1`, model
+`qwen3.8-flash-next`:
 
 ```sh
 curl http://<spark>:8000/v1/chat/completions -H 'Content-Type: application/json' \
@@ -77,47 +98,179 @@ registries and does not refresh them on `run`.
 
 </details>
 
-## How fast is it?
+## At a glance
 
-<!-- speed-chart:start (scripts/make_charts.py writes this block) -->
-<img src="docs/img/speed-users.svg" alt="Line chart: tokens per second, all users together, against the number of people or agents using the server at the same time, for chat at the default settings, with the coding speed of this setup (temperature 0, thinking off) as a star. Values are labelled on the chart." width="100%">
+| | |
+|---|---|
+| **Model** | Qwen3.8-Flash-Next: NVFP4 experts, MXFP8 dense and attention layers, plus an MTP draft head I retrained on the served model's own outputs |
+| **Hardware** | One DGX Spark (GB10, 128 GB unified memory), checkpoint on the internal NVMe |
+| **Engine** | vLLM with b12x kernels for the GB10, in a prebuilt image with the kernel plans and compile cache included |
+| **Fitting on one Spark** | A 26.8 GiB lookup table inside the model is read from the SSD instead of GPU memory |
+| **Context** | 262,144 tokens per request |
+| **Requests at once** | 8; more wait in line |
+| **API** | OpenAI-compatible, tool calling, thinking on by default at `medium` effort |
+| **Disk** | About 130 GB |
+| **Start time** | About 3 minutes once the model and image are on disk (171 s with a warm page cache) |
+| **License** | Recipe Apache-2.0; model weights Qwen Community License 1.0 |
 
-<sub>Solid lines (chat): each user sends a 2,048-token prompt and gets 512 tokens back; default sampling, thinking on. Total = all tokens written per second, including the time spent reading prompts; each reply = how fast one answer streams once it has started, so it is more than total / users.<br>One Spark: release v2.1.0, 2026-10-08, llama-benchy task mode<br>Two Sparks, TP=2: release v2.0.0, 2026-10-09, llama-benchy task mode<br>One Spark, star (coding): v2.0.0, 2026-10-06, coding_probe.py, up to 768 tokens out; median decode speed of 36 coding prompts sent one at a time, temperature 0, thinking off; at the server defaults (thinking on) the same prompts give 60 tok/s<br>Two Sparks, DP=2: not measured on this test yet.<br>Versions are numbered per setup. Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.</sub>
-<!-- speed-chart:end -->
+| I want to | Go to |
+|---|---|
+| See how fast it is at 1 to 8 chats | [Performance](#performance) |
+| Choose between one Spark, TP=2 and DP=2 | [One Spark or two?](#one-spark-or-two) |
+| Check answer quality | [Quality gate](#quality-gate) |
+| Trace any number to its raw file | [Every number and where it comes from](#every-number-and-where-it-comes-from) |
+| Roll back or pin a release | [Recipes](#details) and [VERSIONS.md](VERSIONS.md) |
 
-The more people use it at once, the more text it writes in total, while each reply streams more slowly. One Spark
-runs up to 8 chats at once, two Sparks up to 16; more requests wait in line.
+## Performance
 
-## How long until the first word?
+Combined speed rises up to 8 chats at once while each single chat slows down. A long prompt takes a while to read
+the first time; in a running chat only the new part of the prompt is read.
 
-<!-- first-token-chart:start (scripts/make_charts.py writes this block) -->
-<img src="docs/img/first-token.svg" alt="Line chart: seconds until the answer starts against prompt length, prompt not cached. Values are labelled on the chart." width="100%">
+<!-- speed:start (scripts/make_charts.py writes this block) -->
+<p align="center">
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/throughput-dark.svg"><img src="docs/img/throughput-light.svg" alt="Line chart of decode tokens per second, all chats together, against 1 to 16 requests at the same time, for each setup. Values are labelled at the line ends." width="420"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/latency-dark.svg"><img src="docs/img/latency-light.svg" alt="Line chart of seconds until the first token against prompt length, prompt not cached, for each setup. Values are labelled at the line ends." width="420"></picture>
+</p>
 
-<sub>One request with a prompt the server has not seen before. Later turns of a chat reuse the cached prompt and start sooner.<br>One Spark: release v2.0.0, 2026-10-05, llm-inference-bench 0.7.6<br>Two Sparks, TP=2: release v1.4.0, 2026-10-05, llm-inference-bench 0.7.6; v1.4.0, 2026-10-07, fidelity_probe.py<br>One Spark: not measured above 128K yet.<br>Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.</sub>
-<!-- first-token-chart:end -->
+<sub>Left: One Spark v2.1.0 · Two Sparks, TP=2 v2.0.0; llama-benchy, 2,048 in, 512 out. Right: One Spark v2.0.0 · Two Sparks, TP=2 v1.4.0; one request.</sub>
 
-Long prompts take a while to read the first time. In a running chat, only the new part of the prompt is read.
+<details>
+<summary><sub>Runs, method and raw data</sub></summary>
 
-## Which setup do I need?
+<sub>Left: llama-benchy task mode: each chat sends a 2,048-token coding prompt and gets up to 512 tokens back, temperature 1.0, top-p 0.95, top-k 20, thinking on. All chats together = every token written per second, including time spent reading prompts; each chat = the speed one reply streams at once it has started.<br>One Spark: release v2.1.0, 2026-10-08, llama-benchy task mode, mean ± sd over runs, one boot<br>Two Sparks, TP=2: release v2.0.0, 2026-10-09, llama-benchy task mode, mean of 2 boots x 4 runs, sd between boots; v2.0.0, 2026-10-09, llama-benchy task mode, mean of 4 runs, one boot, sd between runs<br>Two Sparks, DP=2: not measured on this test yet.<br>Versions are numbered per setup. Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.<br><br>Right: One request with a prompt the server has not seen before. Each point is the mean of the samples of one run (1 to 4 per prompt length; the CSV lists each).<br>One Spark: release v2.0.0, 2026-10-05, llm-inference-bench 0.7.6<br>Two Sparks, TP=2: release v1.4.0, 2026-10-05, llm-inference-bench 0.7.6; v1.4.0, 2026-10-07, fidelity_probe.py<br>One Spark: not measured above 128K yet.<br>Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.</sub>
 
-<img src="docs/img/setup-one.svg" alt="" width="84" align="left">
+</details>
+<!-- speed:end -->
 
-**One Spark: this recipe.** It serves up to 8 chats at once.
-<br clear="left">
+<!-- context:start (scripts/make_charts.py writes this block) -->
+<p align="center">
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/prefill-dark.svg"><img src="docs/img/prefill-light.svg" alt="Line chart of prompt tokens read per second against prompt length, prompt not cached, for each setup. Values are labelled at the line ends." width="420"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/depth-dark.svg"><img src="docs/img/depth-light.svg" alt="Line chart of decode tokens per second with 0 to 64K tokens of context already in the prompt, at 1, 4 and 8 requests. Values are labelled at the line ends." width="420"></picture>
+</p>
 
-<img src="docs/img/setup-tp2.svg" alt="" width="84" align="left">
+<sub>Left: One Spark v2.0.0 · Two Sparks, TP=2 v1.4.0; one request. Right: One Spark v2.0.0; 30 s sustained decode.</sub>
 
-**Two Sparks, one person or a few long chats: TP=2.** The
-[two-Spark recipe](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2) makes the two Sparks work as
-one server, so each chat gets faster and more long chats fit at once.
-<br clear="left">
+<details>
+<summary><sub>Runs, method and raw data</sub></summary>
 
-<img src="docs/img/setup-dp2.svg" alt="" width="84" align="left">
+<sub>Left: One request with a prompt the server has not seen before. Each point is the mean of the samples of one run (1 to 4 per prompt length; the CSV lists each).<br>One Spark: release v2.0.0, 2026-10-05, llm-inference-bench 0.7.6<br>Two Sparks, TP=2: release v1.4.0, 2026-10-05, llm-inference-bench 0.7.6<br>Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.<br><br>Right: One Spark: release v2.0.0, 2026-10-05, llm-inference-bench 0.7.6, 30 s sustained decode, one boot (older release; shipped v2.1.0 not measured on this test yet). Server default sampling. This harness's 30 s steady-state window reads 10-30% above the 512-token runs of the concurrency chart, so compare points within this chart.<br>Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.</sub>
 
-**Two Sparks, many agents at once: DP=2.** Each Spark runs this recipe and a small
-[router](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/blob/main/tools/dp2/README.md) splits the
-chats between them. In my agent tests it finished the same work sooner than TP=2 ([chart](docs/img/agents.svg)).
-<br clear="left">
+</details>
+<!-- context:end -->
+
+<details>
+<summary>Speed of each single chat, and the exact numbers behind the charts</summary>
+
+<!-- perchat:start (scripts/make_charts.py writes this block) -->
+<p align="center">
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/perchat-dark.svg"><img src="docs/img/perchat-light.svg" alt="Line chart of decode tokens per second of each chat against 1 to 16 requests at the same time, for each setup. Values are labelled at the line ends." width="420"></picture>
+</p>
+
+<sub>One Spark v2.1.0 · Two Sparks, TP=2 v2.0.0; llama-benchy, 2,048 in, 512 out.</sub>
+
+<details>
+<summary><sub>Runs, method and raw data</sub></summary>
+
+<sub>llama-benchy task mode: each chat sends a 2,048-token coding prompt and gets up to 512 tokens back, temperature 1.0, top-p 0.95, top-k 20, thinking on. All chats together = every token written per second, including time spent reading prompts; each chat = the speed one reply streams at once it has started.<br>One Spark: release v2.1.0, 2026-10-08, llama-benchy task mode, mean ± sd over runs, one boot<br>Two Sparks, TP=2: release v2.0.0, 2026-10-09, llama-benchy task mode, mean of 2 boots x 4 runs, sd between boots; v2.0.0, 2026-10-09, llama-benchy task mode, mean of 4 runs, one boot, sd between runs<br>Two Sparks, DP=2: not measured on this test yet.<br>Versions are numbered per setup. Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.</sub>
+
+</details>
+<!-- perchat:end -->
+
+<!-- matrix:start (scripts/make_charts.py writes this block) -->
+| Requests at once | All together, tok/s | Each, tok/s | Release, run |
+|--:|--:|--:|---|
+| 1 | 56.9 ± 1.6 | 56.9 ± 1.6 | [v2.1.0, 2026-10-08](results/tp1-v3e-hf-20261008/bench/) |
+| 2 | 80.4 ± 8.2 | 44.8 ± 3.9 | [v2.1.0, 2026-10-08](results/tp1-v3e-hf-20261008/bench/) |
+| 4 | 106.2 ± 4.5 | 32.2 ± 4.2 | [v2.1.0, 2026-10-08](results/tp1-v3e-hf-20261008/bench/) |
+| 8 | 132.9 ± 3.4 | 22.6 ± 3.2 | [v2.1.0, 2026-10-08](results/tp1-v3e-hf-20261008/bench/) |
+
+llama-benchy task mode: 2,048-token prompt, 512 tokens out, temperature 1.0, thinking on; mean ± sd as given per run in the CSV.
+
+| Prompt, tokens | Prompt reading, tok/s | First token, s | Release, run |
+|--:|--:|--:|---|
+| 2K | 1,782 ± 63 | 1.2 ± 0.0 | [v2.1.0, 2026-10-08, llama-benchy task mode](results/tp1-v3e-hf-20261008/bench/) |
+| 8K | 2,137 | 3.8 | [v2.0.0, 2026-10-05, llm-inference-bench 0.7.6](results/tp1-v3d-20261005/bench/) |
+| 16K | 2,079 ± 10 | 7.9 ± 0.0 | [v2.1.0, 2026-10-08, llama-benchy task mode](results/tp1-v3e-hf-20261008/bench/) |
+| 32K | 2,147 | 15.0 | [v2.0.0, 2026-10-05, llm-inference-bench 0.7.6](results/tp1-v3d-20261005/bench/) |
+| 64K | 2,066 | 31.2 | [v2.0.0, 2026-10-05, llm-inference-bench 0.7.6](results/tp1-v3d-20261005/bench/) |
+| 128K | 1,880 | 68.4 | [v2.0.0, 2026-10-05, llm-inference-bench 0.7.6](results/tp1-v3d-20261005/bench/) |
+
+One request, prompt not cached.
+<!-- matrix:end -->
+
+</details>
+
+## One Spark or two?
+
+<!-- setups:start (scripts/make_charts.py writes this block) -->
+<p align="center">
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/setups-dark.svg"><img src="docs/img/setups-light.svg" alt="Bar charts comparing one Spark, two Sparks at TP=2 and two Sparks at DP=2 on coding speed, chat speed, 8 chats combined, first token on a 16K prompt and long chats that fit the KV cache. Values are labelled on the bars." width="640"></picture>
+</p>
+
+<sub>Shipped release of each setup where measured; the bracket names an older release.</sub>
+
+<details>
+<summary><sub>Runs, method and raw data</sub></summary>
+
+<sub>Coding, one chat, T=0 (median of 36 prompts): 1x v2.0.0, 2026-10-06, coding_probe.py, up to 768 tokens out; TP=2 v1.4.0, 2026-10-06, coding_probe.py, up to 768 tokens out; not measured: Two Sparks, DP=2.<br>Chat, one at a time: 1x v2.1.0, 2026-10-08, llama-benchy task mode; TP=2 v2.0.0, 2026-10-09, llama-benchy task mode; not measured: Two Sparks, DP=2.<br>8 chats at once, combined: 1x v2.1.0, 2026-10-08, llama-benchy task mode; TP=2 v2.0.0, 2026-10-09, llama-benchy task mode; not measured: Two Sparks, DP=2.<br>First token on a 16K prompt: 1x v2.0.0, 2026-10-05, llm-inference-bench 0.7.6; TP=2 v1.4.0, 2026-10-05, llm-inference-bench 0.7.6; not measured: Two Sparks, DP=2.<br>262K-token chats the KV cache holds: 1x v2.1.0, 2026-10-08, serve log; TP=2 v2.0.0, 2026-10-09, serve log; DP=2 v2.1.0, 2026-10-08, serve log.<br>Chat rows: llama-benchy task mode at the server defaults (2,048-token prompt, 512 out). 262K-token chats: vLLM's own count at boot (DP=2: two replicas, one pool each).<br>Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.</sub>
+
+</details>
+<!-- setups:end -->
+
+- **One Spark: this recipe.** It serves up to 8 chats at once.
+- **Two Sparks, one person or a few long chats: TP=2.** The
+  [two-Spark recipe](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2) makes the two Sparks work as
+  one server, so each chat is faster and more long chats fit in the KV cache.
+- **Two Sparks, many agents at once: DP=2.** Each Spark runs this recipe and a small
+  [router](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/blob/main/tools/dp2/README.md) splits
+  the chats between them. In my agent replay it finished every workload sooner than TP=2:
+
+<!-- agents:start (scripts/make_charts.py writes this block) -->
+<p align="center">
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/agents-dark.svg"><img src="docs/img/agents-light.svg" alt="Bar chart of wall time for six agent workloads on two Sparks at TP=2 and at DP=2. Values are labelled on the bars." width="640"></picture>
+</p>
+
+<sub>Agent replay, one boot per layout: two-Spark v1.5.0 (old name b1.6) (TP=2); DP=2 on one-Spark v2.1.0 (old name v3e) (DP=2).</sub>
+
+<details>
+<summary><sub>Runs, method and raw data</sub></summary>
+
+<sub>All sessions start together; every turn resends the conversation with tools on, temperature 0.6, thinking off.<br>Two Sparks, TP=2: two-Spark v1.5.0 (old name b1.6), 2026-10-08, agent replay (drive.py), one boot<br>Two Sparks, DP=2: DP=2 on one-Spark v2.1.0 (old name v3e), 2026-10-08, agent replay (drive.py), one boot<br>Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.</sub>
+
+</details>
+<!-- agents:end -->
+
+## Quality gate
+
+<!-- quality:start (scripts/make_charts.py writes this block) -->
+| Check | Result | What it checks |
+|---|---|---|
+| Tool calls (TC-45) | **100/100** | A request that requires a tool call gets one; 5 trials |
+| Hard tool use | **91/100** | 88 multi-step tool-use scenarios; pass mark 88 |
+| Long-context retrieval | **20/20** (one of three ~245K seeds 19/20) | 20 facts hidden in prompts of 8K to ~245K tokens, each returned through a tool call |
+| Stalled requests | **none** | No request falls behind the others when 8 to 16 are sent at once (it runs 8 at a time and queues the rest) |
+
+Gate run: release v2.1.0, 2026-10-07. Every release passes this gate before it ships.
+<!-- quality:end -->
+
+Full gate tables: [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
+
+## Release history
+
+<!-- history:start (scripts/make_charts.py writes this block) -->
+<p align="center">
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/history-dark.svg"><img src="docs/img/history-light.svg" alt="Decode speed at one chat and at 8 chats, and the hard tool-use score, for every release of this setup. Values are labelled on the chart." width="640"></picture>
+</p>
+
+<sub>Each release's own promotion run and gate.</sub>
+
+<details>
+<summary><sub>Runs, method and raw data</sub></summary>
+
+<sub>Speed: llama-benchy task mode, 2,048-token prompt, 512 out, temperature 1.0, thinking on, from each release's own promotion run, so day-to-day drift of the Sparks is in these numbers; the paired A/B of every release is in [VERSIONS.md](VERSIONS.md).<br>Speed runs: v1.0.0 2026-10-02, v1.1.0 2026-10-04, v1.2.0 2026-10-04, v1.3.0 2026-10-05, v2.0.0 2026-10-05 (llama-benchy task mode, mean ± sd over 3 runs, one boot); v2.1.0 2026-10-08 (llama-benchy task mode, mean ± sd over runs, one boot).<br>Hard tool use: the promotion gate of each release (b0: the gate on the pinned checkpoint), v1.1.0 2026-10-04, v1.2.0 2026-10-04, v1.3.0 2026-10-05, v2.0.0 2026-10-05, v2.1.0 2026-10-07; v1.0.0: score not in the data.<br>Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.</sub>
+
+</details>
+<!-- history:end -->
 
 ## What's inside
 
@@ -131,48 +284,21 @@ chats between them. In my agent tests it finished the same work sooner than TP=2
   already done.
 - Thinking on by default at `medium` effort, tool calling, 262,144-token context, OpenAI-compatible API.
 
-## Quality checks
-
-<!-- quality:start (scripts/make_charts.py writes this block) -->
-- ![tool calls](https://img.shields.io/badge/tool%20calls-100%2F100-2ea44f) When a request requires a tool call, the reply makes one (TC-45, 5 trials).
-- ![hard tool use](https://img.shields.io/badge/hard%20tool%20use-91%2F100-2ea44f) Score 91/100 on 88 hard multi-step tool-use scenarios (pass mark: 88/100).
-- ![long prompts](https://img.shields.io/badge/long%20prompts-19%2F20%20or%20better%20up%20to%20~245K%20tokens-2ea44f) Finds 20 facts hidden in a long prompt and returns each through a tool call: 20 of 20 in every run except one of three ~245K prompts (19 of 20).
-- ![stalled requests](https://img.shields.io/badge/stalled%20requests-none-2ea44f) No request falls behind the others when 8 to 16 are sent at once; it runs 8 at a time and queues the rest.
-
-Gate run: release v2.1.0, 2026-10-07. Every release passes this gate before it ships.
-<!-- quality:end -->
-
-Full gate tables: [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
-
 ## Details
 
-### More charts
-
 <details>
-<summary>Decode speed with a long context, coding speed, TP=2 against DP=2 for agents, and what each release added</summary>
-
-<img src="docs/img/decode-depth.svg" alt="Decode speed with 0, 16K and 64K tokens of context already in the prompt, at 1, 4 and 8 requests." width="100%">
-
-<img src="docs/img/coding.svg" alt="Median decode speed over 36 coding prompts, one request at a time." width="100%">
-
-<img src="docs/img/agents.svg" alt="Wall time of six agent workloads on two Sparks at TP=2 and at DP=2." width="100%">
-
-<img src="docs/img/release-gains.svg" alt="Largest gain beyond noise of each release over the one before it, in its own A/B." width="100%">
-
-</details>
+<summary><b>Every number and where it comes from</b>: Capability table for one Spark, TP=2 and DP=2, with the run behind each number</summary>
 
 ### Every number and where it comes from
-
-<details>
-<summary>Full capability table for one Spark, two Sparks at TP=2 and two Sparks at DP=2, with the run behind each number</summary>
 
 Where the shipped release has no measurement yet, the table shows the newest release that has one; a full grid of the
 shipped releases is queued ([tp-2 #128](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/issues/128)).
 Decode rows are the total over all requests unless marked "each"; sampling is the server default (temperature 1.0,
-thinking on) unless the run says otherwise. Charts, hero card and this table are written by
+thinking on) unless the run says otherwise. The hero, charts and tables are written by
 `uv run scripts/make_charts.py` from [`docs/data/capability.csv`](docs/data/capability.csv), where every point lists
 its raw file (`1x:` paths are in this repo, `2x:` paths in the
-[two-Spark repo](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2)). Full grids for every build: [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
+[two-Spark repo](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2)). Full grids for every build:
+[docs/BENCHMARKS.md](docs/BENCHMARKS.md).
 
 <!-- capability-table:start (scripts/make_charts.py writes this block) -->
 | | One Spark | Two Sparks, TP=2 | Two Sparks, DP=2 |
@@ -274,7 +400,7 @@ Each recipe's header lists every change since the first release with its measure
 
 Releases use semantic versions per repo; [VERSIONS.md](VERSIONS.md) lists every shipped release with its old build
 name, date, what changed, its measured delta and its manifest (image digest, vLLM and b12x commits, checkpoint,
-drafter, plan seed). Each release's own A/B against the one before it is in the [release-gains chart](#more-charts) and in
+drafter, plan seed). Each release's own A/B against the one before it is in the [release history](#release-history) and in
 [docs/BENCHMARKS.md](docs/BENCHMARKS.md). Arms that were screened and not promoted: [results/README.md](results/README.md).
 
 </details>
