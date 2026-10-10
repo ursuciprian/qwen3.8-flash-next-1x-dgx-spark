@@ -39,6 +39,10 @@ Newest first. Every 1× release up to v2.1.0 was promoted in the tp-2 repo, befo
 | v1.1.0 | v3a | 2026-10-04 | [#60](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/pull/60) | NVMe keepalive (`VLLM_PLE_MMAP_KEEPALIVE_MS=50`), compile cache in the image | MINOR: faster, same outputs | step −8.4% at 4 requests, −5.1% at 8, −8.0% at 16k c4; 1–2 requests −0.5 to −0.9% |
 | v1.0.0 | v2 | 2026-10-02 | [#59](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/pull/59) | First public `qwen3.8-flash-next-1x-dgx-spark`: PLE table through the page cache with WILLNEED before each decode gather, 131k-id draft vocab | First release | WILLNEED: step −16.9% fresh c1, −8 to −9% at 2–8 requests; draft vocab: step −2.7 to −4.3% at 1–4 |
 
+Pending ([#143](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/issues/143), k82-otlp-traces-ab):
+request traces to MLflow (`--otlp-traces-endpoint` plus `OTEL_*` env). Outputs do not change, so it ships as the next
+PATCH once the A/B shows no cell worse beyond noise.
+
 Every release passed the quality gate. v1.1.0 was the default for about 8 hours and v1.3.0 for about 19; neither was
 rolled back, each was replaced by the next release.
 

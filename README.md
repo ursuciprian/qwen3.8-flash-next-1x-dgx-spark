@@ -71,6 +71,13 @@ The server binds 0.0.0.0 with no API key: keep it on a trusted network or put a 
 `sparkrun stop --all`. To upgrade, run `sparkrun registry update qwen38-flashnext-1x` first: sparkrun caches
 registries and does not refresh them on `run`.
 
+Request traces: the recipe has vLLM send one OpenTelemetry span per finished request (queue, prefill and
+decode time, token counts; no prompt or reply text) over OTLP/HTTP to my MLflow server at `192.168.68.59:5050`,
+service name `qwen3.8-flash-next-1x`. That address only exists on my network: elsewhere the export fails on a background
+thread with a warning line per batch. To send the spans to your own MLflow or OpenTelemetry collector, add
+`-o otlp_traces_endpoint=http://<host>:<port>/v1/traces -e OTEL_EXPORTER_OTLP_TRACES_HEADERS=x-mlflow-experiment-id=<id>`
+to `sparkrun run`.
+
 > Moved here on 2026-10-08 from [qwen3.8-flash-next-dgx-spark-tp-2](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2),
 > which keeps a copy of this recipe so existing `sparkrun run` setups keep working. If both registries are added,
 > pick this one with `sparkrun run @qwen38-flashnext-1x/qwen3.8-flash-next-1x-dgx-spark --hosts <spark> --solo`.
