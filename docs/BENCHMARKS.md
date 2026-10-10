@@ -1,6 +1,6 @@
 # Benchmarks: full tables
 
-Release names follow [VERSIONS.md](../VERSIONS.md). Section headings keep the old build names so existing links keep working; each build section opens with its release name. The current default is 1× v2.1.0 (old name v3e); every other section is history, kept for comparison. The README's capability table and charts read [`docs/data/capability.csv`](data/capability.csv).
+Release names follow [VERSIONS.md](../VERSIONS.md). Section headings keep the old build names so existing links keep working; each build section opens with its release name. The current default is 1× v2.2.0; every other section is history, kept for comparison. The README's capability table and charts read [`docs/data/capability.csv`](data/capability.csv).
 
 
 Every single-Spark (TP=1) build, newest first, then the runs that compared the 1× and 2× setups side by side. The 2×
@@ -27,9 +27,97 @@ Retries and partial results so far:
 - Two-Spark retries are listed in the
   [tp-2 repo](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/blob/main/docs/BENCHMARKS.md#quality-gate-pass-rule).
 
+## Single Spark v2.2.0: MTP drafter D3 (2026-10-10)
+
+Release 1× v2.2.0, the current default.
+
+v2.2.0 = v2.1.0 with the dense BF16 `mtp.*` tensors retrained again (drafter D3 = refit run 3a, 1x #7). Checkpoint
+`ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE` @ `03f4a057` (v2.1.0: `16c9bd54`); only
+`model-00034-of-00036.safetensors` differs, and inside it only the retrained `mtp.*` tensors. Training: initialized
+from D1, one pass over 10.66M anchors (D1's 896,564, about 7.35M tokens of newly generated own outputs and 230 earlier
+responses over 4096 tokens that D1's capture skipped), 1,208 steps of about 8,200 anchors, learning rate 2e-5 decaying
+linearly towards 2e-6, the same loss, held-out set and fp8 drafter KV emulation as D1.
+
+Offline acceptance per draft position on the held-out set (vLLM's cumulative rate), D1 → D3:
+
+| Category | T | pos 1 | pos 2 | pos 3 | pos 4 | pos 5 | pos 6 | tokens/step at 4 drafts |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| all | 0 | 0.905 → 0.911 | 0.797 → 0.810 | 0.699 → 0.718 | 0.614 → 0.640 | 0.542 → 0.574 | 0.480 → 0.517 | 4.015 → 4.079 |
+| all | 1 | 0.876 → 0.885 | 0.713 → 0.733 | 0.551 → 0.581 | 0.409 → 0.446 | 0.294 → 0.334 | 0.206 → 0.245 | 3.548 → 3.643 |
+| agentic | 0 | 0.860 → 0.868 | 0.716 → 0.732 | 0.590 → 0.615 | 0.488 → 0.516 | 0.410 → 0.443 | 0.351 → 0.385 | 3.655 → 3.731 |
+| chat | 0 | 0.827 → 0.834 | 0.643 → 0.656 | 0.502 → 0.514 | 0.393 → 0.407 | 0.315 → 0.330 | 0.257 → 0.272 | 3.365 → 3.410 |
+| code | 0 | 0.944 → 0.951 | 0.870 → 0.884 | 0.792 → 0.815 | 0.717 → 0.749 | 0.646 → 0.688 | 0.580 → 0.630 | 4.324 → 4.399 |
+| math | 0 | 0.968 → 0.973 | 0.917 → 0.924 | 0.853 → 0.870 | 0.785 → 0.808 | 0.714 → 0.747 | 0.645 → 0.688 | 4.522 → 4.575 |
+| tools | 0 | 0.924 → 0.927 | 0.831 → 0.836 | 0.735 → 0.746 | 0.655 → 0.666 | 0.586 → 0.598 | 0.531 → 0.544 | 4.145 → 4.174 |
+
+Live screen: k56c-refit-run3 (Thunderdome, one arm per Spark, D1 control and D3 arm booted alternately, 2 boots per
+side, every cell) and k56d-refit-run3-confirm (4 more boots per side per Spark, ABBA twice, only the cells k56c left in
+doubt: probe fresh c8, llama-benchy pp2048 c1 and tg512 c1/c8 with 5 runs per boot), pooled to 6 boots per side per
+Spark. Same image and snapshot for both; noise band as in Thunderdome (at least 1%; for llama-benchy the control's
+spread over all 6 boots). Acceptance per draft position, T=0 probe cells pooled:
+
+| Spark | pos 1 | pos 2 | pos 3 | pos 4 |
+|---|:---:|:---:|:---:|:---:|
+| dgx-01 | 0.849 → 0.860 | 0.699 → 0.720 | 0.575 → 0.598 | 0.472 → 0.498 |
+| dgx-02 | 0.852 → 0.857 | 0.703 → 0.717 | 0.578 → 0.596 | 0.474 → 0.493 |
+
+| Cell | dgx-01 | dgx-02 |
+|---|:---:|:---:|
+| probe fresh c1 (k56c only) | +1.51% (3.25%) | +1.62% (8.29%) |
+| probe fresh c4 (k56c only) | +3.44% (2.36%) | +1.93% (4.77%) |
+| probe fresh c8 | +3.26% (1.01%) | +1.30% (2.76%) |
+| probe 16K c4 (k56c only) | +4.63% (2.51%) | +1.98% (3.93%) |
+| probe counting c8 (k56c only) | +0.66% (1.01%) | +1.04% (1.90%) |
+| 16K c8 wall time (k56c only) | +0.41% (1.00%) | +0.42% (1.00%) |
+| llama-benchy pp2048 c1 | +0.46% (2.86%), 1799.1 → 1807.4 t/s | −0.67% (4.53%), 1813.0 → 1800.8 t/s |
+| llama-benchy tg512 c1 | +0.66% (11.04%), 57.7 → 58.1 t/s | +2.95% (10.23%), 57.8 → 59.5 t/s |
+| llama-benchy tg512 c8 | +1.22% (8.74%), 131.0 → 132.6 t/s | +2.29% (8.78%), 132.7 → 135.8 t/s |
+
+Beyond the noise band: dgx-01 fresh c4, fresh c8 and 16K c4. Pooled verdict: dgx-01 PROMOTE, dgx-02 no cell beyond noise either way; no cell worse
+beyond noise on either Spark. In k56c alone (2 boots) dgx-01 tg512 c8 read −3.79% (noise 3.05%); with 6 boots per
+side it is +1.22%, and the boot-level 95% interval of every llama-benchy cell contains zero on both Sparks. Every
+boot logged 0 measured b12x plans and the same KV pool (993,754 tokens). Gate (k56c): hardmode 93, TC-45 100,
+fidelity 20/20 at 8k/32k/64k/128k plus 128k seeds 11 and 13 at 20/20, stragglers c8/c12/c16 with 0 preemptions,
+min MemAvailable 13.89 GiB. Raw files:
+[`results/thunderdome-k56c-20261009-1421/`](../results/thunderdome-k56c-20261009-1421/),
+[`results/thunderdome-k56d-20261009-2029/`](../results/thunderdome-k56d-20261009-2029/).
+
+Shipped image check (k79-1x-d3-ship-check, one boot on dgx-01 from the HF cache with the seed entries removed): seed
+HIT, 0 measured b12x plans, AOT loaded from the image, 72 MXFP8 copies, served shard 34 = the D3 shard (sha256
+`4d982c2a`). Its fresh c8 acceptance (no warm-up request before the probe) read 0.851 / 0.688 / 0.562 / 0.462, below
+every k56c/k56d D3 boot at positions 2-3, so the job failed its drafter check. The served shards turned out to be the
+same 36 files on disk as k56c/k56d's arm, with identical config files, tensors and engine configuration.
+
+D3 vs D1 on the published stack (k80-1x-d3-hf-ab): v2.2.0 against v2.1.0, both from their HF revisions and published
+images, ctl/arm/arm/ctl twice per Spark (4 boots per side), warm-up, T=0 fresh c4 and c8 probes, llama-benchy at 5
+runs per boot. Acceptance per draft position, probes pooled:
+
+| Spark | pos 1 | pos 2 | pos 3 | pos 4 |
+|---|:---:|:---:|:---:|:---:|
+| dgx-01 | 0.841 → 0.852 | 0.683 → 0.704 | 0.554 → 0.577 | 0.445 → 0.469 |
+| dgx-02 | 0.841 → 0.854 | 0.683 → 0.705 | 0.552 → 0.578 | 0.444 → 0.470 |
+
+| Cell | dgx-01 | dgx-02 |
+|---|:---:|:---:|
+| probe fresh c4 | +1.79% (2.19%) | +2.60% (2.36%) |
+| probe fresh c8 | +2.10% (1.84%) | +2.01% (2.21%) |
+| llama-benchy pp2048 c1 | −0.09% (1.06%), 1795.0 → 1793.5 t/s | −0.22% (1.73%), 1806.9 → 1802.9 t/s |
+| llama-benchy tg512 c1 | +7.94% (9.63%), 55.5 → 59.9 t/s | +1.73% (8.95%), 56.5 → 57.5 t/s |
+| llama-benchy tg512 c8 | +3.41% (6.01%), 131.8 → 136.3 t/s | +3.75% (4.36%), 132.2 → 137.1 t/s |
+
+Beyond the noise band: fresh c8 on dgx-01 and fresh c4 on dgx-02; no cell worse on either Spark. The acceptance gain
+matches k56c/k56d (+0.021 to +0.027 at positions 2-4), so the k79 boot was a low reading, not a different drafter.
+Every boot logged 0 measured plans and the same KV pool. On dgx-02 the v2.2.0 boots log 19 TritonBundler "Failed to
+reload cubin" warnings each (the image's compile cache was built on dgx-01); the first such boot took 277 s, later
+ones 147 s like the control. A new host pays that recompile once, on its first boot.
+Image
+`tp1-d3-hf-20261010-21e0b201-5dad364d-warm` (also `1x-v2.2.0`), digest
+`sha256:1c191c0a5f816750145e19e104ed812e9b3e63148b00fac901892f310a96a438`, CI run 38033947121 of build-b0-warm.
+Its llama-benchy coding grid (k79 check boot, depth 0, 3 runs): tg512 61.8 t/s at c1 and 136.9 t/s at c8.
+
 ## Single Spark v3e: retrained MTP drafter (2026-10-08)
 
-Release 1× v2.1.0 (old name v3e), the current default.
+Release 1× v2.1.0 (old name v3e), replaced by v2.2.0 on 2026-10-10.
 
 v3e = v3d with the 24 dense BF16 `mtp.*` tensors retrained (#97 refit run 1). Checkpoint
 `ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE` @ `16c9bd54` (v3d: `244cb6fe`); only `model-00034-of-00036.safetensors`

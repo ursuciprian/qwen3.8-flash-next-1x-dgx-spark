@@ -38,7 +38,7 @@ Method and full tables: [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
 
 <!-- badges:start (scripts/make_charts.py writes this block) -->
 <p align="center">
-  <img alt="release: v2.1.0" src="https://img.shields.io/badge/release-v2.1.0-0969da?style=flat-square">
+  <img alt="release: v2.2.0" src="https://img.shields.io/badge/release-v2.2.0-0969da?style=flat-square">
   <img alt="hardware: 1× DGX Spark" src="https://img.shields.io/badge/hardware-1%C3%97%20DGX%20Spark-555555?style=flat-square">
   <img alt="quality gate: passed" src="https://img.shields.io/badge/quality%20gate-passed-2ea44f?style=flat-square">
   <img alt="license: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-555555?style=flat-square">
@@ -78,7 +78,7 @@ Download it on the Spark before the first boot, together with the two files of t
 uses for PP (2.6 GiB):
 
 ```sh
-hf download ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE --revision 16c9bd54788d12390838a65ce4a4ecda97fa5f1d
+hf download ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE --revision 03f4a0570496bbe741189f4a2a7d611679e85406
 hf download local-inference-lab/Qwen3.8-Flash-Next-NVFP4 --revision 7c4f1bc1a2d6847e0cbc01ac6b823f00251de8dd \
   model-00035-of-00036.safetensors model.safetensors.index.json
 ```
@@ -120,8 +120,8 @@ registries and does not refresh them on `run`.
 
 | | |
 |---|---|
-| **Model** | [`ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE`](https://huggingface.co/ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE) @ `16c9bd54`: NVFP4 experts, MXFP8 dense and attention, GDN projections NVFP4 for TG and MXFP8 for PP |
-| **MTP** | MTP ×4, probabilistic drafts, rejection sampling; drafter D1 refit on the served model's outputs |
+| **Model** | [`ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE`](https://huggingface.co/ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE) @ `03f4a057`: NVFP4 experts, MXFP8 dense and attention, GDN projections NVFP4 for TG and MXFP8 for PP |
+| **MTP** | MTP ×4, probabilistic drafts, rejection sampling; drafter D3 refit on the served model's outputs (v2.1.0: D1) |
 | **Hardware** | 1x DGX Spark (GB10, 128 GB unified), checkpoint on local NVMe |
 | **Parallelism / memory** | TP=1; 26.8 GiB PLE table paged from NVMe (`VLLM_PLE_MMAP=1`), 14 GiB KV pool |
 | **Engine** | vLLM + b12x (NVFP4 MoE, MXFP8 linears, GDN, QSA), plan and compile caches baked into the image |
@@ -299,7 +299,7 @@ Full gate tables: [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
 - **KV:** one GDN PP staging buffer shared by all 36 GDN layers (~8.8 GiB freed) and compact MTP draft records;
   14 GiB KV pool.
 - **MTP:** 4 probabilistic drafts per step over a 131k-id draft vocabulary, rejection sampling (output
-  distribution unchanged); drafter D1 refit on the served model's outputs.
+  distribution unchanged); drafter D3 refit on the served model's outputs (D1 in v2.1.0).
 - **Kernels:** b12x for GB10 (NVFP4 MoE, MXFP8 linears, 36 GDN layers, 12 QSA sparse-attention layers), autotuned
   plan cache and compile cache baked into the image.
 - **Serving defaults:** reasoning on at `reasoning_effort` medium, tool calling, max_model_len 262,144.
@@ -382,9 +382,10 @@ Releases and runs behind the numbers:
 | **Concurrency** | `max_num_seqs` 8, KV pool 14 GiB (993,754 tokens, 3.79x at 262,144) |
 
 Checkpoint: [`ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE`](https://huggingface.co/ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE)
-@ `16c9bd54` (v2.1.0, drafter D1; v2.0.0: `244cb6fe`, drafter D0). It is the NVFP4 checkpoint
+@ `03f4a057` (v2.2.0, drafter D3; v2.1.0: `16c9bd54`, drafter D1). It is the NVFP4 checkpoint
 [`local-inference-lab/Qwen3.8-Flash-Next-NVFP4`](https://huggingface.co/local-inference-lab/Qwen3.8-Flash-Next-NVFP4)
-@ `7c4f1bc1` with the GDN projections in weight-only NVFP4 and, since `16c9bd54`, a retrained MTP drafter. Its model
+@ `7c4f1bc1` with the GDN projections in weight-only NVFP4 and, since `16c9bd54`, a retrained MTP drafter. Coming
+from `16c9bd54`, only `model-00034-of-00036.safetensors` (4.5 GB) is new. Its model
 card covers what changed, how it was built and the license (Qwen Community License 1.0). The recipe also fetches
 shard 35 and the index of `7c4f1bc1` (2.6 GiB) for the MXFP8 PP copy. Image and video input are not tested.
 
@@ -402,6 +403,9 @@ shard 35 and the index of `7c4f1bc1` (2.6 GiB) for the MXFP8 PP copy. Image and 
   checkpoint revision. Serving another revision or a local copy of the files autotunes and compiles on its first boot.
 - The recipe and its rollback serve different checkpoint revisions and keep one cache each, so the first boot of the
   other one is not warm.
+- The image's Triton kernel cache was built on one Spark. On another host the first boot recompiles a few Triton
+  kernels (~2 min once: 277 s instead of 147 s) and logs W-level TritonBundler tracebacks ("Cubin file saved by
+  TritonBundler not found"); serving is not affected ([#39](https://github.com/ursuciprian/qwen3.8-flash-next-1x-dgx-spark/issues/39)).
 - Hardmode still fails a few multi-step scenarios (e.g. TC-30, TC-68, TC-74, TC-88) on every release.
 - Above 8 requests: a `max_num_seqs` 32 run (quality gate not run at that cap, v2.0.0) reached 189.3 tok/s aggregate TG
   at c32 (llama-benchy task mode, mean of 3 runs); a boot at `max_num_seqs` 16 was stopped by the 4 GiB memory guard
@@ -414,8 +418,8 @@ shard 35 and the index of `7c4f1bc1` (2.6 GiB) for the MXFP8 PP copy. Image and 
 
 | Recipe | Release | Image | Use |
 |---|---|---|---|
-| [`qwen3.8-flash-next-1x-dgx-spark`](recipes/qwen3.8-flash-next/qwen3.8-flash-next-1x-dgx-spark.yaml) | v2.1.0 (old name v3e) | `tp1-v3e-hf-20261008-21e0b201-5dad364d-warm` | Default (checkpoint @ `16c9bd54`, drafter D1) |
-| [`qwen3.8-flash-next-1x-dgx-spark-previous`](recipes/qwen3.8-flash-next/qwen3.8-flash-next-1x-dgx-spark-previous.yaml) | v2.0.0 (old name v3d) | `tp1-v3d-hf-20261005-21e0b201-5dad364d-warm` | Rollback (checkpoint @ `244cb6fe`, drafter D0) |
+| [`qwen3.8-flash-next-1x-dgx-spark`](recipes/qwen3.8-flash-next/qwen3.8-flash-next-1x-dgx-spark.yaml) | v2.2.0 | `tp1-d3-hf-20261010-21e0b201-5dad364d-warm` (also `1x-v2.2.0`) | Default (checkpoint @ `03f4a057`, drafter D3) |
+| [`qwen3.8-flash-next-1x-dgx-spark-previous`](recipes/qwen3.8-flash-next/qwen3.8-flash-next-1x-dgx-spark-previous.yaml) | v2.1.0 (old name v3e) | `tp1-v3e-hf-20261008-21e0b201-5dad364d-warm` | Rollback (checkpoint @ `16c9bd54`, drafter D1) |
 
 Each recipe's header lists every change since the first release with its measured delta. Earlier recipes:
 [archive/recipes/](archive/recipes/README.md). Renames: [recipes/RENAMES.md](recipes/RENAMES.md).
@@ -462,8 +466,8 @@ single-Spark issues are [here](https://github.com/ursuciprian/qwen3.8-flash-next
 - b12x kernels cover NVFP4 MoE, MXFP8 linears, GDN (36 layers) and QSA sparse attention (12 layers), with an
   autotuned plan cache and the torch compile cache baked into each image ([`docker/b0-warm/`](docker/b0-warm/)).
 - MTP ×4 uses probabilistic drafts over a 131k-id draft vocabulary; rejection sampling keeps the output distribution
-  unchanged. The drafter of v2.1.0 (D1) was retrained on the served model's own outputs
-  ([`tools/mtp_refit/`](tools/mtp_refit/)).
+  unchanged. The drafter was retrained on the served model's own outputs: D1 in v2.1.0, D3 (more data, a longer run)
+  in v2.2.0 ([`tools/mtp_refit/`](tools/mtp_refit/)).
 
 Every flag and environment variable, with the reason for it, is in the recipe header. Engine-wide configuration,
 image provenance and rejected experiments shared with the two-Spark recipe:
@@ -494,7 +498,7 @@ of those answers took over 30 minutes at 8 concurrent requests. Override table:
 | `/health` silent for minutes | Expected on a cold boot. `sparkrun logs qwen3.8-flash-next-1x-dgx-spark -f` |
 | OOM / earlyoom at first boot | Plan seed not used, so it autotunes; see Known limits above |
 | `Recipe ... matches multiple registries` | Both this registry and the tp-2 one are added; use `@qwen38-flashnext-1x/qwen3.8-flash-next-1x-dgx-spark` |
-| Garbled output | Checkpoint mismatch: the serve log must show the pinned `snapshots/16c9bd54...` (or `244cb6fe...` for `-previous`) |
+| Garbled output | Checkpoint mismatch: the serve log must show the pinned `snapshots/03f4a057...` (or `16c9bd54...` for `-previous`) |
 | Empty `content`, long reasoning | `max_tokens` ran out during thinking; raise it or send `"reasoning_effort": "low"` |
 | Old release boots after an upgrade | `sparkrun registry update qwen38-flashnext-1x` |
 | Anything else | Try the `-previous` recipe, then open an issue with `sparkrun logs <recipe> -a` |
@@ -511,7 +515,7 @@ of those answers took over 30 minutes at 8 concurrent requests. Override table:
 | [docs/THUNDERDOME.md](docs/THUNDERDOME.md) | The screen every candidate build runs |
 | [results/](results/README.md) | Every raw measurement and verdict |
 | [archive/](archive/recipes/README.md) | Superseded recipes (not listed by sparkrun) |
-| [tools/mtp_refit/](tools/mtp_refit/) | MTP drafter refit pipeline behind v2.1.0 |
+| [tools/mtp_refit/](tools/mtp_refit/) | MTP drafter refit pipeline behind v2.1.0 (D1) and v2.2.0 (D3) |
 
 </details>
 

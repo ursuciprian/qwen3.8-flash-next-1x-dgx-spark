@@ -32,7 +32,8 @@ Newest first. Every 1× release up to v2.1.0 was promoted in the tp-2 repo, befo
 
 | Release | Old name | Default since | Recipe PR (tp-2 repo) | What changed | Bump | Measured |
 |---|---|---|---|---|---|---|
-| **v2.1.0** | v3e | 2026-10-08 | [#116](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/pull/116) | Retrained MTP drafter D1, checkpoint revision `16c9bd54` (only the 24 drafter tensors differ from `244cb6fe`) | MINOR: drafter only; the new HF revision differs from `244cb6fe` only in the shard with the 24 drafter tensors | acceptance +0.036 to +0.058 per position; probe fresh c4 +4.9 / +7.9%, fresh c8 +6.8 / +8.1%, 16K c4 +5.5 / +5.7% (dgx-01 / dgx-02); no cell worse beyond noise |
+| **v2.2.0** | none | 2026-10-10 | [#24](https://github.com/ursuciprian/qwen3.8-flash-next-1x-dgx-spark/pull/24) (this repo) | Retrained MTP drafter D3 (refit run 3a: more data, one epoch from D1), checkpoint revision `03f4a057` (only the drafter tensors in `model-00034` differ from `16c9bd54`) | MINOR: drafter only; users coming from v2.1.0 download one 4.5 GB shard | acceptance +0.021 to +0.027 per position at pos 2-4; k56c/k56d dgx-01 fresh c4 +3.4%, fresh c8 +3.3%, 16K c4 +4.6%; k80 on the published stack fresh c8 +2.1% (dgx-01), fresh c4 +2.6% (dgx-02); no cell worse beyond noise |
+| v2.1.0 | v3e | 2026-10-08 | [#116](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/pull/116) | Retrained MTP drafter D1, checkpoint revision `16c9bd54` (only the 24 drafter tensors differ from `244cb6fe`) | MINOR: drafter only; the new HF revision differs from `244cb6fe` only in the shard with the 24 drafter tensors | acceptance +0.036 to +0.058 per position; probe fresh c4 +4.9 / +7.9%, fresh c8 +6.8 / +8.1%, 16K c4 +5.5 / +5.7% (dgx-01 / dgx-02); no cell worse beyond noise |
 | v2.0.0 | v3d | 2026-10-06 | [#91](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/pull/91) | New checkpoint `ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE`: GDN weights in NVFP4 for decode, MXFP8 copy for prefill | MAJOR: new checkpoint, numerics change | counting c8 +7.8%, 16K c4 +5.9%, fresh c8 +4.4%, tg512 c1 50.0 to 59.7 tok/s; pp2048 −0.9% (noise 1.0%) |
 | v1.3.0 | v3c | 2026-10-05 | [#86](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/pull/86) | Shared GDN prefill staging, compact GDN records, KV pool 6 to 14 GiB | MINOR: memory and KV only | coding 16k c8 22.1 to 109.3 tok/s; 16K c8 probe 347–370 s to 125 s; counting c8 +3.1%, fresh c4 +2.5% |
 | v1.2.0 | v3b | 2026-10-04 | [#72](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/pull/72) | PLE prefill read-ahead (`VLLM_PLE_MMAP_PREFILL_WILLNEED=1`) | MINOR: faster, same outputs | pp2048 +50% at 1 request, +19% at 4, +9% at 8; decode within noise |
@@ -50,6 +51,7 @@ recipes by path or from the tp-2 registry.
 
 | Release | Tag on commit |
 |---|---|
+| v2.2.0 | the squash-merge commit of #24 |
 | v2.1.0 | `73e3c1e1` (first commit with this repo's registry, the same day as #116) |
 | v2.0.0 | `d08bda54` (copy of #91) |
 | v1.3.0 | `302a013c` (copy of #86) |
@@ -65,6 +67,7 @@ commit is unknown for every release.
 
 | Release | Image tag | Digest | vLLM | b12x | Checkpoint | Drafter | Plan seed |
 |---|---|---|---|---|---|---|---|
+| v2.2.0 | `tp1-d3-hf-20261010-21e0b201-5dad364d-warm` (also `1x-v2.2.0`) | `sha256:1c191c0a5f816750145e19e104ed812e9b3e63148b00fac901892f310a96a438` | `5dad364d05ac` | `21e0b201dd48` | `ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE` @ `03f4a0570496` | D3 | `33d9b32e` (289) |
 | v2.1.0 | `tp1-v3e-hf-20261008-21e0b201-5dad364d-warm` | `sha256:5a9aa728ed6d2b984a40b16dbb51b572de0a1b988899147aca6ef43819e6eac9` | `5dad364d05ac` | `21e0b201dd48` | `ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE` @ `16c9bd54788d` | D1 | `3205a613` (289) |
 | v2.0.0 | `tp1-v3d-hf-20261005-21e0b201-5dad364d-warm` | `sha256:81ac7975869814102843b4ca58e5ea219c3e938518b8f87d1a6fbb6edd89ede2` | `5dad364d05ac` | `21e0b201dd48` | `ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE` @ `244cb6fe99ff` | D0 | `f7894ea6` (289) |
 | v1.3.0 | `tp1-v3c-20261005-21e0b201-50330171-warm` | `sha256:ba140406cabf0fbbbd13d0f605c42881c2442079619aa2fa7297eed2e0e31bff` | `503301710397` | `21e0b201dd48` | `local-inference-lab/Qwen3.8-Flash-Next-NVFP4` @ `7c4f1bc1a2d6` | D0 | `54b3e768` (302), per the Dockerfile; image not checked |
