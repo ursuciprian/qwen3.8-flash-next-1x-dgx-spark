@@ -1,0 +1,23 @@
+refit k75 2x2 2026-10-09 22:12:10 EEST: 1x #7, tools f4a5deb (run2 used 2b22498, same train path at --min-lr-frac 1.0), image spark-vllm-b12x:mtpcap-21e0b201-fe5c57fb
+cells (all from the original drafter f4..03): run2 = p2 + flat (refit-p3, seed 97); k75a = run2 args + --min-lr-frac 0.1; k75b = run3b args + --min-lr-frac 1.0; run3b = p2+r3 + decay (refit-r3, seed 113). Args checked against each reference's recorded args: args match;args match
+train k75a: 272 steps, last {"step": 272, "epoch": 2, "lr": 2e-06, "grad_norm": 7.7532, "anchors": [8828, 8820, 8812, 8804, 8796, 8788], "ce": [0.34001, 0.42543, 0.47766, 0.51762, 0.55378, 0.59192], "kl": [0.10064, 0.18584, 0.23795, 0.27776, 0.31379, 0.35215], "s": 10566.1}
+train k75b: 1208 steps, last {"step": 1208, "epoch": 0, "lr": 2e-05, "grad_norm": 10.0105, "anchors": [8404, 8361, 8318, 8275, 8232, 8189], "ce": [0.60462, 0.7569, 0.85789, 0.94059, 0.99946, 1.04982], "kl": [0.20534, 0.35933, 0.46172, 0.54483, 0.60486, 0.65539], "s": 32821.7}
+
+== p2 held-out (70 docs / 64,425 anchors, the run1/run2/run3 eval set): mean gain per draft position vs refit run1, pts (category all, positions 1-6); tokens/step d4/d6
+data / lr   | flat 2e-5             | linear decay to 0.1x      (cell = T=0 / T=1 gain)
+p2          | run2  +0.88 / +1.75    | k75a  +1.36 / +2.36
+p2+r3       | k75b  +1.72 / +2.11    | run3b +2.06 / +2.80
+tokens/step d4/d6, T=0 | T=1: run1 4.015/5.037 | 3.548/4.048; run2 4.043/5.090 | 3.605/4.154; k75a 4.054/5.119 | 3.623/4.190; k75b 4.066/5.140 | 3.619/4.175; run3b 4.074/5.160 | 3.640/4.216
+T=0: data main effect +0.77, schedule main effect +0.41, interaction (decay effect on p2+r3 minus on p2) -0.14; data alone at flat lr +0.84, decay alone on p2 +0.48
+T=1: data main effect +0.40, schedule main effect +0.65, interaction (decay effect on p2+r3 minus on p2) +0.08; data alone at flat lr +0.36, decay alone on p2 +0.61
+
+== report only: p2 held-out responses > 4096 tokens (14 docs / 145,983 anchors): mean gain per draft position vs refit run1, pts (category all, positions 1-6); tokens/step d4/d6
+data / lr   | flat 2e-5             | linear decay to 0.1x      (cell = T=0 / T=1 gain)
+p2          | run2  +1.20 / +2.41    | k75a  +1.60 / +2.76
+p2+r3       | k75b  +2.58 / +2.89    | run3b +3.11 / +3.89
+tokens/step d4/d6, T=0 | T=1: run1 3.931/4.856 | 3.463/3.903; run2 3.965/4.928 | 3.542/4.047; k75a 3.975/4.952 | 3.552/4.068; k75b 4.010/5.011 | 3.564/4.076; run3b 4.023/5.042 | 3.595/4.136
+T=0: data main effect +1.44, schedule main effect +0.46, interaction (decay effect on p2+r3 minus on p2) +0.13; data alone at flat lr +1.38, decay alone on p2 +0.40
+T=1: data main effect +0.81, schedule main effect +0.67, interaction (decay effect on p2+r3 minus on p2) +0.66; data alone at flat lr +0.48, decay alone on p2 +0.35
+
+eval repeatability, the same run3b weights scored on dgx-02 (r3train) and on dgx-01 (k75): max |diff| per position 0.000 pts, mean T=0 (all) +0.000 pts/pos
+noise: one training seed per cell; eval_offline reports no confidence interval, so there is no seed-to-seed noise estimate for these cells.

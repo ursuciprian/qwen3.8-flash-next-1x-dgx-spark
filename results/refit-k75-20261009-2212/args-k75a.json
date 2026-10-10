@@ -1,0 +1,31 @@
+{
+ "args": {
+  "snapshot": "/cache/huggingface/hub/models--local-inference-lab--Qwen3.8-Flash-Next-NVFP4/snapshots/f400000000000000000000000000000000000003",
+  "draft_vocab": "/opt/mtp-vocab/ids-v2-K131072.txt.gz",
+  "data": "/cache/huggingface/mtp-refit/p2-20261006/data/train",
+  "heldout": null,
+  "trainable": "dense",
+  "depth": 6,
+  "depth_weights": "equal",
+  "loss": "kl",
+  "topk": 20,
+  "window": 2048,
+  "window_stride": null,
+  "lr": 2e-05,
+  "warmup": 20,
+  "min_lr_frac": 0.1,
+  "clip": 1.0,
+  "epochs": 3,
+  "max_steps": 272,
+  "save_every": 45,
+  "tokens_per_step": 8192,
+  "eval_windows": 0,
+  "device": "cuda",
+  "experts_impl": null,
+  "kv_fp8": "on",
+  "seed": 97,
+  "out": "/work/runs/k75a",
+  "metrics_file": "/metrics/mtp_refit_train.prom"
+ },
+ "steps": 272
+}
