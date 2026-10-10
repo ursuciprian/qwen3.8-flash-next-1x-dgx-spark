@@ -7,6 +7,26 @@ Every single-Spark (TP=1) build, newest first, then the runs that compared the 1
 rows in those runs are kept for reference; the 2× builds have their own tables in
 [qwen3.8-flash-next-dgx-spark-tp-2](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/blob/main/docs/BENCHMARKS.md).
 
+## Quality gate: pass rule
+
+Every release passes the same gate before it ships. The rule is fixed:
+
+| Check | Pass rule |
+|---|---|
+| Hardmode (tool-eval-bench `--hardmode`, 88 multi-step tool-use scenarios, T=0, thinking on) | score ≥ 88/100 |
+| Fidelity (`scripts/fidelity_probe.py`, 20 tool-call retrievals per depth, 8K / 32K / 64K / 128K) | 20/20 at every depth |
+| Stragglers (`scripts/straggler_probe.py`, batches c5 to c16) | none |
+| TC-45 (regression test: 1 scenario, 2 points, 5 trials) | reported; 5/5 on every release with a recorded run |
+
+Retries: a fidelity depth that scores 19/20 is rerun on a fresh boot, and the release passes only if the rerun is 20/20 at
+every depth. Each retry is listed below with both results. The extra ~245K seeds are reported and not gated.
+
+Retries and partial results so far:
+
+- 1× v2.1.0: one of three ~245K seeds 19/20 (dgx-01); every gated depth 20/20.
+- Two-Spark retries are listed in the
+  [tp-2 repo](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/blob/main/docs/BENCHMARKS.md#quality-gate-pass-rule).
+
 ## Single Spark v3e: retrained MTP drafter (2026-10-08)
 
 Release 1× v2.1.0 (old name v3e), the current default.
@@ -53,8 +73,7 @@ passes, T=0 probe cells plus llama-benchy (T=1, 2 runs). Noise band = the cell's
 
 Verdict PROMOTE on both Sparks. Gate (both Sparks): hardmode 91, TC-45 100, fidelity 20/20 at 8k/32k/64k/128k
 (~245k seeds: dgx-01 one seed 19/20, 119/120 overall; dgx-02 120/120), stragglers c8/c12/c16 with 0 preemptions, min
-MemAvailable 13.92 GiB. Jev (TypeSafe System One) on the same numbers: ship, confidence 0.97
-([`jev-ship.json`](../results/thunderdome-k56-20261007/jev-ship.json)). Raw files:
+MemAvailable 13.92 GiB. Raw files:
 [`results/thunderdome-k56-20261007/`](../results/thunderdome-k56-20261007/).
 
 Shipped image check (hfship, one boot on dgx-01 from the HF cache with the seed entries removed): seed HIT, drafter
