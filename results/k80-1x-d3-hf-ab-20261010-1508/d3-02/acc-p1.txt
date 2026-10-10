@@ -1,0 +1,6 @@
+== acceptance per draft position (T=0 probe cells, pooled)
+  pos 0: control 0.838 arm 0.857 shift +0.019
+  pos 1: control 0.675 arm 0.709 shift +0.034  > 0.03 (rise allowed: TD_ACC_RISE_OK=1)
+  pos 2: control 0.538 arm 0.582 shift +0.043  > 0.03 (rise allowed: TD_ACC_RISE_OK=1)
+  pos 3: control 0.431 arm 0.470 shift +0.039  > 0.03 (rise allowed: TD_ACC_RISE_OK=1)
+ACC=OK

@@ -1,0 +1,51 @@
+== acceptance per draft position (T=0 probe cells, pooled)
+  pos 0: control 0.841 arm 0.852 shift +0.011
+  pos 1: control 0.683 arm 0.704 shift +0.021
+  pos 2: control 0.554 arm 0.577 shift +0.023
+  pos 3: control 0.445 arm 0.469 shift +0.024
+== cells: arm vs control % (noise = the cell's noise band, %)
+  probe  fresh-c1     missing
+  probe  fresh-c4      +1.79%  noise  2.19%            n=32 CI [+0.1,+3.5] control boot-to-boot -2.19%, step +0.02%
+  probe  fresh-c8      +2.10%  noise  1.84%  better    n=64 CI [+0.8,+3.5] control boot-to-boot +1.84%, step -0.31%
+  probe  d16k-c4      missing
+  probe  count-c8     missing
+  wall   d16k-c8      missing
+  benchy pp2048 (c1)   -0.09%  noise  1.06%            control 1795.0 arm 1793.5 t/s (boots 4/4)
+  benchy tg512 (c1)    +7.94%  noise  9.63%            control 55.5 arm 59.9 t/s (boots 4/4)
+  benchy tg512 (c8)    +3.41%  noise  6.01%            control 131.8 arm 136.3 t/s (boots 4/4)
+== logits_equiv (reported, not judged)
+  self  ctl-p3 a/b: 13/20 prompts identical, |dlogprob| mean 0.0384 max 0.5925
+  self  ctl-p4 a/b: 12/20 prompts identical, |dlogprob| mean 0.0426 max 0.4752
+  self  ctl-p5 a/b: 12/20 prompts identical, |dlogprob| mean 0.0414 max 0.5792
+  self  ctl-p6 a/b: 11/20 prompts identical, |dlogprob| mean 0.0396 max 0.5496
+  self  arm-p3 a/b: 12/20 prompts identical, |dlogprob| mean 0.0410 max 0.4489
+  self  arm-p4 a/b: 11/20 prompts identical, |dlogprob| mean 0.0311 max 0.2863
+  self  arm-p5 a/b: 14/20 prompts identical, |dlogprob| mean 0.0369 max 0.5824
+  self  arm-p6 a/b: 9/20 prompts identical, |dlogprob| mean 0.0353 max 0.3222
+  cross ctl-p3/arm-p3: 11/20 prompts identical, |dlogprob| mean 0.0292 max 0.4839
+  cross ctl-p4/arm-p4: 8/20 prompts identical, |dlogprob| mean 0.0394 max 0.3729
+  cross ctl-p5/arm-p5: 12/20 prompts identical, |dlogprob| mean 0.0324 max 0.5554
+  cross ctl-p6/arm-p6: 10/20 prompts identical, |dlogprob| mean 0.0337 max 0.3803
+reason: probe fresh-c1: missing
+reason: probe d16k-c4: missing
+reason: probe count-c8: missing
+reason: wall d16k-c8: missing
+better: probe fresh-c8 +2.10% (noise 1.84%)
+VERDICT=INCONCLUSIVE
+== boot-level Welch 95% CI, benchy cells (reported; the rule uses the noise bands above)
+  pp2048 (c1)   -0.09%  CI [-1.86,+1.69]  control 1794.0 1796.5 1792.8 1796.8 | arm 1772.2 1800.5 1817.7 1783.4
+  tg512 (c1)    +7.94%  CI [-2.18,+18.06]  control 55.6 53.4 54.4 58.8 | arm 64.9 58.9 60.0 56.0
+  tg512 (c8)    +3.41%  CI [-0.79,+7.62]  control 129.7 128.3 136.2 132.8 | arm 134.1 134.7 136.7 139.6
+== post checks per boot
+  ctl-p3 -> k80-1x-d3-hf-ab-20261010-1508/d3-01/ctl-p1: kv 993,754 ok
+  ctl-p4 -> k80-1x-d3-hf-ab-20261010-1508/d3-01/ctl-p2: kv 993,754 ok
+  ctl-p5 -> k80-1x-d3-hf-ab-20261010-1508/d3-01/ctl-p3: kv 993,754 ok
+  ctl-p6 -> k80-1x-d3-hf-ab-20261010-1508/d3-01/ctl-p4: kv 993,754 ok
+  arm-p3 -> k80-1x-d3-hf-ab-20261010-1508/d3-01/arm-p1: kv 993,754 ok
+  arm-p4 -> k80-1x-d3-hf-ab-20261010-1508/d3-01/arm-p2: kv 993,754 ok
+  arm-p5 -> k80-1x-d3-hf-ab-20261010-1508/d3-01/arm-p3: kv 993,754 ok
+  arm-p6 -> k80-1x-d3-hf-ab-20261010-1508/d3-01/arm-p4: kv 993,754 ok
+worse: none
+better: probe  fresh-c8      +2.10%  noise  1.84%  better    n=64 CI [+0.8,+3.5] control boot-to-boot +1.84%, step -0.31%
+RULE=PASS
+drafter (fresh-c4 + fresh-c8 T=0, 4 boots per side): ctl 0.841 0.683 0.554 0.445 | arm 0.852 0.704 0.577 0.469 DRAFTER=OK
