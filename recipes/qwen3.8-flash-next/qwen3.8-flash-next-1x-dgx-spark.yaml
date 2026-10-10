@@ -11,12 +11,12 @@
 #     0.857/0.717/0.596/0.493; dgx-01 fresh c4 +3.4% (noise 2.4%), fresh c8 +3.3% (1.0%), 16K c4 +4.6% (2.5%); every
 #     other cell on both Sparks inside its noise band (dgx-02: all up, none beyond noise); no cell worse beyond noise.
 #   - Gate (k56c, dgx-01 tools + dgx-02 fidelity): hardmode 93, TC-45 100, fidelity 20/20 at 8k-128k plus 128k seeds
-#     11/13 20/20, stragglers c8-c16 0 preemptions. Jev ship 0.91.
+#     11/13 20/20, stragglers c8-c16 0 preemptions.
 #   - Image: the v2.1.0 image + the b12x plan seed re-keyed to the 03f4a057 snapshot path (33d9b32e, 289 records) and
 #     the torch AOT compile cache of boots of this recipe (k79-1x-d3-ship-check). Nothing else changes.
 #   - Published stack (k80-1x-d3-hf-ab, this recipe vs v2.1.0, 4 boots per side per Spark): acceptance pos 2-4
 #     +0.021..+0.026 on both Sparks; dgx-01 fresh c8 +2.1% (noise 1.8%), dgx-02 fresh c4 +2.6% (2.4%); no cell worse.
-#     Jev ship 0.97. Image digest sha256:1c191c0a5f816750145e19e104ed812e9b3e63148b00fac901892f310a96a438 (CI run
+#     Image digest sha256:1c191c0a5f816750145e19e104ed812e9b3e63148b00fac901892f310a96a438 (CI run
 #     38033947121); the first boot on a host other than dgx-01 recompiles a few Triton kernels once (277 s, then 147 s).
 #   Results: results/thunderdome-k56c-20261009-1421, results/thunderdome-k56d-20261009-2029.
 #   Rollback: qwen3.8-flash-next-1x-dgx-spark-previous (v2.1.0).

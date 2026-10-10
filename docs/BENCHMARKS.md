@@ -78,8 +78,7 @@ beyond noise on either Spark. In k56c alone (2 boots) dgx-01 tg512 c8 read −3.
 side it is +1.22%, and the boot-level 95% interval of every llama-benchy cell contains zero on both Sparks. Every
 boot logged 0 measured b12x plans and the same KV pool (993,754 tokens). Gate (k56c): hardmode 93, TC-45 100,
 fidelity 20/20 at 8k/32k/64k/128k plus 128k seeds 11 and 13 at 20/20, stragglers c8/c12/c16 with 0 preemptions,
-min MemAvailable 13.89 GiB. Jev (TypeSafe System One) on the pooled numbers: ship, confidence 0.91
-([`jev-ship.json`](../results/thunderdome-k56d-20261009-2029/jev-ship.json)). Raw files:
+min MemAvailable 13.89 GiB. Raw files:
 [`results/thunderdome-k56c-20261009-1421/`](../results/thunderdome-k56c-20261009-1421/),
 [`results/thunderdome-k56d-20261009-2029/`](../results/thunderdome-k56d-20261009-2029/).
 
@@ -110,8 +109,8 @@ Beyond the noise band: fresh c8 on dgx-01 and fresh c4 on dgx-02; no cell worse 
 matches k56c/k56d (+0.021 to +0.027 at positions 2-4), so the k79 boot was a low reading, not a different drafter.
 Every boot logged 0 measured plans and the same KV pool. On dgx-02 the v2.2.0 boots log 19 TritonBundler "Failed to
 reload cubin" warnings each (the image's compile cache was built on dgx-01); the first such boot took 277 s, later
-ones 147 s like the control. A new host pays that recompile once, on its first boot. Jev on k80: ship, confidence 0.97
-([`jev-ship-k80.json`](../results/thunderdome-k56d-20261009-2029/jev-ship-k80.json)). Image
+ones 147 s like the control. A new host pays that recompile once, on its first boot.
+Image
 `tp1-d3-hf-20261010-21e0b201-5dad364d-warm` (also `1x-v2.2.0`), digest
 `sha256:1c191c0a5f816750145e19e104ed812e9b3e63148b00fac901892f310a96a438`, CI run 38033947121 of build-b0-warm.
 Its llama-benchy coding grid (k79 check boot, depth 0, 3 runs): tg512 61.8 t/s at c1 and 136.9 t/s at c8.

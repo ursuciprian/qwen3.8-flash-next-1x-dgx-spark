@@ -403,6 +403,9 @@ shard 35 and the index of `7c4f1bc1` (2.6 GiB) for the MXFP8 PP copy. Image and 
   checkpoint revision. Serving another revision or a local copy of the files autotunes and compiles on its first boot.
 - The recipe and its rollback serve different checkpoint revisions and keep one cache each, so the first boot of the
   other one is not warm.
+- The image's Triton kernel cache was built on one Spark. On another host the first boot recompiles a few Triton
+  kernels (~2 min once: 277 s instead of 147 s) and logs W-level TritonBundler tracebacks ("Cubin file saved by
+  TritonBundler not found"); serving is not affected ([#39](https://github.com/ursuciprian/qwen3.8-flash-next-1x-dgx-spark/issues/39)).
 - Hardmode still fails a few multi-step scenarios (e.g. TC-30, TC-68, TC-74, TC-88) on every release.
 - Above 8 requests: a `max_num_seqs` 32 run (quality gate not run at that cap, v2.0.0) reached 189.3 tok/s aggregate TG
   at c32 (llama-benchy task mode, mean of 3 runs); a boot at `max_num_seqs` 16 was stopped by the 4 GiB memory guard
