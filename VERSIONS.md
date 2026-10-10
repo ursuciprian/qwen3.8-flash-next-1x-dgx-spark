@@ -51,7 +51,7 @@ recipes by path or from the tp-2 registry.
 
 | Release | Tag on commit |
 |---|---|
-| v2.2.0 | the squash-merge commit of #24 |
+| v2.2.0 | `12b6d520` (#24) |
 | v2.1.0 | `73e3c1e1` (first commit with this repo's registry, the same day as #116) |
 | v2.0.0 | `d08bda54` (copy of #91) |
 | v1.3.0 | `302a013c` (copy of #86) |
