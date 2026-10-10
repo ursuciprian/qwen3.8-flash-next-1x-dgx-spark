@@ -8,3 +8,7 @@ relative_links:
   collections: false
 include:
   - README.md
+# results/ holds raw run data: pooled-run symlinks that point at paths on the Sparks break the Jekyll build.
+# GitHub renders results/ from the repo tree instead.
+exclude:
+  - results
