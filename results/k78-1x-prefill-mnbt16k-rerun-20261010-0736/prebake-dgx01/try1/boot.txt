@@ -1,0 +1,8 @@
+boot 619 s, KV pool 6442450944 bytes, min MemAvailable 5.28 GiB
+GPU KV cache size: 425,956 tokens
+      2 Dynamo bytecode transform time:
+      2 saved AOT
+b12x ready sequence.ple_embedding: 7/7 ready, 0 measured, 0 cached, 0 compilations
+b12x ready gemm.blockscaled_precision: 271/271 ready, 255 measured, 10 cached, 770 compilations
+b12x ready sequence.ple_embedding: 20/20 ready, 0 measured, 0 cached, 0 compilations
+pong: pong
