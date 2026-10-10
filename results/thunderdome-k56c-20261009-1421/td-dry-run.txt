@@ -17,5 +17,5 @@ per boot  boot ~180s, warm-up ~25s, fresh-c1(2x c1 ~45s) fresh-c4(2x c4 ~85s) fr
 screen    ~89 min wall for 2 arm(s) incl. ~14 min bake + hook time, no gate (GATE=0)
 verdict   <node dir>/verdict.txt: KILL (cell < -2x noise, acceptance shift > 0.03, arm boot failed) /
           PROMOTE (no cell < -1x noise, >= 1 cell > +1x noise, all cells measured) / INCONCLUSIVE
-example   timeout 480 python3 scripts/depth_decode_probe.py --base http://192.168.100.62:8000 --label d16k-c8 --corpus /home/nvidia/GEN-AI/qwen3.8-flash-next-dgx-spark-tp-2/results/corpus-code.txt \
+example   timeout 480 python3 scripts/depth_decode_probe.py --base http://<cx7-ip-a>:8000 --label d16k-c8 --corpus /home/nvidia/GEN-AI/qwen3.8-flash-next-dgx-spark-tp-2/results/corpus-code.txt \
             --concurrency 8 --repeats 1 --temperature 0 --depth 16384 --new 2048 --offset 1466206 --max-tokens 512 --out <boot dir>/probe-d16k-c8.json

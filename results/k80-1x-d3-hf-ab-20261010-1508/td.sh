@@ -50,7 +50,7 @@
 set -u
 export PATH="$HOME/.local/bin:$PATH"
 R=/home/nvidia/GEN-AI/qwen3.8-flash-next-dgx-spark-tp-2
-H1=192.168.100.62; H2=192.168.100.53; MODEL=qwen3.8-flash-next
+H1=<cx7-ip-a>; H2=<cx7-ip-b>; MODEL=qwen3.8-flash-next
 SNAP=${SNAP:-$HOME/.cache/huggingface/hub/models--local-inference-lab--Qwen3.8-Flash-Next-NVFP4/snapshots/7c4f1bc1a2d6847e0cbc01ac6b823f00251de8dd}
 CORPUS=${CORPUS:-$R/results/corpus-code.txt}
 BENCHY_SRC=${BENCHY_SRC:-$HOME/GEN-AI/llama-benchy-fork}
