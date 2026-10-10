@@ -1,0 +1,8 @@
+pinned 1x v2.2.0: ghcr.io/ursuciprian/spark-vllm-b12x:tp1-d3-hf-20261010-21e0b201-5dad364d-warm
+dgx01: v2.2.0 image present
+dgx02: v2.2.0 image present
+fresh HOME: registry add OK
+fresh HOME resolves qwen3.8-flash-next-1x-dgx-spark to the v2.2.0 image
+fresh config: runtime cache /home/nvidia/GEN-AI/backlog/k87/fresh-dry/runtime-cache (empty), HF cache /home/nvidia/.cache/huggingface
+benchy: llama-benchy 0.4.1.dev4+g0d4de4271
+results dir writable: /home/nvidia/GEN-AI/qwen3.8-flash-next-dgx-spark-tp-2/results

@@ -1,0 +1,104 @@
+Name:         @qwen38-flashnext-1x/qwen3.8-flash-next-1x-dgx-spark
+Description:  Experimental (v2.2.0: v2.1.0 with MTP drafter D3). Qwen3.8-Flash-Next on ONE DGX Spark (TP=1, NVFP4 GDN decode / MXFP8 prefill, PLE table through the page cache, NVMe keepalive, prefill read-ahead, 14 GiB KV pool), OpenAI-compatible API on port 8000 (2026-10-10).
+Runtime:      vllm-distributed
+Model:        ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE
+Container:    ghcr.io/ursuciprian/spark-vllm-b12x:tp1-d3-hf-20261010-21e0b201-5dad364d-warm
+Nodes:        1 - 1
+
+Defaults:
+  block_size: 16
+  gpu_memory_utilization: 0.01
+  host: 0.0.0.0
+  kv_cache_memory_bytes: 15032385536
+  max_model_len: 262144
+  max_num_batched_tokens: 8192
+  max_num_seqs: 8
+  num_speculative_tokens: 4
+  pipeline_parallel: 1
+  port: 8000
+  tensor_parallel: 1
+
+Environment:
+  B12X_AUTOTUNE=1
+  B12X_COMPILE_WORKERS=1
+  B12X_POLICY_MODE=auto
+  CUTE_DSL_ARCH=sm_121a
+  SAFETENSORS_FAST_GPU=1
+  VLLM_B12X_NVFP4_MXFP8_CHECKPOINT=/cache/huggingface/hub/models--local-inference-lab--Qwen3.8-Flash-Next-NVFP4/snapshots/7c4f1bc1a2d6847e0cbc01ac6b823f00251de8dd
+  VLLM_B12X_NVFP4_MXFP8_MIN_TOKENS=41
+  VLLM_GDN_COMPACT_RECORDS=1
+  VLLM_GDN_DEFERRED_CHECKPOINTS=1
+  VLLM_GDN_SHARED_PREFILL_STAGING=1
+  VLLM_GDN_UNIFORM_DECODE_META_SKIP=1
+  VLLM_MTP_DRAFT_VOCAB=/opt/mtp-vocab/ids-v2-K131072.txt.gz
+  VLLM_MXFP8_LM_HEAD=1
+  VLLM_PLE_MMAP=1
+  VLLM_PLE_MMAP_KEEPALIVE_MS=50
+  VLLM_PLE_MMAP_PREFILL_WILLNEED=1
+  VLLM_PLE_MMAP_WILLNEED_MAX=8192
+  VLLM_PREFIX_DROP_EXACT=1
+  VLLM_QWEN38_HC_MXFP8=hc
+  VLLM_SSM_CONV_STATE_LAYOUT=DS
+  VLLM_USE_AOT_COMPILE=1
+  VLLM_USE_MEGA_AOT_ARTIFACT=1
+  VLLM_USE_V2_MODEL_RUNNER=1
+  VLLM_WORKER_MULTIPROC_METHOD=spawn
+
+Command:
+  S=/opt/b12x-seed/preparation; D="$XDG_CACHE_HOME/b12x/compile/preparation"; if [ -d "$S" ] && [ -n "$XDG_CACHE_HOME" ]; then mkdir -p "$D" && for f in "$S"/*.json; do [ -e "$D/$(basename "$f")" ] || cp "$f" "$D/"; done; fi
+A=/opt/b12x-seed/torch_compile_cache; if [ -d "$A" ] && [ -n "$XDG_CACHE_HOME" ]; then mkdir -p "$XDG_CACHE_HOME/vllm/torch_compile_cache" && cp -rn "$A/." "$XDG_CACHE_HOME/vllm/torch_compile_cache/" || true; fi
+M=/cache/huggingface/hub/models--local-inference-lab--Qwen3.8-Flash-Next-NVFP4/snapshots/7c4f1bc1a2d6847e0cbc01ac6b823f00251de8dd; [ -s $M/model-00035-of-00036.safetensors ] && [ -s $M/model.safetensors.index.json ] || HF_HUB_OFFLINE=0 python3 -c "from huggingface_hub import snapshot_download as d; d('local-inference-lab/Qwen3.8-Flash-Next-NVFP4', revision='7c4f1bc1a2d6847e0cbc01ac6b823f00251de8dd', allow_patterns=['model-00035-of-00036.safetensors', 'model.safetensors.index.json'])" || exit 1
+vllm serve ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE \
+  --revision 03f4a0570496bbe741189f4a2a7d611679e85406 \
+  --host {host} \
+  --port {port} \
+  --trust-remote-code \
+  --served-model-name qwen3.8-flash-next ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE \
+  --tensor-parallel-size {tensor_parallel} \
+  --pipeline-parallel-size {pipeline_parallel} \
+  --mamba-cache-mode align \
+  --enable-prefix-caching \
+  --enable-chunked-prefill \
+  --max-parallel-prefills 4 \
+  --prefill-policy decode-aware \
+  --decode-refill-target auto \
+  --dtype bfloat16 \
+  --kv-cache-dtype fp8 \
+  --quantization modelopt_mixed \
+  --block-size {block_size} \
+  --load-format b12x \
+  --max-model-len {max_model_len} \
+  --max-num-seqs {max_num_seqs} \
+  --max-num-batched-tokens {max_num_batched_tokens} \
+  --speculative-config '{{"method":"mtp","num_speculative_tokens":{num_speculative_tokens},"draft_sample_method":"probabilistic"}}' \
+  --gdn-decode-kernel b12x \
+  --linear-backend b12x \
+  --moe-backend b12x \
+  --no-enable-flashinfer-autotune \
+  --reasoning-parser qwen3 \
+  --tool-call-parser qwen3_xml \
+  --enable-auto-tool-choice \
+  --default-chat-template-kwargs '{{"reasoning_effort":"medium"}}' \
+  --compilation-config '{{"pass_config":{{"fuse_act_quant":true}}}}' \
+  --kv-cache-memory-bytes {kv_cache_memory_bytes} \
+  --gpu-memory-utilization {gpu_memory_utilization}
+
+VRAM Estimation:
+  Model dtype:      bfloat16
+  KV cache dtype:   fp8
+  Architecture:     48 layers, 2 KV heads, 256 head_dim
+  Model weights:    97.66 GB
+  KV cache:         12.00 GB (max_model_len=262,144)
+  Tensor parallel:  1
+  Per-GPU total:    109.66 GB
+  DGX Spark fit:    YES
+
+  GPU Memory Budget:
+    gpu_memory_utilization: 1%
+    Usable GPU memory:     1.2 GB (121 GB x 1%)
+    Available for KV:      0.0 GB
+    Max context tokens:    0
+    Context multiplier:    0.0x (vs max_model_len=262,144)
+    WARNING: max_model_len exceeds available KV budget (0.0% fits)
+  Warning: Model weights (97.7 GB) exceed usable GPU memory (1.2 GB at 1% utilization)
+  Warning: kv_cache_dtype 'fp8' inferred from command: template; pin it in defaults.kv_cache_dtype or metadata.kv_dtype for a stable estimate
