@@ -1,0 +1,91 @@
+k78 2026-10-10 09:31:12 EEST: rerun of k74 phase 2 (v3e, max_num_batched_tokens 16384, single Spark) + standalone prefill
+
+== seed: arm cache dir /cache/runtime/k78-mnbt16k = copy of the v3e b12x cache (size, kernel dirs)
+dgx01: 26M 184 
+dgx02: 27M 193 
+
+== prebake: arm recipe with a 6 GiB KV pool
+-- dgx01 try1 
+boot 619 s, KV pool 6442450944 bytes, min MemAvailable 5.28 GiB
+GPU KV cache size: 425,956 tokens
+      2 Dynamo bytecode transform time:
+      2 saved AOT
+b12x ready sequence.ple_embedding: 7/7 ready, 0 measured, 0 cached, 0 compilations
+b12x ready gemm.blockscaled_precision: 271/271 ready, 255 measured, 10 cached, 770 compilations
+b12x ready sequence.ple_embedding: 20/20 ready, 0 measured, 0 cached, 0 compilations
+pong: pong
+-- dgx02 try1 
+boot 630 s, KV pool 6442450944 bytes, min MemAvailable 5.63 GiB
+GPU KV cache size: 425,956 tokens
+      2 Dynamo bytecode transform time:
+      2 saved AOT
+b12x ready sequence.ple_embedding: 7/7 ready, 0 measured, 0 cached, 0 compilations
+b12x ready gemm.blockscaled_precision: 271/271 ready, 255 measured, 10 cached, 770 compilations
+b12x ready sequence.ple_embedding: 20/20 ready, 0 measured, 0 cached, 0 compilations
+pong: pong
+
+== dgx-01 solo v3e (registry recipe @qwen38-flashnext-1x/qwen3.8-flash-next-1x-dgx-spark): both prefill definitions from one boot (cold test first, then llm-inference-bench)
+boot 150 s, recipe @qwen38-flashnext-1x/qwen3.8-flash-next-1x-dgx-spark Directly load AOT compilation GPU KV cache size: 993,754 tokens ghcr.io/ursuciprian/spark-vllm-b12x:tp1-v3e-hf-20261008-21e0b201-5dad364d-warm 
+| prompt | cold TTFT mean s (3 fresh) | cold tok/s (prompt / mean TTFT) | each | standalone tok/s (llm-inference-bench) | server-side tok/s | samples |
+|---|---:|---:|---|---:|---:|---:|
+| 128K | 72.85 | 1799 | [1799, 1817, 1782] | 1872 | 0 | 1 |
+| 64K | 33.40 | 1962 | [1955, 1949, 1983] | 2057 | 0 | 1 |
+| 16K | 8.01 | 2044 | [2037, 2065, 2030] | 2180 | 0 | 2 |
+k74 cold test on v3e (2026-10-09): 2,049 / 1,966 / 1,797 tok/s at 16K / 64K / 128K
+v3d reference (llm-inference-bench standalone, 2026-10-05): 2,182 / 2,066 / 1,880 tok/s at 16K / 64K / 128K
+
+== thunderdome mnbt16k (max_num_batched_tokens 16384) vs v3e: exit 0, DONE: mnbt16k=KILL mnbt16k=KILL
+
+-- mnbt-01 (dgx-01)
+bake-arm: boot 162s Directly load AOT compilation
+== acceptance per draft position (T=0 probe cells, pooled)
+  pos 0: control 0.854 arm 0.852 shift -0.002
+  pos 1: control 0.711 arm 0.710 shift -0.002
+  pos 2: control 0.590 arm 0.586 shift -0.004
+  pos 3: control 0.487 arm 0.484 shift -0.003
+== cells: arm vs control % (noise = the cell's noise band, %)
+  probe  fresh-c1      +3.46%  noise  4.15%            n=4 CI [-0.2,+8.2] control boot-to-boot +1.51%, step +0.17%
+  probe  fresh-c4      +2.65%  noise  1.98%  better    n=16 CI [+0.7,+4.7] control boot-to-boot +0.83%, step -0.44%
+  probe  fresh-c8      -1.11%  noise  2.05%            n=32 CI [-3.0,+0.6] control boot-to-boot +2.05%, step -0.11%
+  probe  d16k-c4       -1.41%  noise  2.05%            n=16 CI [-3.6,+0.5] control boot-to-boot -0.86%, step +0.53%
+  probe  count-c8      -0.27%  noise  1.34%            n=32 CI [-1.7,+1.0] control boot-to-boot +1.00%, step +0.25%
+  wall   d16k-c8      -12.90%  noise  1.00%  WORSE>2x  wall s control 122/121 arm 140/139 (cut counts as the time)
+  benchy pp2048 (c1)  -18.19%  noise  8.48%  WORSE>2x  control 1760.7 arm 1440.4 t/s (boots 2/2)
+  benchy tg512 (c1)   +19.52%  noise  3.92%  better    control 54.0 arm 64.6 t/s (boots 2/2)
+  benchy tg512 (c8)    +9.76%  noise 15.27%            control 125.1 arm 137.4 t/s (boots 2/2)
+== logits_equiv (reported, not judged)
+reason: wall d16k-c8 -12.90% (noise 1.00%)
+reason: benchy pp2048 (c1) -18.19% (noise 8.48%)
+better: probe fresh-c4 +2.65% (noise 1.98%); benchy tg512 (c1) +19.52% (noise 3.92%)
+VERDICT=KILL
+
+-- mnbt-02 (dgx-02)
+bake-arm: boot 158s Directly load AOT compilation
+== acceptance per draft position (T=0 probe cells, pooled)
+  pos 0: control 0.857 arm 0.855 shift -0.001
+  pos 1: control 0.713 arm 0.711 shift -0.002
+  pos 2: control 0.589 arm 0.589 shift +0.000
+  pos 3: control 0.488 arm 0.489 shift +0.001
+== cells: arm vs control % (noise = the cell's noise band, %)
+  probe  fresh-c1      +0.34%  noise  2.86%            n=4 CI [-2.5,+3.2] control boot-to-boot -1.71%, step -0.03%
+  probe  fresh-c4      -2.80%  noise  2.20%  worse     n=16 CI [-4.9,-0.5] control boot-to-boot +1.01%, step +0.39%
+  probe  fresh-c8      +0.39%  noise  1.53%            n=32 CI [-1.1,+2.0] control boot-to-boot -0.79%, step +0.87%
+  probe  d16k-c4       -0.41%  noise  3.11%            n=16 CI [-3.3,+2.9] control boot-to-boot -2.63%, step -0.99%
+  probe  count-c8      +3.79%  noise  1.18%  better    n=32 CI [+3.0,+4.5] control boot-to-boot +1.18%, step -4.19%
+  wall   d16k-c8       -9.89%  noise  1.00%  WORSE>2x  wall s control 123/123 arm 137/136 (cut counts as the time)
+  benchy pp2048 (c1)  -13.89%  noise  1.00%  WORSE>2x  control 1826.7 arm 1573.0 t/s (boots 2/2)
+  benchy tg512 (c1)    -3.29%  noise  3.54%            control 56.8 arm 54.9 t/s (boots 2/2)
+  benchy tg512 (c8)   +10.32%  noise  3.37%  better    control 125.7 arm 138.7 t/s (boots 2/2)
+== logits_equiv (reported, not judged)
+reason: wall d16k-c8 -9.89% (noise 1.00%)
+reason: benchy pp2048 (c1) -13.89% (noise 1.00%)
+reason: probe fresh-c4 -2.80% (noise 2.20%)
+better: probe count-c8 +3.79% (noise 1.18%); benchy tg512 (c8) +10.32% (noise 3.37%)
+VERDICT=KILL
+
+== mnbt-01: cold prefill tok/s per boot (hook, prompt tokens / mean TTFT, 3 reps)
+  64K: ctl-p1 1893 ctl-p2 1902 arm-p1 1656 arm-p2 1679, arm vs ctl -12.1%
+  128K: ctl-p1 1726 ctl-p2 1739 arm-p1 1503 arm-p2 1512, arm vs ctl -13.0%
+== mnbt-02: cold prefill tok/s per boot (hook, prompt tokens / mean TTFT, 3 reps)
+  64K: ctl-p1 1884 ctl-p2 1897 arm-p1 1651 arm-p2 1672, arm vs ctl -12.1%
+  128K: ctl-p1 1732 ctl-p2 1728 arm-p1 1513 arm-p2 1546, arm vs ctl -11.6%

@@ -1,0 +1,4 @@
+boot 150 s, recipe @qwen38-flashnext-1x/qwen3.8-flash-next-1x-dgx-spark
+Directly load AOT compilation
+GPU KV cache size: 993,754 tokens
+ghcr.io/ursuciprian/spark-vllm-b12x:tp1-v3e-hf-20261008-21e0b201-5dad364d-warm
