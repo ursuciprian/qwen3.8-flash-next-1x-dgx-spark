@@ -1,0 +1,3 @@
+dgx01: TTFT 8.234 s (sd 0.238; runs 8.46, 8.26, 7.99), prefill 1998 tok/s
+dgx02: TTFT 8.163 s (sd 0.484; runs 8.59, 8.27, 7.64), prefill 2019 tok/s
+pooled: TTFT 8.199 s (sd 0.343, 6 runs on 2 Sparks), prefill 2008 tok/s

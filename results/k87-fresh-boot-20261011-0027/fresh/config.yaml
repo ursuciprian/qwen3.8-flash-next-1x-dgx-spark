@@ -1,0 +1,12 @@
+self_update:
+  channel: stable
+  source: pypi
+  requirement: sparkrun
+ssh:
+  key: /home/nvidia/.config/sparkrun/ssh/sparkrun_ed25519
+telemetry:
+  installation_id: 223c8f64-221c-49dd-bb6f-cf9ac834845f
+cache_dir: /home/nvidia/GEN-AI/backlog/k87/fresh-20261011-0028/sparkrun-cache
+hf_cache_dir: /home/nvidia/.cache/huggingface
+runtime_cache:
+  dir: /home/nvidia/GEN-AI/backlog/k87/fresh-20261011-0028/runtime-cache
