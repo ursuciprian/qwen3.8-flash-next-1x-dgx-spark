@@ -1,0 +1,91 @@
+[transformers] You tried to access the `ExpertsInterface` with a `config._experts_implementation` set to `None`. This is expected if you use an Expert Module as a standalone Module. If this is not the case, something went wrong with the dispatch of `config._experts_implementation`
+overlay: 26 tensors from /work/runs/k75b/mtp_refit.safetensors
+HC MXFP8 round trip: 8 tensors
+{
+ "anchors": [
+  64395,
+  64295,
+  64195,
+  64095,
+  63995,
+  63896
+ ],
+ "t1": {
+  "per_draft": [
+   0.8833,
+   0.824,
+   0.7868,
+   0.7605,
+   0.7406,
+   0.7235
+  ],
+  "per_position": [
+   0.8833,
+   0.7278,
+   0.5727,
+   0.4355,
+   0.3225,
+   0.2334
+  ],
+  "tokens_per_step_d4": 3.619,
+  "tokens_per_step": 4.175
+ },
+ "t0": {
+  "per_draft": [
+   0.9108,
+   0.886,
+   0.8855,
+   0.887,
+   0.8926,
+   0.8982
+  ],
+  "per_position": [
+   0.9108,
+   0.807,
+   0.7146,
+   0.6338,
+   0.5658,
+   0.5082
+  ],
+  "tokens_per_step_d4": 4.066,
+  "tokens_per_step": 5.14
+ },
+ "replay": {
+  "t0": {
+   "steps": 4472.0,
+   "per_position": [
+    0.7753,
+    0.5995,
+    0.4877,
+    0.3985,
+    0.3292,
+    0.2793
+   ],
+   "tokens_per_step": 3.869
+  },
+  "t1": {
+   "steps": 4318.1,
+   "per_position": [
+    0.8212,
+    0.6461,
+    0.5119,
+    0.4115,
+    0.3369,
+    0.2804
+   ],
+   "tokens_per_step": 4.008
+  },
+  "t1_hi": {
+   "steps": 4287.2,
+   "per_position": [
+    0.8266,
+    0.6527,
+    0.5179,
+    0.4162,
+    0.3405,
+    0.2831
+   ],
+   "tokens_per_step": 4.037
+  }
+ }
+}
