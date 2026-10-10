@@ -2,21 +2,36 @@
 <h1 align="center"><img src="docs/img/hero.png" alt="Qwen3.8 Flash Next on one DGX Spark: Qwen emblem, gold NVIDIA hardware and violet token trails." width="840"></h1>
 <!-- hero:end -->
 
-<p align="center">A sparkrun recipe that serves Qwen3.8-Flash-Next on one NVIDIA DGX Spark as a private,<br>OpenAI-compatible server for chat, coding and agents. Two commands to start.</p>
+<p align="center">sparkrun recipe: Qwen3.8-Flash-Next (NVFP4 / MXFP8, MTP ×4) on 1x DGX Spark.<br>vLLM with b12x GB10 kernels, PLE table paged from NVMe, OpenAI-compatible endpoint, quality-gated releases.</p>
 
 <!-- numbers:start (scripts/make_charts.py writes this block) -->
 <table align="center">
   <tr>
-    <td align="center"><h2>73 tok/s</h2><b>coding, one chat</b><br><sub>median of 36 prompts, T=0, thinking off; fastest prompt 81.8 · release v2.0.0</sub></td>
-    <td align="center"><h2>133 tok/s</h2><b>8 chats at once, combined</b><br><sub>512-token replies, default settings</sub></td>
-    <td align="center"><h2>57 tok/s</h2><b>one chat, default settings</b><br><sub>temperature 1.0, thinking on</sub></td>
-    <td align="center"><h2>100/100</h2><b>tool calls when required</b><br><sub>TC-45, 5 trials</sub></td>
+    <td align="center"><h2>73 tok/s</h2><b>TG, coding c1</b><br><sub>median of 36 prompts · T=0, thinking off · max 81.8 · v2.0.0</sub></td>
+    <td align="center"><h2>133 tok/s</h2><b>TG, aggregate c8</b><br><sub>ISL/OSL 2048/512 · defaults</sub></td>
+    <td align="center"><h2>57 tok/s</h2><b>TG c1, defaults</b><br><sub>ISL/OSL 2048/512 · T=1.0, thinking on</sub></td>
+    <td align="center"><h2>100/100</h2><b>TC-45</b><br><sub>tool calls · 5 of 5 trials</sub></td>
   </tr>
 </table>
 
-<p align="center"><b>262,144-token context</b> · <b>8 requests at once</b> · <b>OpenAI-compatible API</b> · <b>quality-gated releases</b></p>
+<p align="center"><sub>262K context · max_num_seqs 8 · MTP ×4 · OpenAI-compatible API · quality-gated releases</sub></p>
 
-<sub>tok/s = tokens per second; a token is about 3/4 of a word. Coding: median decode speed of 36 coding prompts (Python, C++, Rust, Go) sent one at a time, temperature 0, thinking off, up to 768 tokens out, release v2.0.0, 2026-10-06; at the server defaults the same prompts give 60 tok/s. Chat: each chat sends a 2,048-token prompt and gets 512 tokens back at the server defaults (temperature 1.0, thinking on), release v2.1.0, 2026-10-08, mean ± sd over runs, one boot. Tool calls: TC-45, 5 trials, release v2.1.0, 2026-10-07. Method: [docs/BENCHMARKS.md](docs/BENCHMARKS.md).</sub>
+<sub>TG tok/s. Coding: median, n=36, T=0, thinking off, OSL ≤768, v2.0.0. Chat: ISL/OSL 2048/512, server defaults (T=1.0, thinking on), v2.1.0.</sub>
+
+<details>
+<summary><sub>Measurement details</sub></summary>
+
+| Metric | Value | Workload | Sampling | n | Release (date) | Source |
+|---|--:|---|---|---|---|---|
+| TG, coding c1 | 72.9 tok/s median, max 81.8 | 36 prompts (Python, C++, Rust, Go), OSL ≤768 | T=0, thinking off | 36 prompts, median | v2.0.0 (2026-10-06) | [results](results/coding-probe-k55-20261006/1x-v3d-dgx02-multilang/) |
+| TG, coding c1, defaults | 59.7 tok/s median | 36 prompts, OSL ≤768 | server defaults, thinking on | 36 prompts, median | v2.0.0 (2026-10-06) | [results](results/coding-probe-k55-20261006/1x-v3d-dgx02-multilang/) |
+| TG, aggregate c8 | 132.9 ± 3.4 tok/s | llama-benchy task mode, ISL/OSL 2048/512 | T=1.0, top-p 0.95, top-k 20, thinking on | 1 boot, mean | v2.1.0 (2026-10-08) | [results](results/tp1-v3e-hf-20261008/bench/) |
+| TG c1 | 56.9 ± 1.6 tok/s | llama-benchy task mode, ISL/OSL 2048/512 | T=1.0, top-p 0.95, top-k 20, thinking on | 1 boot, mean | v2.1.0 (2026-10-08) | [results](results/tp1-v3e-hf-20261008/bench/) |
+| TC-45 | 100/100 | tool call required by the request | – | 5 trials | v2.1.0 (2026-10-07) | [BENCHMARKS](docs/BENCHMARKS.md) |
+
+Method and full tables: [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
+
+</details>
 <!-- numbers:end -->
 
 <!-- badges:start (scripts/make_charts.py writes this block) -->
@@ -30,32 +45,31 @@
 
 ## Quick start
 
-You need one DGX Spark with about 130 GB free on its internal SSD, and [sparkrun](https://github.com/eugr/sparkrun)
-0.3.6 or newer. Replace `<spark>` with the Spark's hostname or IP; `--solo` runs it on that one machine.
+Requirements: 1x DGX Spark, ~130 GB free on the internal NVMe, [sparkrun](https://github.com/eugr/sparkrun) ≥ 0.3.6.
+`<spark>` = hostname or IP; `--solo` = single node.
 
 ```sh
 sparkrun registry add https://github.com/ursuciprian/qwen3.8-flash-next-1x-dgx-spark
 sparkrun run qwen3.8-flash-next-1x-dgx-spark --hosts <spark> --solo
 ```
 
-The first start downloads the model and the image (about 130 GB on disk; on a slow link, fetch the model
-beforehand, see below). Once it is on disk, a start takes about 3 minutes. `sparkrun run` returns before the server
-is ready. Once `http://<spark>:8000/health` answers, point any OpenAI client at `http://<spark>:8000/v1`, model
-`qwen3.8-flash-next`:
+First run pulls checkpoint and image (~130 GB; on a slow link, pre-fetch the checkpoint, see below); warm boot
+~3 min. `sparkrun run` returns before the engine is ready: poll `http://<spark>:8000/health`, then use
+`http://<spark>:8000/v1`, model `qwen3.8-flash-next`:
 
 ```sh
 curl http://<spark>:8000/v1/chat/completions -H 'Content-Type: application/json' \
   -d '{"model": "qwen3.8-flash-next", "messages": [{"role": "user", "content": "Hello"}]}'
 ```
 
-The server has no API key, so keep it on a trusted network.
+No API key: keep it on a trusted network or put an authenticating proxy in front.
 
 <details>
 <summary>Download the model beforehand, check that it works, stop, upgrade</summary>
 
 The recipe serves its own checkpoint, about 98 GB. A fresh download took about 3 h 15 min on my link (~8.6 MB/s).
 Download it on the Spark before the first boot, together with the two files of the base checkpoint that the recipe
-uses for prefill (2.6 GiB):
+uses for PP (2.6 GiB):
 
 ```sh
 hf download ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE --revision 16c9bd54788d12390838a65ce4a4ecda97fa5f1d
@@ -100,91 +114,92 @@ registries and does not refresh them on `run`.
 
 | | |
 |---|---|
-| **Model** | Qwen3.8-Flash-Next: NVFP4 experts, MXFP8 dense and attention layers, plus an MTP draft head I retrained on the served model's own outputs |
-| **Hardware** | One DGX Spark (GB10, 128 GB unified memory), checkpoint on the internal NVMe |
-| **Engine** | vLLM with b12x kernels for the GB10, in a prebuilt image with the kernel plans and compile cache included |
-| **Fitting on one Spark** | A 26.8 GiB lookup table inside the model is read from the SSD instead of GPU memory |
-| **Context** | 262,144 tokens per request |
-| **Requests at once** | 8; more wait in line |
-| **API** | OpenAI-compatible, tool calling, thinking on by default at `medium` effort |
-| **Disk** | About 130 GB |
-| **Start time** | About 3 minutes once the model and image are on disk (171 s with a warm page cache) |
-| **License** | Recipe Apache-2.0; model weights Qwen Community License 1.0 |
+| **Model** | [`ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE`](https://huggingface.co/ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE) @ `16c9bd54`: NVFP4 experts, MXFP8 dense and attention, GDN projections NVFP4 for TG and MXFP8 for PP |
+| **MTP** | MTP ×4, probabilistic drafts, rejection sampling; drafter D1 refit on the served model's outputs |
+| **Hardware** | 1x DGX Spark (GB10, 128 GB unified), checkpoint on local NVMe |
+| **Parallelism / memory** | TP=1; 26.8 GiB PLE table paged from NVMe (`VLLM_PLE_MMAP=1`), 14 GiB KV pool |
+| **Engine** | vLLM + b12x (NVFP4 MoE, MXFP8 linears, GDN, QSA), plan and compile caches baked into the image |
+| **Context** | 262,144 tokens (max_model_len) |
+| **Concurrent requests** | up to 8 (max_num_seqs) |
+| **KV cache** | 993,754 tokens, 3.79 concurrent 262K requests (v2.1.0 boot log) |
+| **API** | OpenAI-compatible, tool calling, reasoning on (`reasoning_effort` medium) |
+| **Disk / start time** | ~130 GB / ~3 min warm (171 s with a warm page cache) |
+| **License** | Recipe Apache-2.0; weights Qwen Community License 1.0 |
 
-| I want to | Go to |
+| Task | Section |
 |---|---|
-| See how fast it is at 1 to 8 chats | [Performance](#performance) |
-| Choose between one Spark, TP=2 and DP=2 | [One Spark or two?](#one-spark-or-two) |
-| Check answer quality | [Quality gate](#quality-gate) |
-| Trace any number to its raw file | [Every number and where it comes from](#every-number-and-where-it-comes-from) |
-| Roll back or pin a release | [Recipes](#details) and [VERSIONS.md](VERSIONS.md) |
+| TG, PP, TTFT, context depth | [Performance](#performance) |
+| Sizing: 1x vs TP=2 vs DP=2 | [1x vs 2x TP=2 vs 2x DP=2](#1x-vs-2x-tp2-vs-2x-dp2) |
+| Quality gate results | [Quality gate](#quality-gate) |
+| Raw data and provenance per number | [Every number and where it comes from](#every-number-and-where-it-comes-from) |
+| Pin or roll back a release | [Recipes](#details), [VERSIONS.md](VERSIONS.md) |
 
 ## Performance
 
-Combined speed rises up to 8 chats at once while each single chat slows down. A long prompt takes a while to read
-the first time; in a running chat only the new part of the prompt is read.
+Aggregate TG scales to c8 while per-request TG drops. TTFT grows with ISL on a cold prefix; multi-turn
+requests hit the prefix cache and run PP only on the new tokens.
 
 <!-- speed:start (scripts/make_charts.py writes this block) -->
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/throughput-dark.svg"><img src="docs/img/throughput-light.svg" alt="Line chart of decode tokens per second, all chats together, against 1 to 16 requests at the same time, for each setup. Values are labelled at the line ends." width="420"></picture>
-<picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/latency-dark.svg"><img src="docs/img/latency-light.svg" alt="Line chart of seconds until the first token against prompt length, prompt not cached, for each setup. Values are labelled at the line ends." width="420"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/throughput-dark.svg"><img src="docs/img/throughput-light.svg" alt="TG aggregate tok/s vs concurrency c1-c16 per setup, ISL/OSL 2048/512, server defaults. End values labelled." width="420"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/latency-dark.svg"><img src="docs/img/latency-light.svg" alt="TTFT in seconds vs ISL, c1, cold prefix, per setup. End values labelled." width="420"></picture>
 </p>
 
-<sub>Left: One Spark v2.1.0 · Two Sparks, TP=2 v2.0.0; llama-benchy, 2,048 in, 512 out. Right: One Spark v2.0.0 · Two Sparks, TP=2 v1.4.0; one request.</sub>
+<sub>Left: 1x Spark v2.1.0 · 2x Spark TP=2 v2.0.0; llama-benchy task mode. Right: 1x Spark v2.0.0 · 2x Spark TP=2 v1.4.0; c1, cold prefix.</sub>
 
 <details>
 <summary><sub>Runs, method and raw data</sub></summary>
 
-<sub>Left: llama-benchy task mode: each chat sends a 2,048-token coding prompt and gets up to 512 tokens back, temperature 1.0, top-p 0.95, top-k 20, thinking on. All chats together = every token written per second, including time spent reading prompts; each chat = the speed one reply streams at once it has started.<br>One Spark: release v2.1.0, 2026-10-08, llama-benchy task mode, mean ± sd over runs, one boot<br>Two Sparks, TP=2: release v2.0.0, 2026-10-09, llama-benchy task mode, mean of 2 boots x 4 runs, sd between boots; v2.0.0, 2026-10-09, llama-benchy task mode, mean of 4 runs, one boot, sd between runs<br>Two Sparks, DP=2: not measured on this test yet.<br>Versions are numbered per setup. Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.<br><br>Right: One request with a prompt the server has not seen before. Each point is the mean of the samples of one run (1 to 4 per prompt length; the CSV lists each).<br>One Spark: release v2.0.0, 2026-10-05, llm-inference-bench 0.7.6<br>Two Sparks, TP=2: release v1.4.0, 2026-10-05, llm-inference-bench 0.7.6; v1.4.0, 2026-10-07, fidelity_probe.py<br>One Spark: not measured above 128K yet.<br>Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.</sub>
+<sub>Left: llama-benchy task mode (agent coding turn), ISL/OSL 2048/512, T=1.0, top-p 0.95, top-k 20, thinking on, prefix caching. Aggregate = all output tokens / wall time, PP included; per request = TG rate of one stream after its first token.<br>1x Spark: release v2.1.0, 2026-10-08, llama-benchy task mode, mean ± sd over runs, one boot<br>2x Spark TP=2: release v2.0.0, 2026-10-09, llama-benchy task mode, mean of 2 boots x 4 runs, sd between boots; v2.0.0, 2026-10-09, llama-benchy task mode, mean of 4 runs, one boot, sd between runs<br>2x Spark DP=2: not measured on this test yet.<br>Versions are numbered per setup. Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.<br><br>Right: c1, cold prefix (no cache hit). Each point: mean of 1 to 4 samples of one run (n per point in the CSV).<br>1x Spark: release v2.0.0, 2026-10-05, llm-inference-bench 0.7.6<br>2x Spark TP=2: release v1.4.0, 2026-10-05, llm-inference-bench 0.7.6; v1.4.0, 2026-10-07, fidelity_probe.py<br>1x Spark: not measured above 128K yet.<br>Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.</sub>
 
 </details>
 <!-- speed:end -->
 
 <!-- context:start (scripts/make_charts.py writes this block) -->
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/prefill-dark.svg"><img src="docs/img/prefill-light.svg" alt="Line chart of prompt tokens read per second against prompt length, prompt not cached, for each setup. Values are labelled at the line ends." width="420"></picture>
-<picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/depth-dark.svg"><img src="docs/img/depth-light.svg" alt="Line chart of decode tokens per second with 0 to 64K tokens of context already in the prompt, at 1, 4 and 8 requests. Values are labelled at the line ends." width="420"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/prefill-dark.svg"><img src="docs/img/prefill-light.svg" alt="PP tok/s vs ISL, c1, cold prefix, per setup. End values labelled." width="420"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/depth-dark.svg"><img src="docs/img/depth-light.svg" alt="TG aggregate tok/s at context depth 0, 16K and 64K, c1/c4/c8. End values labelled." width="420"></picture>
 </p>
 
-<sub>Left: One Spark v2.0.0 · Two Sparks, TP=2 v1.4.0; one request. Right: One Spark v2.0.0; 30 s sustained decode.</sub>
+<sub>Left: 1x Spark v2.0.0 · 2x Spark TP=2 v1.4.0; c1, cold prefix. Right: 1x Spark v2.0.0; llm-inference-bench, 30 s sustained TG.</sub>
 
 <details>
 <summary><sub>Runs, method and raw data</sub></summary>
 
-<sub>Left: One request with a prompt the server has not seen before. Each point is the mean of the samples of one run (1 to 4 per prompt length; the CSV lists each).<br>One Spark: release v2.0.0, 2026-10-05, llm-inference-bench 0.7.6<br>Two Sparks, TP=2: release v1.4.0, 2026-10-05, llm-inference-bench 0.7.6<br>Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.<br><br>Right: One Spark: release v2.0.0, 2026-10-05, llm-inference-bench 0.7.6, 30 s sustained decode, one boot (older release; shipped v2.1.0 not measured on this test yet). Server default sampling. This harness's 30 s steady-state window reads 10-30% above the 512-token runs of the concurrency chart, so compare points within this chart.<br>Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.</sub>
+<sub>Left: c1, cold prefix (no cache hit). Each point: mean of 1 to 4 samples of one run (n per point in the CSV).<br>1x Spark: release v2.0.0, 2026-10-05, llm-inference-bench 0.7.6<br>2x Spark TP=2: release v1.4.0, 2026-10-05, llm-inference-bench 0.7.6<br>Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.<br><br>Right: 1x Spark: release v2.0.0, 2026-10-05, llm-inference-bench 0.7.6, 30 s sustained TG, one boot (older release; shipped v2.1.0 not measured on this test yet). Server default sampling, 30 s steady-state TG window; it reads 10-30% above the OSL-512 runs of the concurrency chart, so compare points within this chart.<br>Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.</sub>
 
 </details>
 <!-- context:end -->
 
 <details>
-<summary>Speed of each single chat, and the exact numbers behind the charts</summary>
+<summary>Per-request TG and the numbers behind the charts</summary>
 
 <!-- perchat:start (scripts/make_charts.py writes this block) -->
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/perchat-dark.svg"><img src="docs/img/perchat-light.svg" alt="Line chart of decode tokens per second of each chat against 1 to 16 requests at the same time, for each setup. Values are labelled at the line ends." width="420"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/perchat-dark.svg"><img src="docs/img/perchat-light.svg" alt="TG per-request tok/s vs concurrency c1-c16 per setup, ISL/OSL 2048/512, server defaults. End values labelled." width="420"></picture>
 </p>
 
-<sub>One Spark v2.1.0 · Two Sparks, TP=2 v2.0.0; llama-benchy, 2,048 in, 512 out.</sub>
+<sub>1x Spark v2.1.0 · 2x Spark TP=2 v2.0.0; llama-benchy task mode.</sub>
 
 <details>
 <summary><sub>Runs, method and raw data</sub></summary>
 
-<sub>llama-benchy task mode: each chat sends a 2,048-token coding prompt and gets up to 512 tokens back, temperature 1.0, top-p 0.95, top-k 20, thinking on. All chats together = every token written per second, including time spent reading prompts; each chat = the speed one reply streams at once it has started.<br>One Spark: release v2.1.0, 2026-10-08, llama-benchy task mode, mean ± sd over runs, one boot<br>Two Sparks, TP=2: release v2.0.0, 2026-10-09, llama-benchy task mode, mean of 2 boots x 4 runs, sd between boots; v2.0.0, 2026-10-09, llama-benchy task mode, mean of 4 runs, one boot, sd between runs<br>Two Sparks, DP=2: not measured on this test yet.<br>Versions are numbered per setup. Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.</sub>
+<sub>llama-benchy task mode (agent coding turn), ISL/OSL 2048/512, T=1.0, top-p 0.95, top-k 20, thinking on, prefix caching. Aggregate = all output tokens / wall time, PP included; per request = TG rate of one stream after its first token.<br>1x Spark: release v2.1.0, 2026-10-08, llama-benchy task mode, mean ± sd over runs, one boot<br>2x Spark TP=2: release v2.0.0, 2026-10-09, llama-benchy task mode, mean of 2 boots x 4 runs, sd between boots; v2.0.0, 2026-10-09, llama-benchy task mode, mean of 4 runs, one boot, sd between runs<br>2x Spark DP=2: not measured on this test yet.<br>Versions are numbered per setup. Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.</sub>
 
 </details>
 <!-- perchat:end -->
 
 <!-- matrix:start (scripts/make_charts.py writes this block) -->
-| Requests at once | All together, tok/s | Each, tok/s | Release, run |
+| Concurrency | TG tok/s, aggregate | TG tok/s, per request | Release, run |
 |--:|--:|--:|---|
 | 1 | 56.9 ± 1.6 | 56.9 ± 1.6 | [v2.1.0, 2026-10-08](results/tp1-v3e-hf-20261008/bench/) |
 | 2 | 80.4 ± 8.2 | 44.8 ± 3.9 | [v2.1.0, 2026-10-08](results/tp1-v3e-hf-20261008/bench/) |
 | 4 | 106.2 ± 4.5 | 32.2 ± 4.2 | [v2.1.0, 2026-10-08](results/tp1-v3e-hf-20261008/bench/) |
 | 8 | 132.9 ± 3.4 | 22.6 ± 3.2 | [v2.1.0, 2026-10-08](results/tp1-v3e-hf-20261008/bench/) |
 
-llama-benchy task mode: 2,048-token prompt, 512 tokens out, temperature 1.0, thinking on; mean ± sd as given per run in the CSV.
+llama-benchy task mode, ISL/OSL 2048/512, T=1.0, thinking on; mean ± sd per run.
 
-| Prompt, tokens | Prompt reading, tok/s | First token, s | Release, run |
+| ISL | PP tok/s | TTFT s | Release, run |
 |--:|--:|--:|---|
 | 2K | 1,782 ± 63 | 1.2 ± 0.0 | [v2.1.0, 2026-10-08, llama-benchy task mode](results/tp1-v3e-hf-20261008/bench/) |
 | 8K | 2,137 | 3.8 | [v2.0.0, 2026-10-05, llm-inference-bench 0.7.6](results/tp1-v3d-20261005/bench/) |
@@ -193,16 +208,16 @@ llama-benchy task mode: 2,048-token prompt, 512 tokens out, temperature 1.0, thi
 | 64K | 2,066 | 31.2 | [v2.0.0, 2026-10-05, llm-inference-bench 0.7.6](results/tp1-v3d-20261005/bench/) |
 | 128K | 1,880 | 68.4 | [v2.0.0, 2026-10-05, llm-inference-bench 0.7.6](results/tp1-v3d-20261005/bench/) |
 
-One request, prompt not cached.
+c1, cold prefix.
 <!-- matrix:end -->
 
 </details>
 
-## One Spark or two?
+## 1x vs 2x TP=2 vs 2x DP=2
 
 <!-- setups:start (scripts/make_charts.py writes this block) -->
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/setups-dark.svg"><img src="docs/img/setups-light.svg" alt="Bar charts comparing one Spark, two Sparks at TP=2 and two Sparks at DP=2 on coding speed, chat speed, 8 chats combined, first token on a 16K prompt and long chats that fit the KV cache. Values are labelled on the bars." width="640"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/setups-dark.svg"><img src="docs/img/setups-light.svg" alt="1x vs 2x TP=2 vs 2x DP=2: TG coding c1, TG c1, TG aggregate c8, TTFT at ISL 16K, concurrent 262K requests in KV. Values labelled on the bars." width="640"></picture>
 </p>
 
 <sub>Shipped release of each setup where measured; the bracket names an older release.</sub>
@@ -210,22 +225,20 @@ One request, prompt not cached.
 <details>
 <summary><sub>Runs, method and raw data</sub></summary>
 
-<sub>Coding, one chat, T=0 (median of 36 prompts): 1x v2.0.0, 2026-10-06, coding_probe.py, up to 768 tokens out; TP=2 v1.4.0, 2026-10-06, coding_probe.py, up to 768 tokens out; not measured: Two Sparks, DP=2.<br>Chat, one at a time: 1x v2.1.0, 2026-10-08, llama-benchy task mode; TP=2 v2.0.0, 2026-10-09, llama-benchy task mode; not measured: Two Sparks, DP=2.<br>8 chats at once, combined: 1x v2.1.0, 2026-10-08, llama-benchy task mode; TP=2 v2.0.0, 2026-10-09, llama-benchy task mode; not measured: Two Sparks, DP=2.<br>First token on a 16K prompt: 1x v2.0.0, 2026-10-05, llm-inference-bench 0.7.6; TP=2 v1.4.0, 2026-10-05, llm-inference-bench 0.7.6; not measured: Two Sparks, DP=2.<br>262K-token chats the KV cache holds: 1x v2.1.0, 2026-10-08, serve log; TP=2 v2.0.0, 2026-10-09, serve log; DP=2 v2.1.0, 2026-10-08, serve log.<br>Chat rows: llama-benchy task mode at the server defaults (2,048-token prompt, 512 out). 262K-token chats: vLLM's own count at boot (DP=2: two replicas, one pool each).<br>Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.</sub>
+<sub>TG, coding c1 (median, n=36, T=0): 1x v2.0.0, 2026-10-06, coding_probe.py, up to 768 tokens out; TP=2 v1.4.0, 2026-10-06, coding_probe.py, up to 768 tokens out; not measured: 2x Spark DP=2.<br>TG c1, defaults: 1x v2.1.0, 2026-10-08, llama-benchy task mode; TP=2 v2.0.0, 2026-10-09, llama-benchy task mode; not measured: 2x Spark DP=2.<br>TG, aggregate c8, defaults: 1x v2.1.0, 2026-10-08, llama-benchy task mode; TP=2 v2.0.0, 2026-10-09, llama-benchy task mode; not measured: 2x Spark DP=2.<br>TTFT, ISL 16K, cold prefix: 1x v2.0.0, 2026-10-05, llm-inference-bench 0.7.6; TP=2 v1.4.0, 2026-10-05, llm-inference-bench 0.7.6; not measured: 2x Spark DP=2.<br>KV cache: concurrent 262K-token requests: 1x v2.1.0, 2026-10-08, serve log; TP=2 v2.0.0, 2026-10-09, serve log; DP=2 v2.1.0, 2026-10-08, serve log.<br>TG c1/c8: llama-benchy task mode, ISL/OSL 2048/512, server defaults. KV row: vLLM's 'Maximum concurrency for 262,144 tokens per request' at boot (DP=2: two replicas, one pool each).<br>Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.</sub>
 
 </details>
 <!-- setups:end -->
 
-- **One Spark: this recipe.** It serves up to 8 chats at once.
-- **Two Sparks, one person or a few long chats: TP=2.** The
-  [two-Spark recipe](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2) makes the two Sparks work as
-  one server, so each chat is faster and more long chats fit in the KV cache.
-- **Two Sparks, many agents at once: DP=2.** Each Spark runs this recipe and a small
-  [router](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/blob/main/tools/dp2/README.md) splits
-  the chats between them. In my agent replay it finished every workload sooner than TP=2:
+- **1x (this recipe):** max_num_seqs 8.
+- **2x TP=2:** [2x recipe](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2), higher per-request TG and a larger KV cache; fits low concurrency and long
+  contexts.
+- **2x DP=2:** two 1x replicas behind the [router](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/blob/main/tools/dp2/README.md). Lower wall time than TP=2
+  on all six agent-replay workloads:
 
 <!-- agents:start (scripts/make_charts.py writes this block) -->
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/agents-dark.svg"><img src="docs/img/agents-light.svg" alt="Bar chart of wall time for six agent workloads on two Sparks at TP=2 and at DP=2. Values are labelled on the bars." width="640"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/agents-dark.svg"><img src="docs/img/agents-light.svg" alt="Agent replay wall time in seconds, TP=2 vs DP=2, six workloads. Values labelled on the bars." width="640"></picture>
 </p>
 
 <sub>Agent replay, one boot per layout: two-Spark v1.5.0 (old name b1.6) (TP=2); DP=2 on one-Spark v2.1.0 (old name v3e) (DP=2).</sub>
@@ -233,7 +246,7 @@ One request, prompt not cached.
 <details>
 <summary><sub>Runs, method and raw data</sub></summary>
 
-<sub>All sessions start together; every turn resends the conversation with tools on, temperature 0.6, thinking off.<br>Two Sparks, TP=2: two-Spark v1.5.0 (old name b1.6), 2026-10-08, agent replay (drive.py), one boot<br>Two Sparks, DP=2: DP=2 on one-Spark v2.1.0 (old name v3e), 2026-10-08, agent replay (drive.py), one boot<br>Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.</sub>
+<sub>All sessions start at once; each turn resends the full conversation (prefix cache on), tools on, T=0.6, thinking off.<br>2x Spark TP=2: two-Spark v1.5.0 (old name b1.6), 2026-10-08, agent replay (drive.py), one boot<br>2x Spark DP=2: DP=2 on one-Spark v2.1.0 (old name v3e), 2026-10-08, agent replay (drive.py), one boot<br>Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.</sub>
 
 </details>
 <!-- agents:end -->
@@ -241,14 +254,14 @@ One request, prompt not cached.
 ## Quality gate
 
 <!-- quality:start (scripts/make_charts.py writes this block) -->
-| Check | Result | What it checks |
+| Check | Result | Criterion |
 |---|---|---|
-| Tool calls (TC-45) | **100/100** | A request that requires a tool call gets one; 5 trials |
-| Hard tool use | **91/100** | 88 multi-step tool-use scenarios; pass mark 88 |
-| Long-context retrieval | **20/20** (one of three ~245K seeds 19/20) | 20 facts hidden in prompts of 8K to ~245K tokens, each returned through a tool call |
-| Stalled requests | **none** | No request falls behind the others when 8 to 16 are sent at once (it runs 8 at a time and queues the rest) |
+| TC-45 | **100/100** | tool call emitted when the request requires one, 5 trials |
+| Hardmode | **91/100** | 88 multi-step tool-use scenarios, pass ≥ 88 |
+| Fidelity | **20/20** (one of three ~245K seeds 19/20) | 20 needles retrieved via tool calls, ISL 8K to ~245K |
+| Stragglers | **none** | no stalled request at c8-c16 (max_num_seqs 8, rest queued) |
 
-Gate run: release v2.1.0, 2026-10-07. Every release passes this gate before it ships.
+Gate run: release v2.1.0, 2026-10-07. Every release passes this gate before promotion.
 <!-- quality:end -->
 
 Full gate tables: [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
@@ -257,7 +270,7 @@ Full gate tables: [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
 
 <!-- history:start (scripts/make_charts.py writes this block) -->
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/history-dark.svg"><img src="docs/img/history-light.svg" alt="Decode speed at one chat and at 8 chats, and the hard tool-use score, for every release of this setup. Values are labelled on the chart." width="640"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/history-dark.svg"><img src="docs/img/history-light.svg" alt="Release history: TG aggregate c8 and TG c1 tok/s, and hardmode score, per shipped release. Values labelled." width="640"></picture>
 </p>
 
 <sub>Each release's own promotion run and gate.</sub>
@@ -265,22 +278,24 @@ Full gate tables: [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
 <details>
 <summary><sub>Runs, method and raw data</sub></summary>
 
-<sub>Speed: llama-benchy task mode, 2,048-token prompt, 512 out, temperature 1.0, thinking on, from each release's own promotion run, so day-to-day drift of the Sparks is in these numbers; the paired A/B of every release is in [VERSIONS.md](VERSIONS.md).<br>Speed runs: v1.0.0 2026-10-02, v1.1.0 2026-10-04, v1.2.0 2026-10-04, v1.3.0 2026-10-05, v2.0.0 2026-10-05 (llama-benchy task mode, mean ± sd over 3 runs, one boot); v2.1.0 2026-10-08 (llama-benchy task mode, mean ± sd over runs, one boot).<br>Hard tool use: the promotion gate of each release (b0: the gate on the pinned checkpoint), v1.1.0 2026-10-04, v1.2.0 2026-10-04, v1.3.0 2026-10-05, v2.0.0 2026-10-05, v2.1.0 2026-10-07; v1.0.0: score not in the data.<br>Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.</sub>
+<sub>TG: llama-benchy task mode, ISL/OSL 2048/512, T=1.0, thinking on, from each release's own promotion run (unpaired across releases, so day-to-day drift is included; paired A/B per release in [VERSIONS.md](VERSIONS.md)).<br>TG runs: v1.0.0 2026-10-02, v1.1.0 2026-10-04, v1.2.0 2026-10-04, v1.3.0 2026-10-05, v2.0.0 2026-10-05 (llama-benchy task mode, mean ± sd over 3 runs, one boot); v2.1.0 2026-10-08 (llama-benchy task mode, mean ± sd over runs, one boot).<br>Hardmode: promotion gate of each release (b0: gate on the pinned checkpoint), v1.1.0 2026-10-04, v1.2.0 2026-10-04, v1.3.0 2026-10-05, v2.0.0 2026-10-05, v2.1.0 2026-10-07; v1.0.0: score not in the data.<br>Data: [docs/data/capability.csv](docs/data/capability.csv), with the source file of every point.</sub>
 
 </details>
 <!-- history:end -->
 
-## What's inside
+## Stack
 
-- The model: Qwen3.8-Flash-Next, stored at 4 and 8 bits per weight so it fits (NVFP4 and MXFP8), plus a draft head I
-  retrained so more of its guesses are accepted.
-- Fitting on one Spark: a 26.8 GiB lookup table inside the model is read from the SSD instead of GPU memory, which
-  leaves room for more and longer chats.
-- Several tokens per step: the draft head guesses 4 tokens ahead and the model checks them in one pass; the output
-  follows the same distribution as without it (speculative decoding).
-- Software: vLLM with kernels written for the Spark's GB10 chip (b12x), in a prebuilt image with the kernel tuning
-  already done.
-- Thinking on by default at `medium` effort, tool calling, 262,144-token context, OpenAI-compatible API.
+- **Weights:** NVFP4 experts, MXFP8 dense and attention. GDN projections in weight-only NVFP4 for TG, MXFP8 copy
+  for calls of 41+ rows.
+- **PLE table:** 26.8 GiB n-gram table read through the page cache (`VLLM_PLE_MMAP=1`), WILLNEED before each TG
+  gather, 50 ms NVMe keepalive; ~72 GiB of other weights stay resident.
+- **KV:** one GDN PP staging buffer shared by all 36 GDN layers (~8.8 GiB freed) and compact MTP draft records;
+  14 GiB KV pool.
+- **MTP:** 4 probabilistic drafts per step over a 131k-id draft vocabulary, rejection sampling (output
+  distribution unchanged); drafter D1 refit on the served model's outputs.
+- **Kernels:** b12x for GB10 (NVFP4 MoE, MXFP8 linears, 36 GDN layers, 12 QSA sparse-attention layers), autotuned
+  plan cache and compile cache baked into the image.
+- **Serving defaults:** reasoning on at `reasoning_effort` medium, tool calling, max_model_len 262,144.
 
 ## Details
 
@@ -291,7 +306,7 @@ Full gate tables: [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
 
 Where the shipped release has no measurement yet, the table shows the newest release that has one; a full grid of the
 shipped releases is queued ([tp-2 #128](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/issues/128)).
-Decode rows are the total over all requests unless marked "each"; sampling is the server default (temperature 1.0,
+TG rows are aggregate unless marked "per request"; sampling is the server default (temperature 1.0,
 thinking on) unless the run says otherwise. The charts and tables are written by
 `uv run scripts/make_charts.py` from [`docs/data/capability.csv`](docs/data/capability.csv), where every point lists
 its raw file (`1x:` paths are in this repo, `2x:` paths in the
@@ -299,24 +314,24 @@ its raw file (`1x:` paths are in this repo, `2x:` paths in the
 [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
 
 <!-- capability-table:start (scripts/make_charts.py writes this block) -->
-| | One Spark | Two Sparks, TP=2 | Two Sparks, DP=2 |
+| | 1x Spark | 2x Spark TP=2 | 2x Spark DP=2 |
 |---|---|---|---|
-| Decode tok/s, 1 request | 56.9 <sup>a</sup> | 89.3 <sup>b</sup> | not measured |
-| Decode tok/s, 4 requests: each / total | 32.2 <sup>a</sup> / 106.2 <sup>a</sup> | 50.2 <sup>b</sup> / 161.4 <sup>b</sup> | not measured |
-| Decode tok/s, 8 requests: each / total | 22.6 <sup>a</sup> / 132.9 <sup>a</sup> | 33.1 <sup>b</sup> / 187.9 <sup>b</sup> | not measured |
-| Decode tok/s, 16 requests: each / total | over the cap (max_num_seqs 8) | 22.1 <sup>c</sup> / 236.6 <sup>c</sup> | not measured |
-| Coding, 36 prompts one at a time: median (max) decode tok/s, T=0 / server defaults | 73 <sup>d</sup> (82) <sup>d</sup> / 60 <sup>d</sup> (67) <sup>d</sup> | 106 <sup>e</sup> (121) <sup>e</sup> / 88 <sup>e</sup> (97) <sup>e</sup> | not measured |
-| Copy-heavy (MTP accepts nearly every draft) total tok/s at 1 / 4 / 8 requests, max of 3 rounds | 81 <sup>f</sup> / 188 <sup>f</sup> / 282 <sup>f</sup> | 117 <sup>g</sup> / 290 <sup>g</sup> / 439 <sup>g</sup> | not measured |
-| Prefill tok/s at 2K / 16K / 64K / 128K prompt, 1 request | 1,782 <sup>a</sup> / 2,079 <sup>a</sup> / 2,066 <sup>h</sup> / 1,880 <sup>h</sup> | 2,831 <sup>b</sup> / 2,931 <sup>i</sup> / 2,664 <sup>i</sup> / 2,384 <sup>i</sup> | not measured |
-| Time to first token at 2K / 16K / 64K / 128K, uncached, s | 1.2 <sup>a</sup> / 7.9 <sup>a</sup> / 31.2 <sup>h</sup> / 68.4 <sup>h</sup> | 0.7 <sup>b</sup> / 5.5 <sup>i</sup> / 24.2 <sup>i</sup> / 54.0 <sup>i</sup> | not measured |
-| Decode, mean ms per token at 1 / 8 requests (MTP emits several tokens per step) | 20 <sup>h</sup> / 46 <sup>h</sup> | 15 <sup>i</sup> / 31 <sup>i</sup> | not measured |
-| Gap between streamed chunks p50 at 1 / 8 requests, ms | 56 <sup>h</sup> / 143 <sup>h</sup> | 41 <sup>i</sup> / 90 <sup>i</sup> | not measured |
-| Decode tok/s total at 0 → 64K context, 1 request / 4 requests | 47.4 <sup>h</sup> → 56.9 <sup>h</sup> / 116.6 <sup>h</sup> → 111.8 <sup>h</sup> | 64.8 <sup>i</sup> → 77.8 <sup>i</sup> / 171.2 <sup>i</sup> → 165.4 <sup>i</sup> | not measured |
-| Max context per request | 262,144 (recipe) | 262,144 (recipe) | 262,144 (recipe) |
-| KV pool, tokens | 993,754 <sup>j</sup> | 3,527,297 <sup>k</sup> | 2 × 993,754, one pool per replica <sup>l</sup> |
-| Requests of 262,144 tokens the pool holds (vLLM's count) | 3.79 <sup>j</sup> | 13.46 <sup>k</sup> | 2 × 3.79 <sup>l</sup> |
-| Requests that fit the KV pool at 16K / 64K / 128K | 39.7 <sup>m</sup> / 14.1 <sup>m</sup> / 7.5 <sup>m</sup> | not measured | not measured |
-| Quality gate: hardmode / TC-45 / retrieval to ~245K / stragglers | 91 <sup>n</sup> / 100 <sup>n</sup> / 20/20 (one of three ~245K seeds 19/20) <sup>n</sup> / none, c8-c16 <sup>n</sup> | 90 <sup>o</sup> / 100 <sup>o</sup> / 20/20 <sup>o</sup> / none, c8-c16 <sup>o</sup> | 93 <sup>p</sup> / 100 <sup>p</sup> / 20/20 <sup>p</sup> / none, c5-c16 <sup>p</sup> |
+| TG c1, tok/s | 56.9 <sup>a</sup> | 89.3 <sup>b</sup> | not measured |
+| TG c4, tok/s: per request / aggregate | 32.2 <sup>a</sup> / 106.2 <sup>a</sup> | 50.2 <sup>b</sup> / 161.4 <sup>b</sup> | not measured |
+| TG c8, tok/s: per request / aggregate | 22.6 <sup>a</sup> / 132.9 <sup>a</sup> | 33.1 <sup>b</sup> / 187.9 <sup>b</sup> | not measured |
+| TG c16, tok/s: per request / aggregate | > max_num_seqs 8 | 22.1 <sup>c</sup> / 236.6 <sup>c</sup> | not measured |
+| TG, coding c1 (36 prompts), tok/s median (max): T=0 / defaults | 73 <sup>d</sup> (82) <sup>d</sup> / 60 <sup>d</sup> (67) <sup>d</sup> | 106 <sup>e</sup> (121) <sup>e</sup> / 88 <sup>e</sup> (97) <sup>e</sup> | not measured |
+| Copy-heavy (MTP acceptance near 1), aggregate tok/s c1 / c4 / c8, max of 3 rounds | 81 <sup>f</sup> / 188 <sup>f</sup> / 282 <sup>f</sup> | 117 <sup>g</sup> / 290 <sup>g</sup> / 439 <sup>g</sup> | not measured |
+| PP tok/s, ISL 2K / 16K / 64K / 128K, c1 | 1,782 <sup>a</sup> / 2,079 <sup>a</sup> / 2,066 <sup>h</sup> / 1,880 <sup>h</sup> | 2,831 <sup>b</sup> / 2,931 <sup>i</sup> / 2,664 <sup>i</sup> / 2,384 <sup>i</sup> | not measured |
+| TTFT s, ISL 2K / 16K / 64K / 128K, cold prefix | 1.2 <sup>a</sup> / 7.9 <sup>a</sup> / 31.2 <sup>h</sup> / 68.4 <sup>h</sup> | 0.7 <sup>b</sup> / 5.5 <sup>i</sup> / 24.2 <sup>i</sup> / 54.0 <sup>i</sup> | not measured |
+| ITL p50, ms, c1 / c8 (MTP emits several tokens per step) | 20 <sup>h</sup> / 46 <sup>h</sup> | 15 <sup>i</sup> / 31 <sup>i</sup> | not measured |
+| Stream chunk gap p50, ms, c1 / c8 | 56 <sup>h</sup> / 143 <sup>h</sup> | 41 <sup>i</sup> / 90 <sup>i</sup> | not measured |
+| TG aggregate tok/s, depth 0 → 64K, c1 / c4 | 47.4 <sup>h</sup> → 56.9 <sup>h</sup> / 116.6 <sup>h</sup> → 111.8 <sup>h</sup> | 64.8 <sup>i</sup> → 77.8 <sup>i</sup> / 171.2 <sup>i</sup> → 165.4 <sup>i</sup> | not measured |
+| max_model_len | 262,144 (recipe) | 262,144 (recipe) | 262,144 (recipe) |
+| KV cache, tokens | 993,754 <sup>j</sup> | 3,527,297 <sup>k</sup> | 2 × 993,754, one pool per replica <sup>l</sup> |
+| Concurrent 262K requests in KV (vLLM count) | 3.79 <sup>j</sup> | 13.46 <sup>k</sup> | 2 × 3.79 <sup>l</sup> |
+| Requests that fit KV at 16K / 64K / 128K | 39.7 <sup>m</sup> / 14.1 <sup>m</sup> / 7.5 <sup>m</sup> | not measured | not measured |
+| Gate: hardmode / TC-45 / fidelity to ~245K / stragglers | 91 <sup>n</sup> / 100 <sup>n</sup> / 20/20 (one of three ~245K seeds 19/20) <sup>n</sup> / none, c8-c16 <sup>n</sup> | 90 <sup>o</sup> / 100 <sup>o</sup> / 20/20 <sup>o</sup> / none, c8-c16 <sup>o</sup> | 93 <sup>p</sup> / 100 <sup>p</sup> / 20/20 <sup>p</sup> / none, c5-c16 <sup>p</sup> |
 
 Releases and runs behind the numbers:
 
@@ -327,8 +342,8 @@ Releases and runs behind the numbers:
 - <sup>e</sup> two-Spark v1.4.0 (old name b1.4), 2026-10-06, coding probe, coding_probe.py, up to 768 tokens out ([files](results/coding-probe-k55-20261006/2x/))
 - <sup>f</sup> one-Spark v2.0.0 (old name v3d), 2026-10-05, copy-heavy run, copy-heavy benchmark, 1,500 tokens out ([files](results/tp1-v3d-20261005/bench/))
 - <sup>g</sup> two-Spark v1.4.0 (old name b1.4), 2026-10-04, copy-heavy run, copy-heavy benchmark, 1,500 tokens out ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/showcase-20261004/A/))
-- <sup>h</sup> one-Spark v2.0.0 (old name v3d), 2026-10-05, depth and prefill sweep, llm-inference-bench 0.7.6 ([files](results/tp1-v3d-20261005/bench/))
-- <sup>i</sup> two-Spark v1.4.0 (old name b1.4), 2026-10-05, depth and prefill sweep, llm-inference-bench 0.7.6 ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/lib-bench-20261005/tp2-b1.4/))
+- <sup>h</sup> one-Spark v2.0.0 (old name v3d), 2026-10-05, depth and PP sweep, llm-inference-bench 0.7.6 ([files](results/tp1-v3d-20261005/bench/))
+- <sup>i</sup> two-Spark v1.4.0 (old name b1.4), 2026-10-05, depth and PP sweep, llm-inference-bench 0.7.6 ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/lib-bench-20261005/tp2-b1.4/))
 - <sup>j</sup> one-Spark v2.1.0 (old name v3e), 2026-10-08, serve log ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/dp2-gate-k72-20261008-1135/))
 - <sup>k</sup> two-Spark v2.0.0, 2026-10-09, serve log ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k77-2x-ship-check-20261009-2149/check/))
 - <sup>l</sup> DP=2 on one-Spark v2.1.0 (old name v3e), 2026-10-08, serve log ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/dp2-gate-k72-20261008-1135/))
@@ -357,7 +372,7 @@ Checkpoint: [`ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE`](https://huggingface
 [`local-inference-lab/Qwen3.8-Flash-Next-NVFP4`](https://huggingface.co/local-inference-lab/Qwen3.8-Flash-Next-NVFP4)
 @ `7c4f1bc1` with the GDN projections in weight-only NVFP4 and, since `16c9bd54`, a retrained MTP drafter. Its model
 card covers what changed, how it was built and the license (Qwen Community License 1.0). The recipe also fetches
-shard 35 and the index of `7c4f1bc1` (2.6 GiB) for the MXFP8 prefill copy. Image and video input are not tested.
+shard 35 and the index of `7c4f1bc1` (2.6 GiB) for the MXFP8 PP copy. Image and video input are not tested.
 
 </details>
 
@@ -407,13 +422,13 @@ drafter, plan seed). Each release's own A/B against the one before it is in the 
 <summary><b>How I measure</b>: How builds are screened, compared and promoted</summary>
 
 - Candidate builds are screened with [Thunderdome](docs/THUNDERDOME.md): one arm per Spark, control and candidate
-  booted alternately, 2 passes, T=0 decode probes at 1/4/8 requests and at 16K context, plus llama-benchy at
+  booted alternately, 2 passes, T=0 TG probes at c1/c4/c8 and at 16K context, plus llama-benchy at
   temperature 1.0. Noise band = the control's boot-to-boot spread, at least 1%.
 - To be promoted, a build must pass the gate, be faster beyond noise in at least one coding or counting cell, and be
   slower beyond noise in no cell at 1–4 requests ([`scripts/arm_verdict.py`](scripts/arm_verdict.py)).
 - MTP acceptance per draft position is compared cell by cell as a numerics canary; logprob agreement against the
   previous build must sit within self-noise.
-- Copy-heavy and counting workloads accept nearly every draft and show the decode ceiling of MTP; the coding grid
+- Copy-heavy and counting workloads accept nearly every draft and show the TG ceiling of MTP; the coding grid
   (llama-benchy task mode, thinking on) is the rate an agent sees. Every table states its workload.
 
 Index of every run and verdict: [results/README.md](results/README.md). The issue history up to 2026-10-08 is in the
@@ -423,13 +438,13 @@ single-Spark issues are [here](https://github.com/ursuciprian/qwen3.8-flash-next
 </details>
 
 <details>
-<summary><b>How it works</b>: Parallelism, kernels, speculative decoding, where the time goes</summary>
+<summary><b>How it works</b>: Parallelism, kernels, MTP, where the time goes</summary>
 
 - The 26.8 GiB PLE n-gram table is read through the page cache from the checkpoint files (`VLLM_PLE_MMAP=1`), with a
-  WILLNEED pass before each decode gather and a 50 ms NVMe keepalive, so ~72 GiB of other weights fit on one GB10.
-- One GDN prefill staging buffer shared by all 36 GDN layers frees ~8.8 GiB, which goes to a 14 GiB KV pool, and
+  WILLNEED pass before each TG gather and a 50 ms NVMe keepalive, so ~72 GiB of other weights fit on one GB10.
+- One GDN PP staging buffer shared by all 36 GDN layers frees ~8.8 GiB, which goes to a 14 GiB KV pool, and
   compact MTP draft records cut each request's GDN state blocks from 185 to 37.
-- The GDN projections decode from weight-only NVFP4 and switch to an MXFP8 copy for calls of 41+ rows.
+- The GDN projections run TG from weight-only NVFP4 and switch to an MXFP8 copy for calls of 41+ rows.
 - b12x kernels cover NVFP4 MoE, MXFP8 linears, GDN (36 layers) and QSA sparse attention (12 layers), with an
   autotuned plan cache and the torch compile cache baked into each image ([`docker/b0-warm/`](docker/b0-warm/)).
 - MTP ×4 uses probabilistic drafts over a 131k-id draft vocabulary; rejection sampling keeps the output distribution
