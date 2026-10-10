@@ -59,7 +59,7 @@ wall power); the 2× rows add both Sparks. Idle = 120 s with the server up and n
 What it shows: the coding probe at T=0 repeats within 0.5% between boots; llama-benchy at the server defaults moves
 2.4-5.3% between boots, so a single-boot difference below that is noise. Against the single-boot k76 run of the same
 2× build, TG defaults c8 differs most (k76 172.2, k86 195.3 ± 5.1); the README now quotes the multi-boot means. Per-Spark rows, per-boot values and the 1 Hz power traces:
-[`results/k86-boot-noise-power-20261010-1704/`](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k86-boot-noise-power-20261010-1704/).
+[k86 results folder in the tp-2 repo](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k86-boot-noise-power-20261010-1704/).
 
 ## Single Spark v2.2.0: MTP drafter D3 (2026-10-10)
 
