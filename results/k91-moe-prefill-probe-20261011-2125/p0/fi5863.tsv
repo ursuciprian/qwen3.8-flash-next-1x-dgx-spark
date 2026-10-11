@@ -1,0 +1,10 @@
+fi5863	5	uniform	1264	6.4447	19.3	nan	512	42	24.7	PR #5863 a0997210 run_moe_w4a4, scalar layer-max a13/a2
+fi5863	5	uniform	3024	7.6040	39.1	nan	512	83	59.1	PR #5863 a0997210 run_moe_w4a4, scalar layer-max a13/a2
+fi5863	5	uniform	6048	9.7072	61.2	0.15753	512	149	118.1	PR #5863 a0997210 run_moe_w4a4, scalar layer-max a13/a2
+fi5863	5	uniform	8192	12.0726	66.7	nan	512	197	160.0	PR #5863 a0997210 run_moe_w4a4, scalar layer-max a13/a2
+fi5863	5	skew	1264	6.5092	19.1	nan	512	100	24.7	PR #5863 a0997210 run_moe_w4a4, scalar layer-max a13/a2
+fi5863	5	skew	3024	7.6041	39.1	nan	512	239	59.1	PR #5863 a0997210 run_moe_w4a4, scalar layer-max a13/a2
+fi5863	5	skew	6048	9.8516	60.3	0.16036	512	511	118.1	PR #5863 a0997210 run_moe_w4a4, scalar layer-max a13/a2
+fi5863	5	skew	8192	11.8422	68.0	nan	512	708	160.0	PR #5863 a0997210 run_moe_w4a4, scalar layer-max a13/a2
+fi5863	47	uniform	6048	nan	nan	0.15755	512	150	118.1	PR #5863 a0997210 run_moe_w4a4, scalar layer-max a13/a2
+fi5863	47	skew	6048	nan	nan	0.15757	512	514	118.1	PR #5863 a0997210 run_moe_w4a4, scalar layer-max a13/a2

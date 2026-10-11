@@ -1,0 +1,10 @@
+b12x-m128-l1max-split	5	uniform	1264	12.0133	10.3	nan	512	42	24.7	?
+b12x-m128-l1max-split	5	uniform	3024	15.8953	18.7	nan	512	83	59.1	?
+b12x-m128-l1max-split	5	uniform	6048	21.4382	27.7	0.15999	512	149	118.1	?
+b12x-m128-l1max-split	5	uniform	8192	27.8125	29.0	nan	512	197	160.0	?
+b12x-m128-l1max-split	5	skew	1264	12.2181	10.2	nan	512	100	24.7	?
+b12x-m128-l1max-split	5	skew	3024	16.4400	18.1	nan	512	239	59.1	?
+b12x-m128-l1max-split	5	skew	6048	22.0126	27.0	0.16629	512	511	118.1	?
+b12x-m128-l1max-split	5	skew	8192	30.5098	26.4	nan	512	708	160.0	?
+b12x-m128-l1max-split	47	uniform	6048	nan	nan	0.26852	512	150	118.1	?
+b12x-m128-l1max-split	47	skew	6048	nan	nan	0.22566	512	514	118.1	?
