@@ -1,0 +1,24 @@
+{
+ "seed": "d01-min0-w16",
+ "corpus_tokens": 29565,
+ "rows": [
+  {
+   "ttft_s": 9.766836404800415,
+   "prompt_tokens": 16384,
+   "len": 16384,
+   "rep": 0
+  }
+ ],
+ "summary": {
+  "16384": {
+   "n": 1,
+   "prompt_tokens": 16384,
+   "ttft_mean_s": 9.766836404800415,
+   "ttft_min_s": 9.766836404800415,
+   "tok_s": 1677.513508053359,
+   "tok_s_each": [
+    1678
+   ]
+  }
+ }
+}

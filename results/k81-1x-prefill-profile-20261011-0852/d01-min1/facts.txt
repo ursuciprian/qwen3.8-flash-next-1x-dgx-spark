@@ -1,0 +1,1 @@
+tp1-d3-hf-20261010-21e0b201-5dad364d-warm MIN_TOKENS 1, MTP 4, KV 6 GiB, boot 202 s, torch compiled, 0 plans measured
