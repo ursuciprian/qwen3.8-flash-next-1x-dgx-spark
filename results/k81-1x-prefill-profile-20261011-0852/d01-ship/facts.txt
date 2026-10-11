@@ -1,0 +1,1 @@
+tp1-d3-hf-20261010-21e0b201-5dad364d-warm MIN_TOKENS 41, MTP 4, KV 14 GiB, boot 186 s, AOT loaded, 0 plans measured

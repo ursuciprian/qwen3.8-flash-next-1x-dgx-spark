@@ -1,0 +1,38 @@
+{
+ "seed": "d01-ship-ttft",
+ "corpus_tokens": 55364,
+ "rows": [
+  {
+   "ttft_s": 7.971516132354736,
+   "prompt_tokens": 16384,
+   "len": 16384,
+   "rep": 0
+  },
+  {
+   "ttft_s": 7.92818284034729,
+   "prompt_tokens": 16384,
+   "len": 16384,
+   "rep": 1
+  },
+  {
+   "ttft_s": 7.876661062240601,
+   "prompt_tokens": 16384,
+   "len": 16384,
+   "rep": 2
+  }
+ ],
+ "summary": {
+  "16384": {
+   "n": 3,
+   "prompt_tokens": 16384,
+   "ttft_mean_s": 7.925453344980876,
+   "ttft_min_s": 7.876661062240601,
+   "tok_s": 2067.263446875989,
+   "tok_s_each": [
+    2055,
+    2067,
+    2080
+   ]
+  }
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "seed": "d01-min0-prof",
+ "corpus_tokens": 28859,
+ "rows": [
+  {
+   "ttft_s": 9.591331720352173,
+   "prompt_tokens": 16384,
+   "len": 16384,
+   "rep": 0
+  }
+ ],
+ "summary": {
+  "16384": {
+   "n": 1,
+   "prompt_tokens": 16384,
+   "ttft_mean_s": 9.591331720352173,
+   "ttft_min_s": 9.591331720352173,
+   "tok_s": 1708.2090868814632,
+   "tok_s_each": [
+    1708
+   ]
+  }
+ }
+}

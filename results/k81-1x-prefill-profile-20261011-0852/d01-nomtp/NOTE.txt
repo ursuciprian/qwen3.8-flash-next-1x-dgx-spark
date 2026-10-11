@@ -1,0 +1,2 @@
+attempt 1 failed: VLLM_GDN_COMPACT_RECORDS=1 needs MTP; recipe fixed and rebooted in place at 09:16:55; boot s in facts includes the failed attempt
+attempt 2 (no MTP, no deferred checkpoints, no compact records) stopped at 09:27:33: without compact records the GDN prefill takes another kernel path and needs 91 new sequence.gdn_prefill plans at about 1 min each (6/91 after 5 min), so it would neither isolate the drafter nor finish in time. Drafter prefill cost is taken from the d01-ship trace instead.

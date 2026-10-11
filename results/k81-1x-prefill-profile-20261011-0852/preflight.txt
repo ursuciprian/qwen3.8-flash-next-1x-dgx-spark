@@ -1,0 +1,6 @@
+ok   ship: +2 -1
+ok   min0: +6 -3
+ok   min1: +6 -3
+ok   nomtp: +5 -4
+ok   rb: +6 -3
+ok   ship6: +5 -2
