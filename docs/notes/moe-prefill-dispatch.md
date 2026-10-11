@@ -18,7 +18,7 @@ A 16K prompt takes 4 steps, because the 3024-token mamba alignment cuts a budget
 
 Two limits on what MoE dispatch can buy:
 
-- Removing the routed MoE completely would give 484 -> 365 us/token, 1.33x. A 2x prefill gap therefore cannot come from the MoE alone. Dense GEMMs, attention, GDN and norms make up the other 74%.
+- Removing the routed MoE completely would give 484 -> 365 us/token, 1.33x. That is the ceiling for MoE work. Dense GEMMs, attention, GDN and norms make up the other 74%.
 - Fewer, larger steps cut the fixed weight stream for every backend. 16K in 2 steps instead of 4 saves about 0.5 s. k88 tried 9072 (3 steps) and lost 4.5% / 5.5% cold 16K. The cause is the K6144 N2560 MXFP8 tile cliff above about 4.5K rows, which k90 targets. That A/B should be repeated after the k90 fix.
 
 ## What the shipped b12x path does at prefill
@@ -41,7 +41,7 @@ The kernel works per (expert, M tile, N128 slice of the 640-wide intermediate):
 
 With 5 slices and 10 routes, every token row takes 50 atomic partial adds per layer. That is 256 KB of atomic traffic per token per layer, 12 MB per token over 48 layers. M32 tiles also restream each expert's weight slices once per 32-row tile, about 4 times per expert at 6048 tokens; L2 absorbs part of that.
 
-My working hypothesis is that atomics and restreaming make up most of the 58.9 us/token marginal. That works out to about 80 TFLOPS on the per-token part, below the 121-127 TFLOPS the MXFP8 dense GEMMs reach on the same GPU in k81 and k88, even though FP4 MMA runs at twice the FP8 rate. The hypothesis is unverified. k91 tests it directly with M64 and M128.
+My working hypothesis is that atomics and restreaming make up most of the 58.9 us/token marginal. That works out to about 80 TFLOPS on the per-token part, below the 121-127 TFLOPS the MXFP8 dense GEMMs reach on the same GPU in k81 and k88. The hypothesis is unverified. k91 tests it directly with M64 and M128.
 
 b12x already has a large-M lowering that serving never selects, the NVFP4 split-materialized M128 path:
 
@@ -74,7 +74,7 @@ The ms/layer column is for M 6048. "#5863 table" means FlashInfer PR #5863's pub
 | b12x split-materialized M128, layer-max FC1 scale | yes | same | scratch only | unknown | zero code via env (numerics change at all M) or small in b12x (shared scale only in the capacity plan) |
 | FlashInfer #5863 canonical NVFP4 W4A4 (open, CuTe DSL) | yes, measured on GB10 | payload and scales byte-identical; FC1 order [gate; up] vs our [up; gate] | workspace per token bucket only | 10.7 (56), #5863 table; 1.18x b12x at 8192, 1.09x at 4096 | medium (below) |
 | FlashInfer CUTLASS fused MoE, NVFP4 SM120 path (FlashInfer 0.7.0 in the image, imports) | yes | matches b12x after the flip ([up; gate], swizzled); one FC1 input scale | workspace | 12.8 (46), #5863 table | small, but no gain expected |
-| vLLM CUTLASS `cutlass_moe_fp4` (SM120 grouped GEMM 128x128x128) | yes | payload and scales same; expects [gate; up], conflicts with the b12x flip | permuted BF16 copies of the routed rows, about 1 GB of traffic per layer at 6048 | no GB10 data; unfused row shuffles in and out | medium, low expectation |
+| vLLM CUTLASS `cutlass_moe_fp4` (SM120 grouped GEMM 128x128x128) | code path (`ENABLE_NVFP4_SM120`); not checked in the image | payload and scales same; expects [gate; up], conflicts with the b12x flip | permuted BF16 copies of the routed rows, about 1 GB of traffic per layer at 6048 | no GB10 data; unfused row shuffles in and out | medium, low expectation |
 | Marlin W4A16 MoE (BF16 math) | yes | no: Marlin tile repack plus E4M3 to S0E5M3 scales | a second 68 GB copy, does not fit | BF16 mm on GB10 measures 79-84 TFLOPS, so not above a good W4A4 at large M | out for a split dispatch; r12 replaced b12x with it and decode lost 6-11% per step |
 | b12x W4A16 (AUTO A16 consumer, same storage) | yes | same | none | BF16 math | out at large M |
 | FlashInfer b12x backend (`flashinfer_b12x`) | yes | its own preparation from BF16 | a second copy | #5863 table 12.7 at 6048 | out |
@@ -104,7 +104,7 @@ The job:
 
 - takes the gpu-lock;
 - stops the 2x (it spans both Sparks);
-- runs one container of the shipped 1x image (`tp1-d3-hf-20261010-21e0b201-5dad364d-warm`) on dgx-01, with a 28 min docker timeout, 5 min per variant and a 26 min budget;
+- runs one container of the shipped 1x image (`tp1-d3-hf-20261010-21e0b201-5dad364d-warm`) on dgx-01, as container `k91-probe` with `--init`, a 28 min timeout, 7.5 min per b12x variant and 5 min for fi5863, and a 26 min budget, then removes the container;
 - restores the 2x with a pong.
 
 ETA is about 38 min.
@@ -134,7 +134,7 @@ Measurement:
 Gates:
 
 - Anchor: b12x-m32 has to land within 10% of the k81 per-layer time at 6048 (12.6 ms). Otherwise the report marks the anchor OFF and I do not publish ratios.
-- Numerics: rows 0..255 at M 6048 against an FP32 dequantized-weight reference. A variant passes when its error is at most 1.10 x the anchor's + 0.005 in all four cells (2 layers x 2 routings). A failing variant gets no speed claim.
+- Numerics: rows 0..255 at M 6048 against an FP32 dequantized-weight reference. A variant passes when its error is at most 1.10 x the anchor's + 0.005 in every cell (2 layers x 2 routings) where the anchor has a value. A failing variant, or one with no judged cell, gets no speed claim.
 
 Output: `k91.txt`, with a numerics table, the anchor check, speed tables per routing (ms, TFLOPS, ratio vs the anchor) and the selected b12x configs. The raw TSV and per-variant logs go in the results dir.
 
