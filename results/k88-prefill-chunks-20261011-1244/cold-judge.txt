@@ -1,0 +1,9 @@
+mnbt-01   16K: control   2079 arm   1987 tok/s (-4.5%, noise 4.3%) WORSE
+mnbt-01   64K: control   1901 arm   1875 tok/s (-1.4%, noise 1.0%) WORSE
+mnbt-01  128K: control   1729 arm   1729 tok/s (-0.0%, noise 1.0%) flat
+mnbt-01 COLD=FAIL
+mnbt-02   16K: control   2111 arm   1995 tok/s (-5.5%, noise 1.0%) WORSE
+mnbt-02   64K: control   1918 arm   1903 tok/s (-0.8%, noise 1.0%) flat
+mnbt-02  128K: control   1722 arm   1740 tok/s (+1.1%, noise 1.1%) flat
+mnbt-02 COLD=FAIL
+COLD_ALL=FAIL

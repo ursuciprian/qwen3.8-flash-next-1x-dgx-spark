@@ -1,0 +1,24 @@
+{
+ "seed": "prof-ctl-p1",
+ "corpus_tokens": 27365,
+ "rows": [
+  {
+   "ttft_s": 8.893155336380005,
+   "prompt_tokens": 16384,
+   "len": 16384,
+   "rep": 0
+  }
+ ],
+ "summary": {
+  "16384": {
+   "n": 1,
+   "prompt_tokens": 16384,
+   "ttft_mean_s": 8.893155336380005,
+   "ttft_min_s": 8.893155336380005,
+   "tok_s": 1842.315733874179,
+   "tok_s_each": [
+    1842
+   ]
+  }
+ }
+}

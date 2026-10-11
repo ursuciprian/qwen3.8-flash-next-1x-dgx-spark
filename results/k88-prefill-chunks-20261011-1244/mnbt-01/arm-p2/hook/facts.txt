@@ -1,0 +1,4 @@
+plans_measured 0
+kv GPU KV cache size: 993,754 tokens
+aot Directly load AOT compilation
+mnbt max_num_batched_tokens': 9072
