@@ -1,0 +1,8 @@
+== mnbt-01: cold prefill tok/s per boot (hook, prompt tokens / mean TTFT, 3 reps)
+  16K: ctl-p1 2035 ctl-p2 2124 arm-p1 1978 arm-p2 1995, arm vs ctl -4.5%
+  64K: ctl-p1 1895 ctl-p2 1908 arm-p1 1872 arm-p2 1879, arm vs ctl -1.4%
+  128K: ctl-p1 1730 ctl-p2 1729 arm-p1 1723 arm-p2 1735, arm vs ctl -0.0%
+== mnbt-02: cold prefill tok/s per boot (hook, prompt tokens / mean TTFT, 3 reps)
+  16K: ctl-p1 2113 ctl-p2 2109 arm-p1 2009 arm-p2 1982, arm vs ctl -5.5%
+  64K: ctl-p1 1909 ctl-p2 1927 arm-p1 1896 arm-p2 1910, arm vs ctl -0.8%
+  128K: ctl-p1 1712 ctl-p2 1731 arm-p1 1733 arm-p2 1746, arm vs ctl +1.1%

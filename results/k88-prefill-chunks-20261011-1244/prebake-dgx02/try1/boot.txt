@@ -1,0 +1,4 @@
+boot 584 s, KV pool 6442450944 bytes, min MemAvailable 11.50 GiB
+      2 Dynamo bytecode transform time
+plans measured: 6818
+pong: pong

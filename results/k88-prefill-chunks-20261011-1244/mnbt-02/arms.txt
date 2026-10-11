@@ -1,0 +1,2 @@
+arm arm /home/nvidia/GEN-AI/backlog/k88/rec/arm.yaml
+ctl base /home/nvidia/GEN-AI/backlog/k88/rec/base.yaml
