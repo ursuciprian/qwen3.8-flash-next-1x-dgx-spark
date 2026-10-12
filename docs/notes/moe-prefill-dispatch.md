@@ -35,7 +35,7 @@ All rows assume the weights stay where b12x prepared them (packed E2M1 payload, 
 | Backend | SM121 | Layout vs b12x storage | Extra memory | Expected ms/layer at 6048 | k91 | Effort |
 |---|---|---|---|---|---|---|
 | b12x dynamic M32, shipped | yes | same | none | 12.6, k81 | 1.00 (anchor) | none |
-| b12x dynamic M64, per-expert scales | yes | same | none | 12.2 for a forced larger tile (M64 or M128), #5863 table | 1.00-1.03 | small |
+| b12x dynamic M64, per-expert scales | yes | same | none | 12.2, #5863 table "b12x forced" | 1.00-1.03 | small |
 | b12x dynamic M128, per-expert scales | yes | same | none | same 12.2 as the M64 row | 0.81-0.87 | small |
 | b12x split-materialized M128, layer-max FC1 scale | yes | same | scratch only | not estimated | 0.44-0.61 | env or small |
 | b12x M128, layer-max FC1 scale, no split | yes | same | none | not estimated | 0.82-0.89 | env |
