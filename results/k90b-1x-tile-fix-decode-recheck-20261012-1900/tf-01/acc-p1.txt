@@ -1,0 +1,2 @@
+== acceptance per draft position (T=0 probe cells, pooled)
+ACC=OK

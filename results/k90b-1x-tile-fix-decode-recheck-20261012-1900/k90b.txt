@@ -1,0 +1,55 @@
+k90b 2026-10-12 20:06:33 EEST: 1x v2.2.0 on the tile-fix image (ghcr.io/ursuciprian/spark-vllm-b12x:tf-20261011-b45fe867-5dad364d) vs shipped, decode recheck, 4 boots per side per Spark
+
+thunderdome exit 0 (DONE: tf=INCONCLUSIVE tf=INCONCLUSIVE); per Spark: tf-01=FLAT tf-02=FLAT; CI below zero: none
+
+-- tf-01 (dgx-01)
+== cells: arm vs control % (noise = the cell's noise band, %)
+  benchy pp2048 (c1)   +0.32%  noise  1.45%            control 1767.1 arm 1772.8 t/s (boots 4/4)
+  benchy tg512 (c1)    -2.44%  noise  8.16%            control 58.9 arm 57.5 t/s (boots 4/4)
+  benchy tg512 (c8)    -0.17%  noise  6.13%            control 135.6 arm 135.4 t/s (boots 4/4)
+== logits_equiv (reported, not judged)
+reason: acceptance: no paired data
+better: none
+VERDICT=INCONCLUSIVE
+== boot-level Welch 95% CI, benchy cells (reported; the rule uses the noise bands above)
+  pp2048 (c1)   +0.32%  CI [-1.14,+1.79]  control 1756.0 1775.1 1769.5 1767.9 | arm 1787.5 1753.5 1786.2 1764.1
+  tg512 (c1)    -2.44%  CI [-6.60,+1.71]  control 56.7 59.4 60.2 59.4 | arm 59.0 56.9 56.4 57.6
+  tg512 (c8)    -0.17%  CI [-4.60,+4.26]  control 136.9 132.4 140.7 132.5 | arm 136.8 136.7 135.0 133.2
+== post checks per boot
+  ctl-p3 -> k90b-1x-tile-fix-decode-recheck-20261012-1900/tf-01/ctl-p1: kv 993,754 ok
+  ctl-p4 -> k90b-1x-tile-fix-decode-recheck-20261012-1900/tf-01/ctl-p2: kv 993,754 ok
+  ctl-p5 -> k90b-1x-tile-fix-decode-recheck-20261012-1900/tf-01/ctl-p3: kv 993,754 ok
+  ctl-p6 -> k90b-1x-tile-fix-decode-recheck-20261012-1900/tf-01/ctl-p4: kv 993,754 ok
+  arm-p3 -> k90b-1x-tile-fix-decode-recheck-20261012-1900/tf-01/arm-p1: kv 993,754 ok
+  arm-p4 -> k90b-1x-tile-fix-decode-recheck-20261012-1900/tf-01/arm-p2: kv 993,754 ok
+  arm-p5 -> k90b-1x-tile-fix-decode-recheck-20261012-1900/tf-01/arm-p3: kv 993,754 ok
+  arm-p6 -> k90b-1x-tile-fix-decode-recheck-20261012-1900/tf-01/arm-p4: kv 993,754 ok
+worse: none
+better: none
+RULE=FLAT
+
+-- tf-02 (dgx-02)
+== cells: arm vs control % (noise = the cell's noise band, %)
+  benchy pp2048 (c1)   +0.45%  noise  1.66%            control 1780.9 arm 1788.9 t/s (boots 4/4)
+  benchy tg512 (c1)    +0.44%  noise  7.53%            control 57.6 arm 57.9 t/s (boots 4/4)
+  benchy tg512 (c8)    -0.48%  noise  5.48%            control 136.8 arm 136.2 t/s (boots 4/4)
+== logits_equiv (reported, not judged)
+reason: acceptance: no paired data
+better: none
+VERDICT=INCONCLUSIVE
+== boot-level Welch 95% CI, benchy cells (reported; the rule uses the noise bands above)
+  pp2048 (c1)   +0.45%  CI [-1.51,+2.40]  control 1765.0 1794.6 1792.5 1771.6 | arm 1780.5 1805.8 1808.6 1760.6
+  tg512 (c1)    +0.44%  CI [-7.03,+7.91]  control 56.8 60.0 58.0 55.6 | arm 57.3 54.2 60.6 59.3
+  tg512 (c8)    -0.48%  CI [-3.91,+2.95]  control 132.9 136.9 137.0 140.4 | arm 134.2 138.5 134.9 137.1
+== post checks per boot
+  ctl-p3 -> k90b-1x-tile-fix-decode-recheck-20261012-1900/tf-02/ctl-p1: kv 993,754 ok
+  ctl-p4 -> k90b-1x-tile-fix-decode-recheck-20261012-1900/tf-02/ctl-p2: kv 993,754 ok
+  ctl-p5 -> k90b-1x-tile-fix-decode-recheck-20261012-1900/tf-02/ctl-p3: kv 993,754 ok
+  ctl-p6 -> k90b-1x-tile-fix-decode-recheck-20261012-1900/tf-02/ctl-p4: kv 993,754 ok
+  arm-p3 -> k90b-1x-tile-fix-decode-recheck-20261012-1900/tf-02/arm-p1: kv 993,754 ok
+  arm-p4 -> k90b-1x-tile-fix-decode-recheck-20261012-1900/tf-02/arm-p2: kv 993,754 ok
+  arm-p5 -> k90b-1x-tile-fix-decode-recheck-20261012-1900/tf-02/arm-p3: kv 993,754 ok
+  arm-p6 -> k90b-1x-tile-fix-decode-recheck-20261012-1900/tf-02/arm-p4: kv 993,754 ok
+worse: none
+better: none
+RULE=FLAT
