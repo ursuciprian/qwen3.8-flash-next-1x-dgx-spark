@@ -1,0 +1,2 @@
+ghcr.io/ursuciprian/spark-vllm-b12x:tf-20261011-b45fe867-5dad364d
+ghcr.io/ursuciprian/spark-vllm-b12x:tf-20261011-b45fe867-5dad364d

@@ -1,0 +1,2 @@
+arm tf /home/nvidia/GEN-AI/backlog/k90/rec/tf.yaml
+ctl base /home/nvidia/GEN-AI/backlog/k90/rec/base.yaml

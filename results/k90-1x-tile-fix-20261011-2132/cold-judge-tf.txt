@@ -1,0 +1,9 @@
+tf-01   16K: control   2090 arm   2125 tok/s (+1.7%, noise 1.0%) better
+tf-01   64K: control   1978 arm   2008 tok/s (+1.6%, noise 1.0%) better
+tf-01  128K: control   1721 arm   1761 tok/s (+2.3%, noise 1.0%) better
+tf-01 COLD=PASS
+tf-02   16K: control   2086 arm   2129 tok/s (+2.0%, noise 1.0%) better
+tf-02   64K: control   1988 arm   2028 tok/s (+2.0%, noise 1.0%) better
+tf-02  128K: control   1734 arm   1769 tok/s (+2.0%, noise 1.0%) better
+tf-02 COLD=PASS
+COLD_ALL=PASS

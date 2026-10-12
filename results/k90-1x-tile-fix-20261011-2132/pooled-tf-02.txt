@@ -1,0 +1,39 @@
+== acceptance per draft position (T=0 probe cells, pooled)
+  pos 0: control 0.855 arm 0.849 shift -0.006
+  pos 1: control 0.712 arm 0.703 shift -0.009
+  pos 2: control 0.585 arm 0.576 shift -0.010
+  pos 3: control 0.480 arm 0.472 shift -0.008
+== cells: arm vs control % (noise = the cell's noise band, %)
+  probe  fresh-c1      -1.50%  noise  8.17%            n=4 CI [-6.8,+4.3] control boot-to-boot -8.17%, step +1.43%
+  probe  fresh-c4      -0.99%  noise  1.74%            n=16 CI [-2.8,+0.7] control boot-to-boot -1.27%, step -0.31%
+  probe  fresh-c8      -0.83%  noise  2.02%            n=32 CI [-2.9,+1.1] control boot-to-boot -1.34%, step +1.17%
+  probe  d16k-c4      missing
+  probe  count-c8     missing
+  wall   d16k-c8      missing
+  benchy pp2048 (c1)   -1.21%  noise  1.98%            control 1815.1 arm 1793.2 t/s (boots 2/2)
+  benchy tg512 (c1)    -3.56%  noise 21.12%            control 61.2 arm 59.0 t/s (boots 2/2)
+  benchy tg512 (c8)    +3.01%  noise  2.64%  better    control 139.2 arm 143.4 t/s (boots 2/2)
+== logits_equiv (reported, not judged)
+  self  ctl-p3 a/b: 16/20 prompts identical, |dlogprob| mean 0.0418 max 0.4584
+  self  ctl-p4 a/b: 9/20 prompts identical, |dlogprob| mean 0.0355 max 0.4231
+  self  arm-p3 a/b: 11/20 prompts identical, |dlogprob| mean 0.0297 max 0.5175
+  self  arm-p4 a/b: 11/20 prompts identical, |dlogprob| mean 0.0308 max 0.6586
+  cross ctl-p3/arm-p3: 11/20 prompts identical, |dlogprob| mean 0.0326 max 0.4590
+  cross ctl-p4/arm-p4: 14/20 prompts identical, |dlogprob| mean 0.0405 max 0.4503
+reason: probe d16k-c4: missing
+reason: probe count-c8: missing
+reason: wall d16k-c8: missing
+better: benchy tg512 (c8) +3.01% (noise 2.64%)
+VERDICT=INCONCLUSIVE
+== boot-level Welch 95% CI, benchy cells (reported; the rule uses the noise bands above)
+  pp2048 (c1)   -1.21%  CI [-12.63,+10.22]  control 1831.1 1799.2 | arm 1796.8 1789.7
+  tg512 (c1)    -3.56%  CI [-138.17,+131.04]  control 54.7 67.6 | arm 58.5 59.5
+  tg512 (c8)    +3.01%  CI [-3.23,+9.24]  control 139.0 139.5 | arm 142.8 144.1
+== post checks per boot
+  ctl-p3 -> k90-1x-tile-fix-20261011-2132/tf-02/ctl-p1: kv 993,754 ok
+  ctl-p4 -> k90-1x-tile-fix-20261011-2132/tf-02/ctl-p2: kv 993,754 ok
+  arm-p3 -> k90-1x-tile-fix-20261011-2132/tf-02/arm-p1: kv 993,754 ok
+  arm-p4 -> k90-1x-tile-fix-20261011-2132/tf-02/arm-p2: kv 993,754 ok
+worse: none
+better: benchy tg512 (c8)    +3.01%  noise  2.64%  better    control 139.2 arm 143.4 t/s (boots 2/2)
+RULE=PASS
