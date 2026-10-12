@@ -1,0 +1,37 @@
+== acceptance per draft position (T=0 probe cells, pooled)
+== cells: arm vs control % (noise = the cell's noise band, %)
+  benchy pp2048 (c1)   +0.45%  noise  1.66%            control 1780.9 arm 1788.9 t/s (boots 4/4)
+  benchy tg512 (c1)    +0.44%  noise  7.53%            control 57.6 arm 57.9 t/s (boots 4/4)
+  benchy tg512 (c8)    -0.48%  noise  5.48%            control 136.8 arm 136.2 t/s (boots 4/4)
+== logits_equiv (reported, not judged)
+  self  ctl-p3 a/b: 12/20 prompts identical, |dlogprob| mean 0.0433 max 0.6570
+  self  ctl-p4 a/b: 10/20 prompts identical, |dlogprob| mean 0.0347 max 0.4257
+  self  ctl-p5 a/b: 11/20 prompts identical, |dlogprob| mean 0.0373 max 0.5136
+  self  ctl-p6 a/b: 8/20 prompts identical, |dlogprob| mean 0.0374 max 0.6963
+  self  arm-p3 a/b: 12/20 prompts identical, |dlogprob| mean 0.0546 max 0.8852
+  self  arm-p4 a/b: 10/20 prompts identical, |dlogprob| mean 0.0369 max 0.7000
+  self  arm-p5 a/b: 9/20 prompts identical, |dlogprob| mean 0.0374 max 0.5566
+  self  arm-p6 a/b: 8/20 prompts identical, |dlogprob| mean 0.0319 max 0.4011
+  cross ctl-p3/arm-p3: 14/20 prompts identical, |dlogprob| mean 0.0404 max 0.7000
+  cross ctl-p4/arm-p4: 11/20 prompts identical, |dlogprob| mean 0.0421 max 0.5128
+  cross ctl-p5/arm-p5: 8/20 prompts identical, |dlogprob| mean 0.0350 max 0.5619
+  cross ctl-p6/arm-p6: 9/20 prompts identical, |dlogprob| mean 0.0394 max 0.7258
+reason: acceptance: no paired data
+better: none
+VERDICT=INCONCLUSIVE
+== boot-level Welch 95% CI, benchy cells (reported; the rule uses the noise bands above)
+  pp2048 (c1)   +0.45%  CI [-1.51,+2.40]  control 1765.0 1794.6 1792.5 1771.6 | arm 1780.5 1805.8 1808.6 1760.6
+  tg512 (c1)    +0.44%  CI [-7.03,+7.91]  control 56.8 60.0 58.0 55.6 | arm 57.3 54.2 60.6 59.3
+  tg512 (c8)    -0.48%  CI [-3.91,+2.95]  control 132.9 136.9 137.0 140.4 | arm 134.2 138.5 134.9 137.1
+== post checks per boot
+  ctl-p3 -> k90b-1x-tile-fix-decode-recheck-20261012-1900/tf-02/ctl-p1: kv 993,754 ok
+  ctl-p4 -> k90b-1x-tile-fix-decode-recheck-20261012-1900/tf-02/ctl-p2: kv 993,754 ok
+  ctl-p5 -> k90b-1x-tile-fix-decode-recheck-20261012-1900/tf-02/ctl-p3: kv 993,754 ok
+  ctl-p6 -> k90b-1x-tile-fix-decode-recheck-20261012-1900/tf-02/ctl-p4: kv 993,754 ok
+  arm-p3 -> k90b-1x-tile-fix-decode-recheck-20261012-1900/tf-02/arm-p1: kv 993,754 ok
+  arm-p4 -> k90b-1x-tile-fix-decode-recheck-20261012-1900/tf-02/arm-p2: kv 993,754 ok
+  arm-p5 -> k90b-1x-tile-fix-decode-recheck-20261012-1900/tf-02/arm-p3: kv 993,754 ok
+  arm-p6 -> k90b-1x-tile-fix-decode-recheck-20261012-1900/tf-02/arm-p4: kv 993,754 ok
+worse: none
+better: none
+RULE=FLAT
