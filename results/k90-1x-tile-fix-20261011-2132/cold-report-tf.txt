@@ -1,0 +1,8 @@
+== tf-01: cold prefill tok/s per boot (hook, prompt tokens / mean TTFT, 3 reps)
+  16K: ctl-p1 2089 ctl-p2 2091 arm-p1 2136 arm-p2 2114, arm vs ctl +1.7%
+  64K: ctl-p1 1983 ctl-p2 1972 arm-p1 2019 arm-p2 1998, arm vs ctl +1.6%
+  128K: ctl-p1 1725 ctl-p2 1717 arm-p1 1765 arm-p2 1757, arm vs ctl +2.3%
+== tf-02: cold prefill tok/s per boot (hook, prompt tokens / mean TTFT, 3 reps)
+  16K: ctl-p1 2089 ctl-p2 2083 arm-p1 2132 arm-p2 2125, arm vs ctl +2.0%
+  64K: ctl-p1 1993 ctl-p2 1983 arm-p1 2043 arm-p2 2014, arm vs ctl +2.0%
+  128K: ctl-p1 1738 ctl-p2 1730 arm-p1 1774 arm-p2 1764, arm vs ctl +2.0%

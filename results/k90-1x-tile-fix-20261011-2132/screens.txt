@@ -1,0 +1,2 @@
+tf: thunderdome exit 0 (DONE: tf=INCONCLUSIVE tf=INCONCLUSIVE); per Spark: tf-01=FAIL tf-02=PASS; cold PASS
+2x: skipped, no TP=2 projection changes plan (K3072 N2560 lowers as shipped at every probed M; see phase 0)
