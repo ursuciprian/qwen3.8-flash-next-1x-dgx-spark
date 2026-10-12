@@ -24,7 +24,7 @@ The serving plan for prefill is the capacity variant at max_tokens 8192 (`B12xEx
 
 b12x also has an NVFP4 split-materialized M128 path that writes one FC2 partial per route instead of five. It engages only when every expert shares one FC1 input scale. This checkpoint has per-expert FC1 input scales (2.0x to 4.2x spread within a layer), so serving never selects it. `VLLM_B12X_MOE_FP4_LAYER_MAX_INPUT_SCALE=w13` forces a shared scale at every M.
 
-My hypothesis before k91 was that atomics and weight restreaming per 32-row tile made up most of the 58.9 us/token marginal. k91 refutes it: larger tiles (fewer restreams) and the split path (a fifth of the atomics) are both slower than the shipped M32 tile.
+My hypothesis before k91 was that atomics and weight restreaming per 32-row tile made up most of the 58.9 us/token marginal. k91 refutes it: M64 only ties the shipped M32 tile, and M128 (fewer restreams) and the split path (a fifth of the atomics) are both slower.
 
 ## Options
 
@@ -35,8 +35,8 @@ All rows assume the weights stay where b12x prepared them (packed E2M1 payload, 
 | Backend | SM121 | Layout vs b12x storage | Extra memory | Expected ms/layer at 6048 | k91 | Effort |
 |---|---|---|---|---|---|---|
 | b12x dynamic M32, shipped | yes | same | none | 12.6, k81 | 1.00 (anchor) | none |
-| b12x dynamic M64, per-expert scales | yes | same | none | 12.2, #5863 table | 1.00-1.03 | small |
-| b12x dynamic M128, per-expert scales | yes | same | none | 12.2, #5863 table | 0.81-0.87 | small |
+| b12x dynamic M64, per-expert scales | yes | same | none | 12.2 for a forced larger tile (M64 or M128), #5863 table | 1.00-1.03 | small |
+| b12x dynamic M128, per-expert scales | yes | same | none | same 12.2 as the M64 row | 0.81-0.87 | small |
 | b12x split-materialized M128, layer-max FC1 scale | yes | same | scratch only | not estimated | 0.44-0.61 | env or small |
 | b12x M128, layer-max FC1 scale, no split | yes | same | none | not estimated | 0.82-0.89 | env |
 | FlashInfer #5863 canonical NVFP4 W4A4 | yes | same payload and scales; FC1 order [gate; up] | workspace per token bucket | 10.7, #5863 table | 1.08-1.13 | medium |
