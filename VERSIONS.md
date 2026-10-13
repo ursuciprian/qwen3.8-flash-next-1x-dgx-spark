@@ -44,6 +44,8 @@ Newest first. Every 1× release up to v2.1.0 was promoted in the tp-2 repo, befo
 Every release passed the quality gate. v1.1.0 was the default for about 8 hours and v1.3.0 for about 19; neither was
 rolled back, each was replaced by the next release.
 
+**Multi-user setups (v2.3.0 and later).** I set this recipe up for a single user. `--enable-prompt-tokens-details` (since v2.3.0) makes the usage field report `prompt_tokens_details.cached_tokens` exactly, so on a server shared by several users or tenants one user can tell whether someone else already sent the same prompt prefix. Prefix caching already leaks this through time to first token; the flag makes it exact. With several users or tenants, give each one its own random, secret `cache_salt` in the request body (the pinned vLLM accepts it on `/v1/chat/completions`, `/v1/completions` and `/v1/responses`; a gateway can set it per API key), so their prefix-cache entries never match each other. Otherwise, remove `--enable-prompt-tokens-details` from the recipe.
+
 ## Tags
 
 The commits before 2026-10-08 are the rewritten copies of the tp-2 promote commits made when this repo was split out
