@@ -1,0 +1,11 @@
+k98-fi5168-moe-layer-probe result: one routed-MoE layer (layer 5 timed, layers 5 and 47 for numerics, checkpoint NVFP4 weights) at prefill M 1,264 / 3,024 / 6,048 / 9,072 on one Spark. I compared the shipped b12x MoE with FlashInfer at `5c4058bd9b`, the merge of FlashInfer PR flashinfer-ai/flashinfer#5168, which brings true-extent weight views for I=320, routing and transfer changes. Both geometries ran: the single-Spark layer (I640, tp1 below) and the rank-0 shard of the 2x (I320, tp2 below).
+
+The control is the 1x v2.3.0 image. Its fused MoE code is the same as the 2x image's, because the v2.3.0 b12x change touches only dense GEMM lowering. FlashInfer runs from source in a throwaway container of the same image, with per-expert activation scales: the shipped contract, not k91's scalar layer max. FlashInfer's SM12x kernels divide by their global scales, so they get the checkpoint input_scale itself (b12x takes its reciprocal), and they fold only the FC1 one into the weight scale, so the harness passes w2_alpha = weight_scale_2 x FC2 input_scale. Routing: "real" is the top-10 ids, weights and MoE inputs captured from a cold 16K prompt (k97); uniform and skew are k91's synthetic patterns.
+
+Numerics come first, at every M: error against an FP32 reference (the accuracy gate), and separately the difference to the b12x output (a contract check that the same quantization contract is computed). Speed is claimed only where the accuracy gate passes. The anchor compares b12x with my k81 serving profile, which exists only for the single Spark; k91's synthetic-routing anchor was 13 to 14% off at M 6,048. Projections are operator-only: they leave out the rest of the step and any server effect. Measure only: nothing ships from this, and I posted nothing upstream.
+
+Verdict: {VERDICT}
+
+```
+{REPORT}
+```

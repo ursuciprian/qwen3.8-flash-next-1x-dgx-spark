@@ -1,0 +1,9 @@
+k98-fi5168-moe-layer-probe, TP=2 part: the routed-MoE layer at the 2x rank shard geometry (E512 H2560 I320 top-10, rank-0 slice of the served checkpoint's layer 5 experts). It compares the shipped b12x MoE with FlashInfer at `5c4058bd9b` (merge of FlashInfer PR flashinfer-ai/flashinfer#5168) at M 1,264 / 3,024 / 6,048 / 9,072, on one Spark. The I320 rows are the `tp2` sections below; `tp1` is the single-Spark I640 layer, which I posted on the 1x repo.
+
+Operator only: there is no TP=2 per-layer serving profile yet, so this has no anchor, and the all-reduce and the rest of the step are not in it. A server A/B on the 2x is worth running only if the gated tp2 gain projects to a useful share of the step.
+
+Verdict: {VERDICT}
+
+```
+{REPORT}
+```

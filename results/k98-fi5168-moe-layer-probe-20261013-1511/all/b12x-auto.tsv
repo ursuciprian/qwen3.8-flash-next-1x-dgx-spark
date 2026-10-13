@@ -1,0 +1,30 @@
+b12x-auto	tp1	5	real	1264	8.0166	15.5	0.10380	nan	7.8	1403	cap8192	captured 16384 rows, router overlap 0.979, n_moe 49
+b12x-auto	tp1	5	real	3024	10.2172	29.1	0.10378	nan	7.8	1403	cap8192	captured 16384 rows, router overlap 0.979, n_moe 49
+b12x-auto	tp1	5	real	6048	13.5411	43.9	0.10379	nan	7.8	1403	cap8192	captured 16384 rows, router overlap 0.979, n_moe 49
+b12x-auto	tp1	5	real	9072	16.9822	52.5	0.10380	nan	7.8	1403	cap9072	captured 16384 rows, router overlap 0.979, n_moe 49
+b12x-auto	tp1	5	uniform	1264	9.0314	13.8	0.16077	nan	7.8	1403	cap8192	synthetic
+b12x-auto	tp1	5	uniform	3024	10.3339	28.8	0.16076	nan	7.8	1403	cap8192	synthetic
+b12x-auto	tp1	5	uniform	6048	12.9124	46.0	0.16075	nan	7.8	1403	cap8192	synthetic
+b12x-auto	tp1	5	uniform	9072	16.4964	54.1	0.16077	nan	7.8	1403	cap9072	synthetic
+b12x-auto	tp1	5	skew	1264	9.0293	13.8	0.16472	nan	7.8	1403	cap8192	synthetic
+b12x-auto	tp1	5	skew	3024	10.3401	28.7	0.16472	nan	7.8	1403	cap8192	synthetic
+b12x-auto	tp1	5	skew	6048	12.9922	45.8	0.16471	nan	7.8	1403	cap8192	synthetic
+b12x-auto	tp1	5	skew	9072	16.6223	53.7	0.16471	nan	7.8	1403	cap9072	synthetic
+b12x-auto	tp2	5	real	1264	4.9446	12.6	0.11378	nan	5.6	442	cap8192	captured 16384 rows, router overlap 0.979, n_moe 49
+b12x-auto	tp2	5	real	3024	6.9229	21.5	0.11379	nan	5.6	442	cap8192	captured 16384 rows, router overlap 0.979, n_moe 49
+b12x-auto	tp2	5	real	6048	10.1783	29.2	0.11378	nan	5.6	442	cap8192	captured 16384 rows, router overlap 0.979, n_moe 49
+b12x-auto	tp2	5	real	9072	13.5677	32.9	0.11379	nan	5.6	442	cap9072	captured 16384 rows, router overlap 0.979, n_moe 49
+b12x-auto	tp2	5	uniform	1264	6.3956	9.7	0.16460	nan	5.6	442	cap8192	synthetic
+b12x-auto	tp2	5	uniform	3024	7.3930	20.1	0.16460	nan	5.6	353	cap8192	synthetic
+b12x-auto	tp2	5	uniform	6048	9.0744	32.8	0.16460	nan	5.6	353	cap8192	synthetic
+b12x-auto	tp2	5	uniform	9072	13.7582	32.4	0.16460	nan	5.6	353	cap9072	synthetic
+b12x-auto	tp2	5	skew	1264	5.6216	11.1	0.16434	nan	5.6	353	cap8192	synthetic
+b12x-auto	tp2	5	skew	3024	7.0837	21.0	0.16433	nan	5.6	353	cap8192	synthetic
+b12x-auto	tp2	5	skew	6048	9.3417	31.8	0.16433	nan	5.6	353	cap8192	synthetic
+b12x-auto	tp2	5	skew	9072	13.5431	32.9	0.16433	nan	5.6	353	cap9072	synthetic
+b12x-auto	tp1	47	real	6048	nan	nan	0.11375	nan	0.1	999	cap8192	captured 16384 rows, router overlap 0.981, n_moe 49
+b12x-auto	tp1	47	uniform	6048	nan	nan	0.19960	nan	0.1	999	cap8192	synthetic
+b12x-auto	tp1	47	skew	6048	nan	nan	0.22563	nan	0.1	999	cap8192	synthetic
+b12x-auto	tp2	47	real	6048	nan	nan	0.11931	nan	0.1	288	cap8192	captured 16384 rows, router overlap 0.981, n_moe 49
+b12x-auto	tp2	47	uniform	6048	nan	nan	0.20074	nan	0.1	288	cap8192	synthetic
+b12x-auto	tp2	47	skew	6048	nan	nan	0.21410	nan	0.1	288	cap8192	synthetic

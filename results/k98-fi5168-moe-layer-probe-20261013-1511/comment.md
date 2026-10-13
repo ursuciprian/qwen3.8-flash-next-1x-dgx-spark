@@ -1,0 +1,103 @@
+k98-fi5168-moe-layer-probe result: one routed-MoE layer (layer 5 timed, layers 5 and 47 for numerics, checkpoint NVFP4 weights) at prefill M 1,264 / 3,024 / 6,048 / 9,072 on one Spark. I compared the shipped b12x MoE with FlashInfer at `5c4058bd9b`, the merge of FlashInfer PR flashinfer-ai/flashinfer#5168, which brings true-extent weight views for I=320, routing and transfer changes. Both geometries ran: the single-Spark layer (I640, tp1 below) and the rank-0 shard of the 2x (I320, tp2 below).
+
+The control is the 1x v2.3.0 image. Its fused MoE code is the same as the 2x image's, because the v2.3.0 b12x change touches only dense GEMM lowering. FlashInfer runs from source in a throwaway container of the same image, with per-expert activation scales: the shipped contract, not k91's scalar layer max. FlashInfer's SM12x kernels divide by their global scales, so they get the checkpoint input_scale itself (b12x takes its reciprocal), and they fold only the FC1 one into the weight scale, so the harness passes w2_alpha = weight_scale_2 x FC2 input_scale. Routing: "real" is the top-10 ids, weights and MoE inputs captured from a cold 16K prompt (k97); uniform and skew are k91's synthetic patterns.
+
+Numerics come first, at every M: error against an FP32 reference (the accuracy gate), and separately the difference to the b12x output (a contract check that the same quantization contract is computed). Speed is claimed only where the accuracy gate passes. The anchor compares b12x with my k81 serving profile, which exists only for the single Spark; k91's synthetic-routing anchor was 13 to 14% off at M 6,048. Projections are operator-only: they leave out the rest of the step and any server effect. Measure only: nothing ships from this, and I posted nothing upstream.
+
+Verdict: anchor=OK fi5168_tp1=PASS contract=PASS x1.04@6048real fi5168_tp2=PASS contract=PASS x1.18@6048real (b12x exit 0, FlashInfer exit 0)
+
+```
+routing/activations: real: captured 16384 rows, router overlap 0.979, n_moe 49; real: captured 16384 rows, router overlap 0.979, n_moe 49; FI scale contract (M256 err 0.104 norm ratio 0.996 cos 0.995); real: captured 16384 rows, router overlap 0.979, n_moe 49; FI scale contract (M256 err 0.114 norm ratio 0.999 cos 0.994); real: captured 16384 rows, router overlap 0.981, n_moe 49; real: captured 16384 rows, router overlap 0.981, n_moe 49; FI scale contract (M256 err 0.114 norm ratio 0.997 cos 0.994); real: captured 16384 rows, router overlap 0.981, n_moe 49; FI scale contract (M256 err 0.119 norm ratio 0.997 cos 0.993); skew: synthetic; skew: synthetic; FI scale contract (M256 err 0.164 norm ratio 0.998 cos 0.986); skew: synthetic; FI scale contract (M256 err 0.165 norm ratio 0.995 cos 0.986); skew: synthetic; FI scale contract (M256 err 0.214 norm ratio 0.962 cos 0.977); skew: synthetic; FI scale contract (M256 err 0.226 norm ratio 0.952 cos 0.974); uniform: synthetic; uniform: synthetic; FI scale contract (M256 err 0.161 norm ratio 0.999 cos 0.987); uniform: synthetic; FI scale contract (M256 err 0.165 norm ratio 1.000 cos 0.986); uniform: synthetic; FI scale contract (M256 err 0.199 norm ratio 0.972 cos 0.980); uniform: synthetic; FI scale contract (M256 err 0.201 norm ratio 0.974 cos 0.980)
+
+== tp1 (I 640) numerics: rel L2 error vs FP32 reference, rows 0..255 (same inputs at every M), at M 6048 [fi5168: rel L2 difference to the b12x-m32 output]
+   accuracy gate: err <= 1.10 x b12x-m32 + 0.005 in every cell and at every M; contract check (fi5168): difference to b12x-m32 <= 0.5 x err(b12x-m32) in every cell and at every M
+variant              L5 real      L5 uniform         L5 skew        L47 real     L47 uniform        L47 skew  accuracy contract
+b12x-m32              0.1038          0.1608          0.1647          0.1137          0.1996          0.2256      PASS      N/A
+b12x-auto             0.1038          0.1608          0.1647          0.1138          0.1996          0.2256      PASS      N/A
+fi5168         0.1038[0.007]   0.1608[0.020]   0.1647[0.019]   0.1137[0.007]   0.1995[0.014]   0.2256[0.011]      PASS     PASS
+  layer 5 real, error per M b12x-m32: 1264=0.1038 3024=0.1038 6048=0.1038 9072=0.1038  b12x-auto: 1264=0.1038 3024=0.1038 6048=0.1038 9072=0.1038  fi5168: 1264=0.1038 3024=0.1038 6048=0.1038 9072=0.1038
+  layer 5 uniform, error per M b12x-m32: 1264=0.1608 3024=0.1608 6048=0.1608 9072=0.1608  b12x-auto: 1264=0.1608 3024=0.1608 6048=0.1608 9072=0.1608  fi5168: 1264=0.1608 3024=0.1608 6048=0.1608 9072=0.1608
+  layer 5 skew, error per M b12x-m32: 1264=0.1647 3024=0.1647 6048=0.1647 9072=0.1647  b12x-auto: 1264=0.1647 3024=0.1647 6048=0.1647 9072=0.1647  fi5168: 1264=0.1647 3024=0.1647 6048=0.1647 9072=0.1647
+
+== tp2 (I 320) numerics: rel L2 error vs FP32 reference, rows 0..255 (same inputs at every M), at M 6048 [fi5168: rel L2 difference to the b12x-m32 output]
+   accuracy gate: err <= 1.10 x b12x-m32 + 0.005 in every cell and at every M; contract check (fi5168): difference to b12x-m32 <= 0.5 x err(b12x-m32) in every cell and at every M
+variant              L5 real      L5 uniform         L5 skew        L47 real     L47 uniform        L47 skew  accuracy contract
+b12x-m32              0.1138          0.1646          0.1643          0.1193          0.2007          0.2141      PASS      N/A
+b12x-auto             0.1138          0.1646          0.1643          0.1193          0.2007          0.2141      PASS      N/A
+fi5168         0.1137[0.009]   0.1646[0.020]   0.1643[0.020]   0.1193[0.009]   0.2006[0.014]   0.2141[0.012]      PASS     PASS
+  layer 5 real, error per M b12x-m32: 1264=0.1138 3024=0.1138 6048=0.1138 9072=0.1138  b12x-auto: 1264=0.1138 3024=0.1138 6048=0.1138 9072=0.1138  fi5168: 1264=0.1138 3024=0.1138 6048=0.1137 9072=0.1137
+  layer 5 uniform, error per M b12x-m32: 1264=0.1646 3024=0.1646 6048=0.1646 9072=0.1646  b12x-auto: 1264=0.1646 3024=0.1646 6048=0.1646 9072=0.1646  fi5168: 1264=0.1647 3024=0.1647 6048=0.1646 9072=0.1646
+  layer 5 skew, error per M b12x-m32: 1264=0.1643 3024=0.1643 6048=0.1643 9072=0.1643  b12x-auto: 1264=0.1643 3024=0.1643 6048=0.1643 9072=0.1643  fi5168: 1264=0.1643 3024=0.1643 6048=0.1643 9072=0.1643
+
+== anchor: b12x-m32 tp1 layer 5 vs k81 serving (routed MoE ms per layer per chunk); tp2: N/A (no TP=2 per-layer profile)
+  real: M 1264: 6.60 vs 6.66 (-1%); M 3024: 8.69 vs 8.98 (-3%); M 6048: 12.05 vs 12.57 (-4%)
+  uniform: M 1264: 7.39 vs 6.66 (+11%); M 3024: 8.44 vs 8.98 (-6%); M 6048: 10.90 vs 12.57 (-13%)
+  skew: M 1264: 7.40 vs 6.66 (+11%); M 3024: 8.49 vs 8.98 (-5%); M 6048: 11.10 vs 12.57 (-12%)
+ANCHOR=OK (closest: real at M 6048, -4%; k91 was -13/-14% with synthetic routing)
+
+== tp1 (I 640) speed, layer 5, real routing: ms per call [TFLOPS] backend; x = best b12x / variant
+     M act  max                       b12x-m32                     b12x-auto                        fi5168
+  1264             6.604 [ 18.8] cap8192 x1.00   8.017 [ 15.5] cap8192 x0.82   6.557 [ 19.0] dynamic x1.01
+  3024             8.686 [ 34.2] cap8192 x1.00  10.217 [ 29.1] cap8192 x0.85   8.586 [ 34.6] dynamic x1.01
+  6048            12.049 [ 49.3] cap8192 x1.00  13.541 [ 43.9] cap8192 x0.89  11.583 [ 51.3] dynamic x1.04
+  9072            15.525 [ 57.4] cap9072 x1.00  16.982 [ 52.5] cap9072 x0.91  14.677 [ 60.8] dynamic x1.06
+
+== tp1 (I 640) speed, layer 5, uniform routing: ms per call [TFLOPS] backend; x = best b12x / variant
+     M act  max                       b12x-m32                     b12x-auto                        fi5168
+  1264             7.389 [ 16.8] cap8192 x1.00   9.031 [ 13.8] cap8192 x0.82   7.319 [ 17.0] dynamic x1.01
+  3024             8.445 [ 35.2] cap8192 x1.00  10.334 [ 28.8] cap8192 x0.82   8.570 [ 34.7] dynamic x0.99
+  6048            10.902 [ 54.5] cap8192 x1.00  12.912 [ 46.0] cap8192 x0.84  11.759 [ 50.6] dynamic x0.93
+  9072            13.996 [ 63.7] cap9072 x1.00  16.496 [ 54.1] cap9072 x0.85  14.397 [ 61.9] dynamic x0.97
+
+== tp1 (I 640) speed, layer 5, skew routing: ms per call [TFLOPS] backend; x = best b12x / variant
+     M act  max                       b12x-m32                     b12x-auto                        fi5168
+  1264             7.399 [ 16.8] cap8192 x1.00   9.029 [ 13.8] cap8192 x0.82   7.305 [ 17.0] dynamic x1.01
+  3024             8.487 [ 35.0] cap8192 x1.00  10.340 [ 28.7] cap8192 x0.82   8.585 [ 34.6] dynamic x0.99
+  6048            11.101 [ 53.6] cap8192 x1.00  12.992 [ 45.8] cap8192 x0.85  11.709 [ 50.8] dynamic x0.95
+  9072            14.223 [ 62.7] cap9072 x1.00  16.622 [ 53.7] cap9072 x0.86  14.454 [ 61.7] dynamic x0.98
+
+== tp2 (I 320) speed, layer 5, real routing: ms per call [TFLOPS] backend; x = best b12x / variant
+     M act  max                       b12x-m32                     b12x-auto                        fi5168
+  1264             3.874 [ 16.0] cap8192 x1.00   4.945 [ 12.6] cap8192 x0.78   3.939 [ 15.8] dynamic x0.98
+  3024             5.560 [ 26.7] cap8192 x1.00   6.923 [ 21.5] cap8192 x0.80   5.487 [ 27.1] dynamic x1.01
+  6048             8.538 [ 34.8] cap8192 x1.00  10.178 [ 29.2] cap8192 x0.84   7.225 [ 41.1] dynamic x1.18
+  9072            11.822 [ 37.7] cap9072 x1.00  13.568 [ 32.9] cap9072 x0.87   9.717 [ 45.9] dynamic x1.22
+
+== tp2 (I 320) speed, layer 5, uniform routing: ms per call [TFLOPS] backend; x = best b12x / variant
+     M act  max                       b12x-m32                     b12x-auto                        fi5168
+  1264             4.331 [ 14.3] cap8192 x1.00   6.396 [  9.7] cap8192 x0.68   4.396 [ 14.1] dynamic x0.99
+  3024             5.405 [ 27.5] cap8192 x1.00   7.393 [ 20.1] cap8192 x0.73   5.575 [ 26.7] dynamic x0.97
+  6048             8.020 [ 37.1] cap8192 x1.00   9.074 [ 32.8] cap8192 x0.88   7.370 [ 40.3] dynamic x1.09
+  9072            11.744 [ 38.0] cap9072 x1.00  13.758 [ 32.4] cap9072 x0.85   9.738 [ 45.8] dynamic x1.21
+
+== tp2 (I 320) speed, layer 5, skew routing: ms per call [TFLOPS] backend; x = best b12x / variant
+     M act  max                       b12x-m32                     b12x-auto                        fi5168
+  1264             4.325 [ 14.4] cap8192 x1.00   5.622 [ 11.1] cap8192 x0.77   4.367 [ 14.2] dynamic x0.99
+  3024             5.449 [ 27.3] cap8192 x1.00   7.084 [ 21.0] cap8192 x0.77   5.527 [ 26.9] dynamic x0.99
+  6048             8.080 [ 36.8] cap8192 x1.00   9.342 [ 31.8] cap8192 x0.86   7.402 [ 40.2] dynamic x1.09
+  9072            12.028 [ 37.1] cap9072 x1.00  13.543 [ 32.9] cap9072 x0.89   9.851 [ 45.3] dynamic x1.22
+* = numerics gate FAIL, NOANCHOR or missing: no speed claim
+
+== preparation (s, layer 5: b12x weights + plans; fi first call incl. JIT) and GPU memory kept beyond the raw checkpoint tensors (MiB per layer, x48 layers)
+  tp1 b12x-m32: prep 8.4 s; kept 1268 MiB per layer, 59.4 GiB x48
+  tp1 b12x-auto: prep 7.8 s; kept 1403 MiB per layer, 65.8 GiB x48
+  tp1 fi5168: prep 7.3 s; kept 1401 MiB per layer, 65.7 GiB x48
+  tp2 b12x-m32: prep 2.5 s; kept 442 MiB per layer, 20.7 GiB x48
+  tp2 b12x-auto: prep 5.6 s; kept 442 MiB per layer, 20.7 GiB x48
+  tp2 fi5168: prep 5.8 s; kept -101 MiB per layer, -4.7 GiB x48
+
+== projection (operator only): seconds per cold 16K prompt = sum over the budget's chunks of (best b12x - fi5168) ms x 48 layers; positive = fi5168 faster
+  tp1 real budget 8192 [6048, 6048, 3024, 1264]: +0.052 s
+  tp1 real budget 9072 [9072, 3024, 3024, 1264]: +0.053 s
+  tp1 uniform budget 8192 [6048, 6048, 3024, 1264]: -0.085 s
+  tp1 uniform budget 9072 [9072, 3024, 3024, 1264]: -0.028 s
+  tp1 skew budget 8192 [6048, 6048, 3024, 1264]: -0.059 s
+  tp1 skew budget 9072 [9072, 3024, 3024, 1264]: -0.016 s
+  tp2 real budget 8192 [6048, 6048, 3024, 1264]: +0.126 s
+  tp2 real budget 9072 [9072, 3024, 3024, 1264]: +0.105 s
+  tp2 uniform budget 8192 [6048, 6048, 3024, 1264]: +0.051 s
+  tp2 uniform budget 9072 [9072, 3024, 3024, 1264]: +0.077 s
+  tp2 skew budget 8192 [6048, 6048, 3024, 1264]: +0.059 s
+  tp2 skew budget 9072 [9072, 3024, 3024, 1264]: +0.095 s
+VERDICT anchor=OK fi5168_tp1=PASS contract=PASS x1.04@6048real fi5168_tp2=PASS contract=PASS x1.18@6048real
+```
