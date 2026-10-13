@@ -1,0 +1,10 @@
+image: ghcr.io/ursuciprian/spark-vllm-b12x:k95-20261013-b45fe867-5dad364d-warm
+runtime cache: /home/nvidia/GEN-AI/backlog/k95f/fresh-20261013-0937/runtime-cache/vllm/ursuciprian__Qwen3.8-Flash-Next-NVFP4-GDN-MSE-5d63a923->/cache/runtime
+boot: boot_s 521 pong pong 
+Directly load AOT: 2; saved AOT: 0; Dynamo bytecode transform: 0
+/home/nvidia/GEN-AI/qwen3.8-flash-next-dgx-spark-tp-2/results/k95f-1x-ship-check-fidelity-20261013-0937/fresh/serve.log: attention.gdn 0 measured / 10 cached, attention.qsa 0 measured / 10 cached, gemm.blockscaled_precision 0 measured / 280 cached, moe.decode 0 measured / 280 cached, norm.hyperconnection 0 measured / 280 cached, sequence.gdn_prefill 0 measured / 10 cached, sequence.mtp_feedback 0 measured / 280 cached, sequence.ple_embedding 0 measured / 0 cached
+seed check PASS
+plan 33d9b32e995b59bc4b0d3cdfb5fc2247f3c7b2151c09569ffd3dbaf85c4562e3.json: 303 records (seed 303)
+MXFP8 copies: 72
+Traceback: 19; ValueError: 0; 'plan belongs to': 0
+revision: --revision 03f4a0570496bbe741189f4a2a7d611679e85406; prompt tokens details flag: 1
