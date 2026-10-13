@@ -1,0 +1,122 @@
+k96-hc-gemm-fair-probe result: the two hyperconnection GEMMs of the 1x v2.3.0 stack (down K10240 to N336, up K320 to N10240, layer 5 weights of the served checkpoint, quantized to MXFP8 the way the server does at load) on identical inputs and weights for every variant. Each variant goes through `blockscaled.plan_regimes` and `blockscaled.mm` with the server's query: activation quantization, output and workspace contract included in every timing. This replaces the k90 candidate column, which timed a prequantized GEMM on other random inputs.
+
+Control is the served plan record when the probe can load it from the image's plan seed (`ctl-seed`, capacity 8192), otherwise the autotuned selection, as a server with `B12X_AUTOTUNE=1` picks it; the report says which one it got. The candidates force the large-row dense lowering (128x128/BK64 without unroll and neighbours) through the same dispatch. `q-prop` keeps the previous plan below 4096 rows, the way the v2.3.0 tile fix does for K6144 N2560. The up projection has K320, which has no quantized path, so its candidates are the A16 launch configs.
+
+Numerics come before speed: per cell I compare the output bytes with the control, the cosine and max relative difference on 128 sampled rows, and the error against an FP32 reference. A variant without a pass in every cell gets no speed claim. Projected savings use the chunk lists of k81/k88 (budgets 8192 and 9072) and the 12096 hypothesis that k97 checks, times 96 HC calls per step. The headline figure is scaled to k81's measured dense-HC cost (48.7 us/token) through the anchor ratio, with the raw probe figure beside it. They are probe projections, not server measurements.
+
+Verdict: anchor=OK served=hit best=none control8192=ctl-seed/ctl-seed ctl=PASS q-128x128k128u0=FAIL q-128x128k64u0=FAIL q-128x128k64u1=FAIL q-128x64k64u0=FAIL q-def=FAIL q-prop=FAIL (probe exit 0)
+
+```
+inputs: captured 16384 rows; weights: layer 5 attention HC, online MXFP8 g32
+control per shape and capacity: down c8192=ctl-seed c9072=ctl c12096=ctl; up c8192=ctl-seed c9072=ctl c12096=ctl (ctl-seed = the served plan record, ctl = autotuned here, q-def/a16-n64k64s1 = default-config fallback)
+
+== served plan record (seed 33d9b32e) at capacity 8192: ctl-seed autotunes over a copy of the image seed; no new record = the served selection was loaded
+  down: ctl-seed a16 n128 k64 s1 [seed hit]; ctl a16 n128 k64 s1; ctl's config appears in 24 of 267 seed records
+  up: ctl-seed quantized [seed hit]; ctl quantized; ctl's config appears in 52 of 267 seed records
+  seed record configs: a16 n64 k64 s1: 56, quantized: 52, a16 n64 k128 s1: 46, a16 n64 k64 s4: 29, a16 n128 k64 s1: 24, a16 n64 k64 s8: 20, a16 n64 k128 s4: 16, a16 n64 k128 s8: 7, a16 n128 k128 s1: 7, a16 n128 k64 s4: 5, a16 n64 k128 s2: 3, a16 n128 k128 s8: 2
+  (seed records are keyed by hash, so a miss cannot name the HC record; this only shows whether ctl's config is one the server uses)
+
+== down K10240 N336: full-op ms per call (blockscaled.mm with activation quantization and workspace), x = control / variant; numerics vs control: '=' bit-equal, '~' within gate, '!' fails
+cap      M               ctl-seed                   ctl       q-128x128k128u0        q-128x128k64u0        q-128x128k64u1         q-128x64k64u0                 q-def                q-prop
+ 8192   1264                  0.381          0.378 x1.01=          0.375 x1.02!          0.560 x0.68!          0.323 x1.18!          0.345 x1.11!          0.337 x1.13!          0.329 x1.16!
+ 8192   3024                  0.988          0.985 x1.00=          0.902 x1.10!          1.137 x0.87!          0.844 x1.17!          0.954 x1.04!          1.253 x0.79!          1.207 x0.82!
+ 8192   4536                  1.430          1.435 x1.00=          1.378 x1.04!          1.678 x0.85!          1.346 x1.06!          1.843 x0.78!          1.982 x0.72!          1.672 x0.86!
+ 8192   6048                  1.883          1.888 x1.00=          1.850 x1.02!          2.228 x0.85!          1.924 x0.98!          2.834 x0.66!          2.697 x0.70!          2.214 x0.85!
+ 8192   8192                  2.513          2.514 x1.00=          2.474 x1.02!          3.026 x0.83!          2.601 x0.97!          3.836 x0.66!          3.613 x0.70!          3.010 x0.84!
+ 9072   1264                    n/a                 0.379          0.376 x1.01!          0.564 x0.67!          0.320 x1.18!          0.360 x1.05!          0.331 x1.15!          0.334 x1.13!
+ 9072   3024                    n/a                 0.986          0.919 x1.07!          1.134 x0.87!          0.850 x1.16!          0.955 x1.03!          1.308 x0.75!          1.238 x0.80!
+ 9072   9072                    n/a                 2.785          2.791 x1.00!          3.330 x0.84!          2.900 x0.96!          4.305 x0.65!          4.012 x0.69!          3.314 x0.84!
+12096   1264                    n/a                 0.379          0.373 x1.02!          0.563 x0.67!          0.319 x1.19!          0.343 x1.11!          0.327 x1.16!          0.319 x1.19!
+12096   3024                    n/a                 0.983          0.908 x1.08!          1.133 x0.87!          0.850 x1.16!          0.945 x1.04!          1.287 x0.76!          1.235 x0.80!
+12096  12096                    n/a                 3.720          3.615 x1.03!          4.425 x0.84!          3.798 x0.98!          5.672 x0.66!          5.330 x0.70!          4.401 x0.85!
+plans (config / dense lowering) at the largest M of each capacity:
+  ctl-seed: c8192: a16 n128 k64 s1 [seed hit] -
+  ctl: c8192: a16 n128 k64 s1 -; c9072: a16 n128 k64 s1 -; c12096: a16 n128 k64 s1 -
+  q-128x128k128u0: c8192: quantized (128, 128)/BK128/u0; c9072: quantized (128, 128)/BK128/u0; c12096: quantized (128, 128)/BK128/u0
+  q-128x128k64u0: c8192: quantized (128, 128)/BK64/u0; c9072: quantized (128, 128)/BK64/u0; c12096: quantized (128, 128)/BK64/u0
+  q-128x128k64u1: c8192: quantized (128, 128)/BK64/u1; c9072: quantized (128, 128)/BK64/u1; c12096: quantized (128, 128)/BK64/u1
+  q-128x64k64u0: c8192: quantized (128, 64)/BK64/u0; c9072: quantized (128, 64)/BK64/u0; c12096: quantized (128, 64)/BK64/u0
+  q-def: c8192: quantized (64, 64)/BK128/u1; c9072: quantized (64, 64)/BK128/u1; c12096: quantized (64, 64)/BK128/u1
+  q-prop: c8192: quantized (128, 128)/BK64/u0; c9072: quantized (128, 128)/BK64/u0; c12096: quantized (128, 128)/BK64/u0
+
+== up K320 N10240: full-op ms per call (blockscaled.mm with activation quantization and workspace), x = control / variant; numerics vs control: '=' bit-equal, '~' within gate, '!' fails
+cap      M               ctl-seed                   ctl
+ 8192   1264                  0.222          0.223 x1.00=
+ 8192   3024                  0.438          0.433 x1.01=
+ 8192   4536                  0.581          0.572 x1.02=
+ 8192   6048                  0.744          0.735 x1.01=
+ 8192   8192                  0.974          0.977 x1.00=
+ 9072   1264                    n/a                 0.224
+ 9072   3024                    n/a                 0.439
+ 9072   9072                    n/a                 1.082
+12096   1264                    n/a                 0.226
+12096   3024                    n/a                 0.436
+12096  12096                    n/a                 1.409
+plans (config / dense lowering) at the largest M of each capacity:
+  ctl-seed: c8192: quantized [seed hit] (64, 128)/BK128/u1
+  ctl: c8192: quantized (64, 128)/BK128/u1; c9072: quantized (64, 128)/BK128/u1; c12096: quantized (64, 128)/BK128/u1
+
+== anchor: control at budget 8192 = 42.7 us/token vs k81 dense-HC class 48.7 us/token (ratio 0.88); ANCHOR=OK (OK = within 15%)
+
+== projection: seconds saved per cold 16K prompt = sum over chunks and covered shapes of (control - variant) ms x 96 calls per step; k81-scaled = that x 48.7 / control us/token. Headline: k81-scaled (ANCHOR=OK)
+budget 8192 chunks [6048, 6048, 3024, 1264] (k81/k88 measured):
+  a16-n64k64s1: -0.311 s (-3.9% of k81's 7.925 s TTFT), -0.272 s raw  (numerics FAIL: no claim)
+  a16-n64k64s2: -1.483 s (-18.7% of k81's 7.925 s TTFT), -1.300 s raw  (numerics FAIL: no claim)
+  a16-n64k64s4: -2.888 s (-36.4% of k81's 7.925 s TTFT), -2.531 s raw  (numerics FAIL: no claim)
+  a16-n64k64s8: -3.593 s (-45.3% of k81's 7.925 s TTFT), -3.149 s raw  (numerics FAIL: no claim)
+  a16-n64k128s1: -0.777 s (-9.8% of k81's 7.925 s TTFT), -0.681 s raw  (numerics FAIL: no claim)
+  a16-n64k128s2: -2.272 s (-28.7% of k81's 7.925 s TTFT), -1.991 s raw  (numerics FAIL: no claim)
+  a16-n64k128s4: -2.865 s (-36.2% of k81's 7.925 s TTFT), -2.511 s raw  (numerics FAIL: no claim)
+  a16-n64k128s8: -2.868 s (-36.2% of k81's 7.925 s TTFT), -2.514 s raw  (numerics FAIL: no claim)
+  a16-n128k64s1: -0.359 s (-4.5% of k81's 7.925 s TTFT), -0.315 s raw  (numerics FAIL: no claim)
+  a16-n128k64s2: -1.737 s (-21.9% of k81's 7.925 s TTFT), -1.522 s raw  (numerics FAIL: no claim)
+  a16-n128k64s4: -3.437 s (-43.4% of k81's 7.925 s TTFT), -3.013 s raw  (numerics FAIL: no claim)
+  a16-n128k64s8: -4.384 s (-55.3% of k81's 7.925 s TTFT), -3.842 s raw  (numerics FAIL: no claim)
+  a16-n128k128s1: -0.637 s (-8.0% of k81's 7.925 s TTFT), -0.559 s raw  (numerics FAIL: no claim)
+  a16-n128k128s2: -2.010 s (-25.4% of k81's 7.925 s TTFT), -1.761 s raw  (numerics FAIL: no claim)
+  a16-n128k128s4: -2.734 s (-34.5% of k81's 7.925 s TTFT), -2.396 s raw  (numerics FAIL: no claim)
+  a16-n128k128s8: -2.735 s (-34.5% of k81's 7.925 s TTFT), -2.397 s raw  (numerics FAIL: no claim)
+  q-128x128k128u0: +0.018 s (+0.2% of k81's 7.925 s TTFT), +0.015 s raw  (numerics FAIL: no claim)
+  q-128x128k64u0: -0.111 s (-1.4% of k81's 7.925 s TTFT), -0.098 s raw  (numerics FAIL: no claim)
+  q-128x128k64u1: +0.013 s (+0.2% of k81's 7.925 s TTFT), +0.012 s raw  (numerics FAIL: no claim)
+  q-128x64k64u0: -0.201 s (-2.5% of k81's 7.925 s TTFT), -0.176 s raw  (numerics FAIL: no claim)
+  q-def: -0.202 s (-2.6% of k81's 7.925 s TTFT), -0.177 s raw  (numerics FAIL: no claim)
+  q-prop: -0.091 s (-1.1% of k81's 7.925 s TTFT), -0.079 s raw  (numerics FAIL: no claim)
+budget 9072 chunks [9072, 3024, 3024, 1264] (k88 measured):
+  q-128x128k128u0: +0.014 s (+0.2% of k81's 7.925 s TTFT), +0.013 s raw  (numerics FAIL: no claim)
+  q-128x128k64u0: -0.112 s (-1.4% of k81's 7.925 s TTFT), -0.098 s raw  (numerics FAIL: no claim)
+  q-128x128k64u1: +0.024 s (+0.3% of k81's 7.925 s TTFT), +0.021 s raw  (numerics FAIL: no claim)
+  q-128x64k64u0: -0.157 s (-2.0% of k81's 7.925 s TTFT), -0.138 s raw  (numerics FAIL: no claim)
+  q-def: -0.200 s (-2.5% of k81's 7.925 s TTFT), -0.175 s raw  (numerics FAIL: no claim)
+  q-prop: -0.108 s (-1.4% of k81's 7.925 s TTFT), -0.095 s raw  (numerics FAIL: no claim)
+budget 12096 chunks [12096, 3024, 1264] (hypothesis, k97 checks):
+  q-128x128k128u0: +0.020 s (+0.3% of k81's 7.925 s TTFT), +0.018 s raw  (numerics FAIL: no claim)
+  q-128x128k64u0: -0.114 s (-1.4% of k81's 7.925 s TTFT), -0.100 s raw  (numerics FAIL: no claim)
+  q-128x128k64u1: +0.013 s (+0.2% of k81's 7.925 s TTFT), +0.011 s raw  (numerics FAIL: no claim)
+  q-128x64k64u0: -0.206 s (-2.6% of k81's 7.925 s TTFT), -0.180 s raw  (numerics FAIL: no claim)
+  q-def: -0.204 s (-2.6% of k81's 7.925 s TTFT), -0.179 s raw  (numerics FAIL: no claim)
+  q-prop: -0.096 s (-1.2% of k81's 7.925 s TTFT), -0.084 s raw  (numerics FAIL: no claim)
+
+== up K320 N10240, A16 configs at capacity 8192 (ms per M; control ctl-seed)
+config                 1264     3024     4536     6048     8192
+ctl-seed              0.222    0.438    0.581    0.744    0.974
+a16-n128k128s1        0.650    1.485    2.202    2.916    3.930
+a16-n128k128s2        1.658    3.777    5.666    7.530   10.803
+a16-n128k128s4        2.063    4.786    7.273   10.130   15.182
+a16-n128k128s8        2.062    4.780    7.276   10.138   15.173
+a16-n128k64s1         0.454    1.015    1.496    1.979    2.660
+a16-n128k64s2         1.458    3.276    4.926    6.634    9.599
+a16-n128k64s4         2.426    5.593    8.839   12.755   18.216
+a16-n128k64s8         2.886    6.770   11.198   16.255   22.634
+a16-n64k128s1         0.751    1.721    2.557    3.385    4.566
+a16-n64k128s2         1.848    4.236    6.353    8.404   11.553
+a16-n64k128s4         2.234    5.213    7.814   10.428   14.748
+a16-n64k128s8         2.240    5.215    7.820   10.438   14.757
+a16-n64k64s1          0.413    0.929    1.380    1.822    2.453
+a16-n64k64s2          1.310    2.935    4.378    5.722    7.773
+a16-n64k64s4          2.329    5.285    7.893   10.451   14.998
+a16-n64k64s8          2.787    6.459    9.727   12.850   18.731
+
+== numerics gate per variant: a16-n64k64s1=FAIL a16-n64k64s2=FAIL a16-n64k64s4=FAIL a16-n64k64s8=FAIL a16-n64k128s1=FAIL a16-n64k128s2=FAIL a16-n64k128s4=FAIL a16-n64k128s8=FAIL a16-n128k64s1=FAIL a16-n128k64s2=FAIL a16-n128k64s4=FAIL a16-n128k64s8=FAIL a16-n128k128s1=FAIL a16-n128k128s2=FAIL a16-n128k128s4=FAIL a16-n128k128s8=FAIL ctl=PASS q-128x128k128u0=FAIL q-128x128k64u0=FAIL q-128x128k64u1=FAIL q-128x64k64u0=FAIL q-def=FAIL q-prop=FAIL
+VERDICT anchor=OK served=hit best=none control8192=ctl-seed/ctl-seed ctl=PASS q-128x128k128u0=FAIL q-128x128k64u0=FAIL q-128x128k64u1=FAIL q-128x64k64u0=FAIL q-def=FAIL q-prop=FAIL
+```

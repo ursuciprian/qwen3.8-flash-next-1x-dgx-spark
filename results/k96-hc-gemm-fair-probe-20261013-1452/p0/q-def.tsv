@@ -1,0 +1,11 @@
+q-def	down	8192	1264	0.3368	25.8	quantized	(64, 64)/BK128/u1	b1c67f803c2756b9	0.009902	captured 16384 rows
+q-def	down	8192	3024	1.2528	16.6	quantized	(64, 64)/BK128/u1	245a9fd0878c7134	0.009817	captured 16384 rows
+q-def	down	8192	4536	1.9819	15.7	quantized	(64, 64)/BK128/u1	fd445b9defc8f36a	0.009841	captured 16384 rows
+q-def	down	8192	6048	2.6975	15.4	quantized	(64, 64)/BK128/u1	687a3f215e073b96	0.009672	captured 16384 rows
+q-def	down	8192	8192	3.6133	15.6	quantized	(64, 64)/BK128/u1	8cdbbb84b75fbcd9	0.009886	captured 16384 rows
+q-def	down	9072	1264	0.3306	26.3	quantized	(64, 64)/BK128/u1	b1c67f803c2756b9	0.009902	captured 16384 rows
+q-def	down	9072	3024	1.3082	15.9	quantized	(64, 64)/BK128/u1	245a9fd0878c7134	0.009817	captured 16384 rows
+q-def	down	9072	9072	4.0120	15.6	quantized	(64, 64)/BK128/u1	5847e01beb1d7521	0.009645	captured 16384 rows
+q-def	down	12096	1264	0.3272	26.6	quantized	(64, 64)/BK128/u1	b1c67f803c2756b9	0.009902	captured 16384 rows
+q-def	down	12096	3024	1.2868	16.2	quantized	(64, 64)/BK128/u1	245a9fd0878c7134	0.009817	captured 16384 rows
+q-def	down	12096	12096	5.3297	15.6	quantized	(64, 64)/BK128/u1	1479af2dacc6f84b	0.009636	captured 16384 rows
