@@ -1255,3 +1255,7 @@ dp2,v2.1.0,v3e,2026-10-10,k76-capability-matrix,kv_tokens,,,,1987508,,"2 replica
 1x,v2.2.0,,2026-10-09,promotion gate,gate_tc45,,,,100.0,,quality gate,,,1x:results/thunderdome-k56c-20261009-1421/run3-02/gate/summary.txt,
 1x,v2.2.0,,2026-10-09,promotion gate,gate_retrieval,,,,20/20,,quality gate,,,1x:results/thunderdome-k56c-20261009-1421/run3-02/gate/summary.txt,
 1x,v2.2.0,,2026-10-09,promotion gate,gate_stragglers,,,,"none, c8-c16",,quality gate,,,1x:results/thunderdome-k56c-20261009-1421/run3-02/gate/summary.txt,
+1x,v2.3.0,,2026-10-13,promotion gate,gate_hardmode,,,,91.0,,quality gate,,,1x:results/k95-1x-ship-check-20261013-0937/k95.txt,
+1x,v2.3.0,,2026-10-13,promotion gate,gate_tc45,,,,100.0,,quality gate,,,1x:results/k95-1x-ship-check-20261013-0937/k95.txt,
+1x,v2.3.0,,2026-10-13,promotion gate,gate_stragglers,,,,"none, c8-c16",,quality gate,,,1x:results/k95-1x-ship-check-20261013-0937/k95.txt,
+1x,v2.3.0,,2026-10-13,promotion gate,gate_retrieval,,,,20/20,,quality gate,,,1x:results/k95f-1x-ship-check-fidelity-20261013-0937/k95f.txt,

@@ -9,7 +9,7 @@
   <tr>
     <td align="center"><h2>60 / 75 tok/s</h2><b>TG c1</b><br><sub>defaults (ISL/OSL 2048/512)<br>/ T=0, thinking off (coding)</sub></td>
     <td align="center"><h2>137 / 192 tok/s</h2><b>TG aggregate c8</b><br><sub>defaults (ISL/OSL 2048/512)<br>/ T=0, thinking off (coding)</sub></td>
-    <td align="center"><h2>93/100</h2><b>Hardmode</b><br><sub>pass ≥ 88, T=0, thinking on</sub></td>
+    <td align="center"><h2>91/100</h2><b>Hardmode</b><br><sub>pass ≥ 88, T=0, thinking on</sub></td>
   </tr>
 </table>
 
@@ -31,7 +31,7 @@
 | TG aggregate c8, defaults | 136.7 tok/s | 3.30 | 6 | llama-benchy task mode, ISL/OSL 2048/512 | T=1.0, top-p 0.95, top-k 20, thinking on | v2.2.0 (2026-10-10) | [results](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k86-boot-noise-power-20261010-1704/) |
 | TG aggregate c8, coding | 192.0 tok/s | 1.02 | 6 | 36 prompts, OSL ≤768, aggregate output tok/s per pass | T=0, thinking off | v2.2.0 (2026-10-10) | [results](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k86-boot-noise-power-20261010-1704/) |
 | TTFT, ISL 16K | 9.09 s | – | 1 | c1, cold prefix | – | v2.1.0 (2026-10-10) | [results](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k76-capability-matrix-20261010-1059/) |
-| Hardmode | 93/100 | – | 1 | 88 multi-step tool-use scenarios; pass ≥ 88 | T=0, thinking on | v2.2.0 (2026-10-09) | [results](results/thunderdome-k56c-20261009-1421/run3-02/gate/) |
+| Hardmode | 91/100 | – | 1 | 88 multi-step tool-use scenarios; pass ≥ 88 | T=0, thinking on | v2.3.0 (2026-10-13) | [results](results/k95-1x-ship-check-20261013-0937/) |
 | GPU power, idle | 9.7 W | – | 6 | server up, no requests, 120 s | – | v2.2.0 (2026-10-10) | [results](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k86-boot-noise-power-20261010-1704/) |
 | GPU power, TG c1 defaults | 24.2 W | – | 6 | power.draw, GPU only (nvidia-smi), not wall power, mean over the cell | T=1.0, top-p 0.95, top-k 20, thinking on | v2.2.0 (2026-10-10) | [results](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k86-boot-noise-power-20261010-1704/) |
 | TG per GPU watt, c1 defaults | 2.49 tok/s/W | – | 6 | TG aggregate / GPU W | T=1.0, top-p 0.95, top-k 20, thinking on | v2.2.0 (2026-10-10) | [results](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k86-boot-noise-power-20261010-1704/) |
@@ -45,7 +45,7 @@ Method and full tables: [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
 
 <!-- badges:start (scripts/make_charts.py writes this block) -->
 <p align="center">
-  <img alt="release: v2.2.0" src="https://img.shields.io/badge/release-v2.2.0-0969da?style=flat-square">
+  <img alt="release: v2.3.0" src="https://img.shields.io/badge/release-v2.3.0-0969da?style=flat-square">
   <img alt="hardware: 1× DGX Spark" src="https://img.shields.io/badge/hardware-1%C3%97%20DGX%20Spark-555555?style=flat-square">
   <img alt="quality gate: passed" src="https://img.shields.io/badge/quality%20gate-passed-2ea44f?style=flat-square">
   <img alt="license: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-555555?style=flat-square">
@@ -135,7 +135,7 @@ registries and does not refresh them on `run`.
 | **Context** | 262,144 tokens (max_model_len) |
 | **Concurrent requests** | up to 8 (max_num_seqs) |
 | **KV cache** | 993,754 tokens, 3.79 concurrent 262K requests (v2.1.0 boot log) |
-| **API** | OpenAI-compatible, tool calling, reasoning on (`reasoning_effort` medium) |
+| **API** | OpenAI-compatible, tool calling, reasoning on (`reasoning_effort` medium); `usage.prompt_tokens_details.cached_tokens` reports prefix-cache hits |
 | **Disk / start time** | ~135 GB / ~3 min warm (171 s with a warm page cache) |
 | **License** | Recipe Apache-2.0; weights Qwen Community License 1.0 |
 
@@ -257,12 +257,12 @@ Release v2.2.0. llama-benchy task mode, ISL/OSL 2048/512, T=1.0, thinking on; me
 <!-- quality:start (scripts/make_charts.py writes this block) -->
 | Check | Result | Criterion |
 |---|---|---|
-| Hardmode | **93/100** | score /100, pass ≥ 88 (88 scenarios), T=0, thinking on |
+| Hardmode | **91/100** | score /100, pass ≥ 88 (88 scenarios), T=0, thinking on |
 | TC-45 | **100/100** | regression test (1 scenario, 2 pts, 5 trials) |
 | Fidelity | **20/20** | 20 needles retrieved via tool calls, ISL 8K to ~245K |
 | Stragglers | **none** | no stalled request at c8-c16 (max_num_seqs 8, rest queued) |
 
-Gate run: release v2.2.0, 2026-10-09. Every release passes this gate before promotion.
+Gate run: release v2.3.0, 2026-10-13 (tools on one Spark, long-context retrieval on the other). Every release passes this gate before promotion.
 <!-- quality:end -->
 
 Full gate tables: [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
@@ -333,7 +333,7 @@ its raw file (`1x:` paths are in this repo, `2x:` paths in the
 | KV cache, tokens | 993,754 <sup>n</sup> | 3,525,633 <sup>o</sup> | 1,987,508 <sup>p</sup> |
 | Concurrent 262K requests in KV (vLLM count) | 3.79 <sup>q</sup> | 13.46 <sup>r</sup> | 2 × 3.79 <sup>s</sup> |
 | Requests that fit KV at 16K / 64K / 128K | 39.7 <sup>t</sup> / 14.1 <sup>t</sup> / 7.5 <sup>t</sup> | not measured | not measured |
-| Gate: hardmode / TC-45 / fidelity to ~245K / stragglers | 93 <sup>u</sup> / 100 <sup>u</sup> / 20/20 <sup>u</sup> / none, c8-c16 <sup>u</sup> | 90 <sup>v</sup> / 100 <sup>v</sup> / 20/20 <sup>v</sup> / none, c8-c16 <sup>v</sup> | 93 <sup>w</sup> / 100 <sup>w</sup> / 20/20 <sup>w</sup> / none, c5-c16 <sup>w</sup> |
+| Gate: hardmode / TC-45 / fidelity to ~245K / stragglers | 91 <sup>u</sup> / 100 <sup>u</sup> / 20/20 <sup>u</sup> / none, c8-c16 <sup>u</sup> | 90 <sup>v</sup> / 100 <sup>v</sup> / 20/20 <sup>v</sup> / none, c8-c16 <sup>v</sup> | 93 <sup>w</sup> / 100 <sup>w</sup> / 20/20 <sup>w</sup> / none, c5-c16 <sup>w</sup> |
 
 Releases and runs behind the numbers:
 
@@ -357,7 +357,7 @@ Releases and runs behind the numbers:
 - <sup>r</sup> two-Spark v2.0.0, 2026-10-09, serve log ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k77-2x-ship-check-20261009-2149/check/))
 - <sup>s</sup> DP=2 on one-Spark v2.1.0 (old name v3e), 2026-10-08, serve log ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/dp2-gate-k72-20261008-1135/))
 - <sup>t</sup> one-Spark v1.3.0 (old name v3c), 2026-10-05, kv-capacity page accounting, same 14 GiB pool in 1× v2.0.0 and v2.1.0 ([files](results/tp1-v3c-20261005/))
-- <sup>u</sup> one-Spark v2.2.0, 2026-10-09, promotion gate ([files](results/thunderdome-k56c-20261009-1421/run3-02/gate/))
+- <sup>u</sup> one-Spark v2.3.0, 2026-10-13, promotion gate ([tools](results/k95-1x-ship-check-20261013-0937/), [retrieval](results/k95f-1x-ship-check-fidelity-20261013-0937/))
 - <sup>v</sup> two-Spark v2.0.0, 2026-10-09, promotion gate ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/blob/main/docs/BENCHMARKS.md))
 - <sup>w</sup> DP=2 on one-Spark v2.1.0 (old name v3e), 2026-10-08, quality gate through the router ([files](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/dp2-gate-k72-20261008-1135/))
 <!-- capability-table:end -->
@@ -413,8 +413,8 @@ shard 35 and the index of `7c4f1bc1` (2.6 GiB) for the MXFP8 PP copy. Image and 
 
 | Recipe | Release | Image | Use |
 |---|---|---|---|
-| [`qwen3.8-flash-next-1x-dgx-spark`](recipes/qwen3.8-flash-next/qwen3.8-flash-next-1x-dgx-spark.yaml) | v2.2.0 | `tp1-d3-hf-20261010-21e0b201-5dad364d-warm` (also `1x-v2.2.0`) | Default (checkpoint @ `03f4a057`, drafter D3) |
-| [`qwen3.8-flash-next-1x-dgx-spark-previous`](recipes/qwen3.8-flash-next/qwen3.8-flash-next-1x-dgx-spark-previous.yaml) | v2.1.0 (old name v3e) | `tp1-v3e-hf-20261008-21e0b201-5dad364d-warm` | Rollback (checkpoint @ `16c9bd54`, drafter D1) |
+| [`qwen3.8-flash-next-1x-dgx-spark`](recipes/qwen3.8-flash-next/qwen3.8-flash-next-1x-dgx-spark.yaml) | v2.3.0 | `k95-20261013-b45fe867-5dad364d-warm` (also `1x-v2.3.0`) | Default (checkpoint @ `03f4a057`, drafter D3, b12x tile fix b45fe867) |
+| [`qwen3.8-flash-next-1x-dgx-spark-previous`](recipes/qwen3.8-flash-next/qwen3.8-flash-next-1x-dgx-spark-previous.yaml) | v2.2.0 | `tp1-d3-hf-20261010-21e0b201-5dad364d-warm` (also `1x-v2.2.0`) | Rollback (checkpoint @ `03f4a057`, drafter D3, b12x 21e0b201) |
 
 Each recipe's header lists every change since the first release with its measured delta. Earlier recipes:
 [archive/recipes/](archive/recipes/README.md). Renames: [recipes/RENAMES.md](recipes/RENAMES.md).
