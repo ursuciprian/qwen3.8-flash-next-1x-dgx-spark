@@ -1,0 +1,3 @@
+boot: boot_s 162 pong pong 
+Directly load AOT: 2; Dynamo: 0; ValueError: 0; plan belongs to: 0
+seed check PASS
