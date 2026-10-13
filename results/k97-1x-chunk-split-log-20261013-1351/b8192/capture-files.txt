@@ -1,0 +1,6 @@
+capture prompt rc=0; files in /home/nvidia/GEN-AI/backlog/k97/capture:
+      4 hcdown5
+      4 hcup5
+      4 moe47
+      4 moe5
+493M

@@ -1,0 +1,21 @@
+k97-chunk-split-log result: the prefill chunks the 1x v2.3.0 recipe really runs at `max_num_batched_tokens` 8192, 9072 and 12096, why each chunk ends where it does, and the peak memory of each budget. Cold 16K and 64K prompts (the same prompts at every budget), one Spark, the full 14 GiB KV pool. I logged the `_mamba_block_aligned_split` decisions that reach the stop selection (its early returns are not logged) and every scheduled prefill step through an env-gated mod loaded from the boot's runtime cache; the image is unchanged. No A/B: this only decides whether a budget A/B is worth running.
+
+Summary: {VERDICT}
+
+```
+{REPORT}
+```
+
+How to read the reasons: `budget` = the chunk was capped by the token budget and ended on a block boundary; `stop last_cache` = the last cacheable block boundary of the prompt; `stop reuse` = a reachable prefix-reuse boundary of the recurrent state manager; `block align` = the end was floored to the mamba block size; `prompt end` = the tail of the prompt.
+
+Boot facts per budget (a boot that failed at 14 GiB was retried after a 6 GiB prebake; both are listed):
+
+```
+{FACTS}
+```
+
+Routing and activation capture for the k96 and k98 probes (layer 5 and 47 routed-MoE inputs with their real top-10 ids, layer 5 HC GEMM inputs, one cold 16K prompt on the 8192 boot; files stay on the Spark):
+
+```
+{CAPTURE}
+```

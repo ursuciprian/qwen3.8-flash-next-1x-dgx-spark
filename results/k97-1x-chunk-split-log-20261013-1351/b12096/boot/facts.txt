@@ -1,0 +1,8 @@
+recipe: max_num_batched_tokens 12096, kv_cache_memory_bytes 15032385536
+boot: boot_s 707 pong pong 
+Directly load AOT: 0; Dynamo bytecode transform: 2
+b12x plans measured: 8190
+Model loading took 76.89 GiB
+Initial free memory 113.69 GiB
+GPU KV cache size: 993,754 tokens
+K97MOD active lines: 5; k97 mod errors: 0; Traceback: 0
