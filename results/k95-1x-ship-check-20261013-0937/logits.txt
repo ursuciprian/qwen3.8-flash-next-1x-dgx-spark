@@ -1,0 +1,55 @@
+== fresh a vs fresh b (same boot)
+FAIL: 623 mismatches (tol 1.0e-03)
+  prompt 0 pos 0: top-5 set changed ['\n', '\n\n', ' London', ' Paris', ' a'] -> ['\n', '\n\n', ' Paris', ' a', ' called']
+  prompt 0 pos 1 token '.': |dlogprob| = 8.301e-02 > 1.0e-03
+  prompt 0 pos 1 token ',': |dlogprob| = 1.670e-01 > 1.0e-03
+  prompt 0 pos 1 token '\n\n': |dlogprob| = 4.199e-02 > 1.0e-03
+  prompt 0 pos 1 token ' and': |dlogprob| = 2.051e-02 > 1.0e-03
+  prompt 0 pos 1 token '\n': |dlogprob| = 1.045e-01 > 1.0e-03
+  prompt 0 pos 2 token ' The': |dlogprob| = 1.251e-01 > 1.0e-03
+  prompt 0 pos 2 token '\n\n': |dlogprob| = 2.499e-01 > 1.0e-03
+  prompt 0 pos 2 token ' Paris': |dlogprob| = 4.999e-01 > 1.0e-03
+  prompt 0 pos 2 token '\n': |dlogprob| = 5.624e-01 > 1.0e-03
+  prompt 0 pos 2 token ' It': |dlogprob| = 1.251e-01 > 1.0e-03
+  prompt 0 pos 3: top-5 set changed [' Eiff', ' capital', ' city', ' largest', ' most'] -> [' capital', ' city', ' largest', ' population', ' president']
+  prompt 0 pos 4 token ' of': |dlogprob| = 5.240e-03 > 1.0e-03
+  prompt 0 pos 4 token ' is': |dlogprob| = 2.448e-01 > 1.0e-03
+  prompt 0 pos 4 token ' city': |dlogprob| = 1.823e-01 > 1.0e-03
+  prompt 0 pos 4 token ' has': |dlogprob| = 6.198e-01 > 1.0e-03
+  prompt 0 pos 4 token ' and': |dlogprob| = 2.552e-01 > 1.0e-03
+  prompt 0 pos 5 token ' Germany': |dlogprob| = 1.258e-01 > 1.0e-03
+  prompt 0 pos 5 token ' Spain': |dlogprob| = 1.867e-01 > 1.0e-03
+  prompt 0 pos 5 token ' England': |dlogprob| = 1.258e-01 > 1.0e-03
+  prompt 0 pos 5 token ' France': |dlogprob| = 2.492e-01 > 1.0e-03
+  prompt 0 pos 6: top-5 set changed [' Berlin', ' is', ' was', ',', '?'] -> ['\n\n', ' Berlin', ' is', ' was', ',']
+  prompt 0 pos 7: top-5 set changed ['\n', '\n\n', ' Berlin', ' Paris', '?'] -> ['\n', '\n\n', ' Berlin', ' Paris', ' not']
+  prompt 0 pos 8 token '.': |dlogprob| = 1.350e-03 > 1.0e-03
+  prompt 0 pos 8 token ',': |dlogprob| = 6.385e-02 > 1.0e-03
+  prompt 0 pos 8 token ' and': |dlogprob| = 1.264e-01 > 1.0e-03
+  prompt 0 pos 8 token '\n\n': |dlogprob| = 4.361e-01 > 1.0e-03
+  prompt 0 pos 8 token '\n': |dlogprob| = 1.236e-01 > 1.0e-03
+  prompt 0 pos 9: top-5 set changed ['\n', ' Is', ' The', ' What', ' Which'] -> ['\n', ' Based', ' Is', ' The', ' What']
+  prompt 0 pos 10: top-5 set changed ['\n', ' \n', ' cap', ' capital', ' following'] -> ['\n', ' \n', ' capital', ' following', ' largest']
+  prompt 0 pos 11 token '\n': |dlogprob| = 3.742e-01 > 1.0e-03
+  prompt 0 pos 11 token ' is': |dlogprob| = 6.170e-02 > 1.0e-03
+  prompt 0 pos 11 token ' and': |dlogprob| = 1.867e-01 > 1.0e-03
+  prompt 0 pos 12: top-5 set changed [' Germany', ' Italy', ' Japan', ' Spain', ' the'] -> [' England', ' Germany', ' Italy', ' Japan', ' Spain']
+  prompt 0 pos 13 token ' is': |dlogprob| = 3.571e-03 > 1.0e-03
+  prompt 0 pos 13 token '?': |dlogprob| = 3.714e-01 > 1.0e-03
+  prompt 0 pos 13 token ',': |dlogprob| = 3.089e-01 > 1.0e-03
+  prompt 0 pos 13 token '\n': |dlogprob| = 8.714e-01 > 1.0e-03
+  prompt 0 pos 13 token ' Rome': |dlogprob| = 7.464e-01 > 1.0e-03
+  prompt 0 pos 14 token ' Rome': |dlogprob| = 5.776e-02 > 1.0e-03
+  ... and 583 more
+== fresh a vs upgrade boot
+Traceback (most recent call last):
+  File "/home/nvidia/GEN-AI/qwen3.8-flash-next-dgx-spark-tp-2/scripts/logits_equiv.py", line 215, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/nvidia/GEN-AI/qwen3.8-flash-next-dgx-spark-tp-2/scripts/logits_equiv.py", line 208, in main
+    return args.func(args)
+           ^^^^^^^^^^^^^^^
+  File "/home/nvidia/GEN-AI/qwen3.8-flash-next-dgx-spark-tp-2/scripts/logits_equiv.py", line 146, in diff
+    with open(args.fused) as handle:
+         ^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/nvidia/GEN-AI/qwen3.8-flash-next-dgx-spark-tp-2/results/k95-1x-ship-check-20261013-0937/upgrade/logits.json'

@@ -1,0 +1,10 @@
+image: 
+runtime cache: 
+boot: 
+Directly load AOT: 0; saved AOT: 0; Dynamo bytecode transform: 0
+FAIL /home/nvidia/GEN-AI/qwen3.8-flash-next-dgx-spark-tp-2/results/k95-1x-ship-check-20261013-0937/upgrade/serve.log: no b12x plan lines
+seed check FAIL
+plan 33d9b32e995b59bc4b0d3cdfb5fc2247f3c7b2151c09569ffd3dbaf85c4562e3.json: missing records (seed 303)
+MXFP8 copies: 0
+Traceback: 0; ValueError: 0; 'plan belongs to': 0
+revision: ; prompt tokens details flag: 
