@@ -1,6 +1,6 @@
 # Benchmarks: full tables
 
-Release names follow [VERSIONS.md](../VERSIONS.md). Section headings keep the old build names so existing links keep working; each build section opens with its release name. The current default is 1× v2.2.0; every other section is history, kept for comparison. The README's capability table and charts read [`docs/data/capability.csv`](data/capability.csv).
+Release names follow [VERSIONS.md](../VERSIONS.md). Section headings keep the old build names so existing links keep working; each build section opens with its release name. The current default is 1× v2.3.0; every other section is history, kept for comparison. The README's capability table and charts read [`docs/data/capability.csv`](data/capability.csv).
 
 
 Every single-Spark (TP=1) build, newest first, then the runs that compared the 1× and 2× setups side by side. The 2×
@@ -61,9 +61,54 @@ What it shows: the coding probe at T=0 repeats within 0.5% between boots; llama-
 2× build, TG defaults c8 differs most (k76 172.2, k86 195.3 ± 5.1); the README now quotes the multi-boot means. Per-Spark rows, per-boot values and the 1 Hz power traces:
 [k86 results folder in the tp-2 repo](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k86-boot-noise-power-20261010-1704/).
 
+## Single Spark v2.3.0: b12x large-row MXFP8 tile fix (2026-10-13)
+
+Release 1× v2.3.0, the current default. No old build name.
+
+v2.3.0 = v2.2.0 on b12x b45fe867 (`fix/pf-large-m-regime`, base 21e0b201): a packed MXFP8 declaration of 4096+ rows with
+K >= 4096 and N > 1536 (the max_num_batched_tokens capacity regime of GDN out_proj and attention o_proj, K6144 N2560)
+lowers to 128x128/BK64 without the large-M unroll on low-SM parts, and a 4095-row regime keeps the v2.2.0 plan for every
+live M below 4096. Decode and prefill chunks below 4096 rows run the v2.2.0 kernels. Same checkpoint (`03f4a057`, drafter
+D3), flags and env, plus `--enable-prompt-tokens-details` (the usage field reports cached prompt tokens) and a compile
+cache root of its own (below).
+
+Cold prefill against v2.2.0 (k90-1x-tile-fix, ctl arm arm ctl on both Sparks, 3 cold prompts per depth and boot,
+noise 1.0%):
+
+| Spark | 16K | 64K | 128K |
+|---|:---:|:---:|:---:|
+| Spark 1 | 2090 → 2125 tok/s (+1.7%) | 1978 → 2008 (+1.6%) | 1721 → 1761 (+2.3%) |
+| Spark 2 | 2086 → 2129 (+2.0%) | 1988 → 2028 (+2.0%) | 1734 → 1769 (+2.0%) |
+
+Decode (k90b-1x-tile-fix-decode-recheck, 4 boots per side per Spark, ctl arm arm ctl ctl arm arm ctl): llama-benchy
+pp2048 c1, tg512 c1 and tg512 c8 FLAT on both Sparks; the largest difference is tg512 c1 −2.44% on Spark 1 (noise 8.16%,
+boot-level 95% CI [−6.60, +1.71]); no CI lies entirely below zero.
+
+Gate (k95 tools on Spark 1, k95f long-context retrieval on Spark 2, both on a fresh-user boot of the release image):
+hardmode 91, TC-45 100, stragglers c5-c16 0 preemptions, fidelity 20/20 at 8k/32k/64k/128k plus 128k seeds 11 and 13.
+
+Fresh-user boots (a new sparkrun HOME with an empty runtime cache, plain `sparkrun run`): 304 s and 307 s on Spark 1, 521 s
+on Spark 2 including ~4 min in which sparkrun copied the image from Spark 1; torch AOT loaded from the image, 0 b12x plans
+measured, plan `33d9b32e` at 303 records. llama-benchy on the k95 boot (3 runs): pp2048 c1 1791, tg512 c1 56.3, tg512 c8
+137.2 tok/s (k90b tile-fix arm: 1773 to 1789, 57.5 to 57.9, 135.4 to 136.2).
+
+Upgrade path: the first candidate kept vLLM's default compile cache root and failed on a v2.2.0 runtime cache (k95). Both
+builds compute the same torch AOT keys, because the b12x build is not part of the key, and the v2.2.0 graphs hold b12x
+plan handles that point at other plans in the new b12x: `ValueError: plan belongs to moe.decode, not
+norm.hyperconnection`. The release recipe sets `VLLM_CACHE_ROOT=/cache/runtime/vllm-b12x-b45fe867` and seeds the image's
+AOT cache there. k95b: fresh boot 307 s and warm; upgrade boot on my v2.2.0 runtime cache 197 s, AOT from the new root,
+no error; the v2.2.0 recipe booted right after in 162 s (its own artifacts, no error). Logits of the fresh and the upgrade
+boot: identical greedy tokens, top-5 logprob differences inside the self-noise of two captures on one boot.
+
+Raw files: [`results/k95-1x-ship-check-20261013-0937/`](../results/k95-1x-ship-check-20261013-0937/),
+[`results/k95f-1x-ship-check-fidelity-20261013-0937/`](../results/k95f-1x-ship-check-fidelity-20261013-0937/),
+[`results/k95b-1x-cache-root-check-20261013-1020/`](../results/k95b-1x-cache-root-check-20261013-1020/),
+[`results/k90-1x-tile-fix-20261011-2132/`](../results/k90-1x-tile-fix-20261011-2132/),
+[`results/k90b-1x-tile-fix-decode-recheck-20261012-1900/`](../results/k90b-1x-tile-fix-decode-recheck-20261012-1900/).
+
 ## Single Spark v2.2.0: MTP drafter D3 (2026-10-10)
 
-Release 1× v2.2.0, the current default.
+Release 1× v2.2.0, the default from 2026-10-10 to 2026-10-13.
 
 v2.2.0 = v2.1.0 with the dense BF16 `mtp.*` tensors retrained again (drafter D3 = refit run 3a, 1x #7). Checkpoint
 `ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE` @ `03f4a057` (v2.1.0: `16c9bd54`); only
