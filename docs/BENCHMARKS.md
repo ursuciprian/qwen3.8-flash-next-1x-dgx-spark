@@ -97,7 +97,8 @@ builds compute the same torch AOT keys, because the b12x build is not part of th
 plan handles that point at other plans in the new b12x: `ValueError: plan belongs to moe.decode, not
 norm.hyperconnection`. The release recipe sets `VLLM_CACHE_ROOT=/cache/runtime/vllm-b12x-b45fe867` and seeds the image's
 AOT cache there. k95b: fresh boot 307 s and warm; upgrade boot on my v2.2.0 runtime cache 197 s, AOT from the new root,
-no error; the v2.2.0 recipe booted right after in 162 s (its own artifacts, no error). Logits of the fresh and the upgrade
+no error (its plan file already had the 303rd record, added by the failed k95 boot; a v2.2.0 user starts from 302
+records and b12x measures that one plan once, which I did not time); the v2.2.0 recipe booted right after in 162 s (its own artifacts, no error). Logits of the fresh and the upgrade
 boot: identical greedy tokens, top-5 logprob differences inside the self-noise of two captures on one boot.
 
 Raw files: [`results/k95-1x-ship-check-20261013-0937/`](../results/k95-1x-ship-check-20261013-0937/),
