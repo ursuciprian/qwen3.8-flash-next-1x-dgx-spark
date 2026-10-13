@@ -32,7 +32,7 @@ Newest first. Every 1× release up to v2.1.0 was promoted in the tp-2 repo, befo
 
 | Release | Old name | Default since | Recipe PR (tp-2 repo) | What changed | Bump | Measured |
 |---|---|---|---|---|---|---|
-| **v2.3.0** | none | 2026-10-13 | [#PRNUM](https://github.com/ursuciprian/qwen3.8-flash-next-1x-dgx-spark/pull/PRNUM) (this repo) | b12x large-row MXFP8 tile fix (b45fe867: a capacity regime for prefill chunks of 4096+ rows on the K6144 N2560 projections, decode and smaller chunks unchanged); `--enable-prompt-tokens-details` (usage reports cached prompt tokens) | MINOR: kernels only, same checkpoint and drafter | cold prefill +1.6 to +2.3% at 16K/64K/128K on both Sparks (noise 1.0%); k90b decode pp2048 c1, tg512 c1 and c8 FLAT on both Sparks (4 boots per side) |
+| **v2.3.0** | none | 2026-10-13 | [#57](https://github.com/ursuciprian/qwen3.8-flash-next-1x-dgx-spark/pull/57) (this repo) | b12x large-row MXFP8 tile fix (b45fe867: a capacity regime for prefill chunks of 4096+ rows on the K6144 N2560 projections, decode and smaller chunks unchanged); `--enable-prompt-tokens-details` (usage reports cached prompt tokens) | MINOR: kernels only, same checkpoint and drafter | cold prefill +1.6 to +2.3% at 16K/64K/128K on both Sparks (noise 1.0%); k90b decode pp2048 c1, tg512 c1 and c8 FLAT on both Sparks (4 boots per side) |
 | v2.2.0 | none | 2026-10-10 | [#24](https://github.com/ursuciprian/qwen3.8-flash-next-1x-dgx-spark/pull/24) (this repo) | Retrained MTP drafter D3 (refit run 3a: more data, one epoch from D1), checkpoint revision `03f4a057` (only the drafter tensors in `model-00034` differ from `16c9bd54`) | MINOR: drafter only; users coming from v2.1.0 download one 4.5 GB shard | acceptance +0.021 to +0.027 per position at pos 2-4; k56c/k56d dgx-01 fresh c4 +3.4%, fresh c8 +3.3%, 16K c4 +4.6%; k80 on the published stack fresh c8 +2.1% (dgx-01), fresh c4 +2.6% (dgx-02); no cell worse beyond noise |
 | v2.1.0 | v3e | 2026-10-08 | [#116](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/pull/116) | Retrained MTP drafter D1, checkpoint revision `16c9bd54` (only the 24 drafter tensors differ from `244cb6fe`) | MINOR: drafter only; the new HF revision differs from `244cb6fe` only in the shard with the 24 drafter tensors | acceptance +0.036 to +0.058 per position; probe fresh c4 +4.9 / +7.9%, fresh c8 +6.8 / +8.1%, 16K c4 +5.5 / +5.7% (dgx-01 / dgx-02); no cell worse beyond noise |
 | v2.0.0 | v3d | 2026-10-06 | [#91](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/pull/91) | New checkpoint `ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE`: GDN weights in NVFP4 for decode, MXFP8 copy for prefill | MAJOR: new checkpoint, numerics change | counting c8 +7.8%, 16K c4 +5.9%, fresh c8 +4.4%, tg512 c1 50.0 to 59.7 tok/s; pp2048 −0.9% (noise 1.0%) |
@@ -52,7 +52,7 @@ recipes by path or from the tp-2 registry.
 
 | Release | Tag on commit |
 |---|---|
-| v2.3.0 | the merge commit of #PRNUM |
+| v2.3.0 | the merge commit of #57 |
 | v2.2.0 | `12b6d520` (#24) |
 | v2.1.0 | `73e3c1e1` (first commit with this repo's registry, the same day as #116) |
 | v2.0.0 | `d08bda54` (copy of #91) |
