@@ -1,0 +1,71 @@
+k95b 2026-10-13 10:32:01 EEST: 1x v2.3.0 with VLLM_CACHE_ROOT=/cache/runtime/vllm-b12x-b45fe867, image ghcr.io/ursuciprian/spark-vllm-b12x:k95-20261013-b45fe867-5dad364d-warm
+== fresh (empty runtime cache): WARM
+image: ghcr.io/ursuciprian/spark-vllm-b12x:k95-20261013-b45fe867-5dad364d-warm
+runtime cache: /home/nvidia/GEN-AI/backlog/k95b/fresh-20261013-1020/runtime-cache/vllm/ursuciprian__Qwen3.8-Flash-Next-NVFP4-GDN-MSE-5d63a923->/cache/runtime
+boot: boot_s 307 pong pong 
+Directly load AOT: 2; saved AOT: 0; Dynamo bytecode transform: 0
+/home/nvidia/GEN-AI/qwen3.8-flash-next-dgx-spark-tp-2/results/k95b-1x-cache-root-check-20261013-1020/fresh/serve.log: attention.gdn 0 measured / 10 cached, attention.qsa 0 measured / 10 cached, gemm.blockscaled_precision 0 measured / 280 cached, moe.decode 0 measured / 280 cached, norm.hyperconnection 0 measured / 280 cached, sequence.gdn_prefill 0 measured / 10 cached, sequence.mtp_feedback 0 measured / 280 cached, sequence.ple_embedding 0 measured / 0 cached
+seed check PASS
+plan 33d9b32e995b59bc4b0d3cdfb5fc2247f3c7b2151c09569ffd3dbaf85c4562e3.json: 303 records (seed 303)
+MXFP8 copies: 72
+Traceback: 19; ValueError: 0; 'plan belongs to': 0
+revision: --revision 03f4a0570496bbe741189f4a2a7d611679e85406; prompt tokens details flag: 1
+usage: prompt_tokens=14239 cached_tokens=12096
+== upgrade (v2.2.0 runtime cache, plan 303 records before): boot ok, WARM
+image: ghcr.io/ursuciprian/spark-vllm-b12x:k95-20261013-b45fe867-5dad364d-warm
+runtime cache: /home/nvidia/.cache/sparkrun/runtime-cache/vllm/ursuciprian__Qwen3.8-Flash-Next-NVFP4-GDN-MSE-5d63a923->/cache/runtime
+boot: boot_s 197 pong pong 
+Directly load AOT: 2; saved AOT: 0; Dynamo bytecode transform: 0
+/home/nvidia/GEN-AI/qwen3.8-flash-next-dgx-spark-tp-2/results/k95b-1x-cache-root-check-20261013-1020/upgrade/serve.log: attention.gdn 0 measured / 10 cached, attention.qsa 0 measured / 10 cached, gemm.blockscaled_precision 0 measured / 280 cached, moe.decode 0 measured / 280 cached, norm.hyperconnection 0 measured / 280 cached, sequence.gdn_prefill 0 measured / 10 cached, sequence.ple_embedding 0 measured / 0 cached
+seed check PASS
+plan 33d9b32e995b59bc4b0d3cdfb5fc2247f3c7b2151c09569ffd3dbaf85c4562e3.json: 303 records (seed 303)
+MXFP8 copies: 72
+Traceback: 0; ValueError: 0; 'plan belongs to': 0
+revision: --revision 03f4a0570496bbe741189f4a2a7d611679e85406; prompt tokens details flag: 1
+== rollback to v2.2.0 right after: boot ok
+boot: boot_s 162 pong pong 
+Directly load AOT: 2; Dynamo: 0; ValueError: 0; plan belongs to: 0
+seed check PASS
+== fresh vs upgrade boot
+FAIL: 472 mismatches (tol 1.0e-03)
+  prompt 0 pos 0: top-5 set changed ['\n', '\n\n', ' Paris', ' a', ' in'] -> ['\n', '\n\n', ' Paris', ' a', ' known']
+  prompt 0 pos 1: top-5 set changed ['\n', '\n\n', ' and', ',', '.'] -> ['\n\n', ' and', ',', '.', '<|im_end|>']
+  prompt 0 pos 2 token ' The': |dlogprob| = 6.675e-02 > 1.0e-03
+  prompt 0 pos 2 token ' Paris': |dlogprob| = 3.082e-01 > 1.0e-03
+  prompt 0 pos 2 token ' It': |dlogprob| = 6.293e-01 > 1.0e-03
+  prompt 0 pos 2 token '\n\n': |dlogprob| = 1.293e-01 > 1.0e-03
+  prompt 0 pos 2 token '\n': |dlogprob| = 4.253e-03 > 1.0e-03
+  prompt 0 pos 3: top-5 set changed [' capital', ' city', ' largest', ' most', ' president'] -> [' answer', ' capital', ' city', ' largest', ' population']
+  prompt 0 pos 4: top-5 set changed [' and', ' contains', ' has', ' is', ' of'] -> [' and', ' city', ' has', ' is', ' of']
+  prompt 0 pos 5 token ' Germany': |dlogprob| = 7.622e-02 > 1.0e-03
+  prompt 0 pos 5 token ' Spain': |dlogprob| = 3.887e-01 > 1.0e-03
+  prompt 0 pos 5 token ' Italy': |dlogprob| = 1.113e-01 > 1.0e-03
+  prompt 0 pos 5 token ' England': |dlogprob| = 3.613e-01 > 1.0e-03
+  prompt 0 pos 5 token ' France': |dlogprob| = 4.863e-01 > 1.0e-03
+  prompt 0 pos 6 token ' is': |dlogprob| = 1.805e-03 > 1.0e-03
+  prompt 0 pos 6 token ' Berlin': |dlogprob| = 3.107e-01 > 1.0e-03
+  prompt 0 pos 6 token ' was': |dlogprob| = 1.805e-03 > 1.0e-03
+  prompt 0 pos 6 token ',': |dlogprob| = 4.393e-01 > 1.0e-03
+  prompt 0 pos 6 token '?': |dlogprob| = 9.357e-01 > 1.0e-03
+  prompt 0 pos 7: top-5 set changed ['\n', '\n\n', ' Ber', ' Berlin', ' also'] -> ['\n', '\n\n', ' Berlin', ' Paris', '?']
+  prompt 0 pos 8: top-5 set changed ['\n\n', ' The', ' and', ',', '.'] -> ['\n\n', ' and', ',', '.', '<|im_end|>']
+  prompt 0 pos 9: top-5 set changed ['\n', ' \n', ' Is', ' The', ' What'] -> ['\n', ' Based', ' Is', ' The', ' What']
+  prompt 0 pos 10: top-5 set changed ['\n', ' \n', ' cap', ' capital', ' capitals'] -> ['\n', ' \n', ' cap', ' capital', ' following']
+  prompt 0 pos 11 token '\n': |dlogprob| = 6.217e-02 > 1.0e-03
+  prompt 0 pos 11 token ' \n': |dlogprob| = 6.217e-02 > 1.0e-03
+  prompt 0 pos 11 token ' is': |dlogprob| = 3.122e-01 > 1.0e-03
+  prompt 0 pos 11 token ' Italy': |dlogprob| = 6.283e-02 > 1.0e-03
+  prompt 0 pos 12: top-5 set changed [' England', ' Italy', ' Japan', ' Spain', ' the'] -> [' England', ' Germany', ' Italy', ' Japan', ' Spain']
+  prompt 0 pos 13 token ' is': |dlogprob| = 1.514e-03 > 1.0e-03
+  prompt 0 pos 13 token '?': |dlogprob| = 4.985e-01 > 1.0e-03
+  prompt 0 pos 13 token ' Rome': |dlogprob| = 1.860e-01 > 1.0e-03
+  prompt 0 pos 13 token '\n': |dlogprob| = 2.515e-01 > 1.0e-03
+  prompt 0 pos 13 token ',': |dlogprob| = 6.401e-02 > 1.0e-03
+  prompt 0 pos 14 token ' Rome': |dlogprob| = 2.987e-02 > 1.0e-03
+  prompt 0 pos 14 token '?': |dlogprob| = 4.049e-01 > 1.0e-03
+  prompt 0 pos 14 token '\n\n': |dlogprob| = 9.701e-01 > 1.0e-03
+  prompt 0 pos 14 token ' what': |dlogprob| = 3.424e-01 > 1.0e-03
+  prompt 0 pos 14 token '\n': |dlogprob| = 1.095e+00 > 1.0e-03
+  prompt 0 pos 15: top-5 set changed ['\n\n', ' and', ',', '.', '?'] -> ['\n', '\n\n', ',', '.', '?']
+  prompt 1 pos 0 token '\n': |dlogprob| = 1.385e-02 > 1.0e-03
+  ... and 432 more

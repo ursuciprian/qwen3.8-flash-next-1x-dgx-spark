@@ -1,0 +1,43 @@
+== fresh vs upgrade boot
+FAIL: 472 mismatches (tol 1.0e-03)
+  prompt 0 pos 0: top-5 set changed ['\n', '\n\n', ' Paris', ' a', ' in'] -> ['\n', '\n\n', ' Paris', ' a', ' known']
+  prompt 0 pos 1: top-5 set changed ['\n', '\n\n', ' and', ',', '.'] -> ['\n\n', ' and', ',', '.', '<|im_end|>']
+  prompt 0 pos 2 token ' The': |dlogprob| = 6.675e-02 > 1.0e-03
+  prompt 0 pos 2 token ' Paris': |dlogprob| = 3.082e-01 > 1.0e-03
+  prompt 0 pos 2 token ' It': |dlogprob| = 6.293e-01 > 1.0e-03
+  prompt 0 pos 2 token '\n\n': |dlogprob| = 1.293e-01 > 1.0e-03
+  prompt 0 pos 2 token '\n': |dlogprob| = 4.253e-03 > 1.0e-03
+  prompt 0 pos 3: top-5 set changed [' capital', ' city', ' largest', ' most', ' president'] -> [' answer', ' capital', ' city', ' largest', ' population']
+  prompt 0 pos 4: top-5 set changed [' and', ' contains', ' has', ' is', ' of'] -> [' and', ' city', ' has', ' is', ' of']
+  prompt 0 pos 5 token ' Germany': |dlogprob| = 7.622e-02 > 1.0e-03
+  prompt 0 pos 5 token ' Spain': |dlogprob| = 3.887e-01 > 1.0e-03
+  prompt 0 pos 5 token ' Italy': |dlogprob| = 1.113e-01 > 1.0e-03
+  prompt 0 pos 5 token ' England': |dlogprob| = 3.613e-01 > 1.0e-03
+  prompt 0 pos 5 token ' France': |dlogprob| = 4.863e-01 > 1.0e-03
+  prompt 0 pos 6 token ' is': |dlogprob| = 1.805e-03 > 1.0e-03
+  prompt 0 pos 6 token ' Berlin': |dlogprob| = 3.107e-01 > 1.0e-03
+  prompt 0 pos 6 token ' was': |dlogprob| = 1.805e-03 > 1.0e-03
+  prompt 0 pos 6 token ',': |dlogprob| = 4.393e-01 > 1.0e-03
+  prompt 0 pos 6 token '?': |dlogprob| = 9.357e-01 > 1.0e-03
+  prompt 0 pos 7: top-5 set changed ['\n', '\n\n', ' Ber', ' Berlin', ' also'] -> ['\n', '\n\n', ' Berlin', ' Paris', '?']
+  prompt 0 pos 8: top-5 set changed ['\n\n', ' The', ' and', ',', '.'] -> ['\n\n', ' and', ',', '.', '<|im_end|>']
+  prompt 0 pos 9: top-5 set changed ['\n', ' \n', ' Is', ' The', ' What'] -> ['\n', ' Based', ' Is', ' The', ' What']
+  prompt 0 pos 10: top-5 set changed ['\n', ' \n', ' cap', ' capital', ' capitals'] -> ['\n', ' \n', ' cap', ' capital', ' following']
+  prompt 0 pos 11 token '\n': |dlogprob| = 6.217e-02 > 1.0e-03
+  prompt 0 pos 11 token ' \n': |dlogprob| = 6.217e-02 > 1.0e-03
+  prompt 0 pos 11 token ' is': |dlogprob| = 3.122e-01 > 1.0e-03
+  prompt 0 pos 11 token ' Italy': |dlogprob| = 6.283e-02 > 1.0e-03
+  prompt 0 pos 12: top-5 set changed [' England', ' Italy', ' Japan', ' Spain', ' the'] -> [' England', ' Germany', ' Italy', ' Japan', ' Spain']
+  prompt 0 pos 13 token ' is': |dlogprob| = 1.514e-03 > 1.0e-03
+  prompt 0 pos 13 token '?': |dlogprob| = 4.985e-01 > 1.0e-03
+  prompt 0 pos 13 token ' Rome': |dlogprob| = 1.860e-01 > 1.0e-03
+  prompt 0 pos 13 token '\n': |dlogprob| = 2.515e-01 > 1.0e-03
+  prompt 0 pos 13 token ',': |dlogprob| = 6.401e-02 > 1.0e-03
+  prompt 0 pos 14 token ' Rome': |dlogprob| = 2.987e-02 > 1.0e-03
+  prompt 0 pos 14 token '?': |dlogprob| = 4.049e-01 > 1.0e-03
+  prompt 0 pos 14 token '\n\n': |dlogprob| = 9.701e-01 > 1.0e-03
+  prompt 0 pos 14 token ' what': |dlogprob| = 3.424e-01 > 1.0e-03
+  prompt 0 pos 14 token '\n': |dlogprob| = 1.095e+00 > 1.0e-03
+  prompt 0 pos 15: top-5 set changed ['\n\n', ' and', ',', '.', '?'] -> ['\n', '\n\n', ',', '.', '?']
+  prompt 1 pos 0 token '\n': |dlogprob| = 1.385e-02 > 1.0e-03
+  ... and 432 more
