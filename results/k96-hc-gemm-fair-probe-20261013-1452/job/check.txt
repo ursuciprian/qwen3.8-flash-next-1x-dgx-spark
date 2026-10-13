@@ -1,0 +1,2 @@
+activation_mode auto workspace_nbytes 2000000000
+check ok
