@@ -1,0 +1,6 @@
+plans measured: 7887
+GPU KV cache size: 993,754 tokens
+Directly load AOT: 0; Dynamo bytecode transform: 2
+reachable boundaries [16383] -> [15120, 12096] (lookup alignment 3024, state alignment 3024, eagle True, lookup drops eagle block True)
+reachable boundaries [16383] -> [15120, 12096] (lookup alignment 3024, state alignment 3024, eagle True, lookup drops eagle block True)
+reachable boundaries [16383] -> [15120, 12096] (lookup alignment 3024, state alignment 3024, eagle True, lookup drops eagle block True)

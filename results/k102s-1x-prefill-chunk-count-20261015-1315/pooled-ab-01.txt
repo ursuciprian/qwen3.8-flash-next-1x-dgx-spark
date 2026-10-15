@@ -1,0 +1,45 @@
+== acceptance per draft position (T=0 probe cells, pooled)
+  pos 0: control 0.850 arm 0.851 shift +0.001
+  pos 1: control 0.703 arm 0.702 shift -0.001
+  pos 2: control 0.577 arm 0.574 shift -0.003
+  pos 3: control 0.468 arm 0.467 shift -0.001
+== cells: arm vs control % (noise = the cell's noise band, %)
+  probe  fresh-c1      +1.12%  noise  6.61%            n=8 CI [-3.4,+4.8] control boot-to-boot +6.61%, step -0.52%
+  probe  fresh-c4      +0.17%  noise  1.90%            n=32 CI [-1.6,+2.2] control boot-to-boot +0.54%, step -0.01%
+  probe  fresh-c8      +1.43%  noise  2.70%            n=64 CI [+0.5,+2.4] control boot-to-boot +2.70%, step -0.59%
+  benchy pp2048 (c1)   -6.11%  noise  2.05%  WORSE>2x  control 1787.0 arm 1677.9 t/s (boots 4/4)
+  benchy tg512 (c1)    -0.06%  noise  8.07%            control 57.5 arm 57.5 t/s (boots 4/4)
+  benchy tg512 (c4)    +3.06%  noise  6.13%            control 109.7 arm 113.1 t/s (boots 4/4)
+  benchy tg512 (c8)    +4.91%  noise 11.83%            control 134.4 arm 141.0 t/s (boots 4/4)
+== logits_equiv (reported, not judged)
+  self  ctl-p3 a/b: 10/20 prompts identical, |dlogprob| mean 0.0430 max 0.7473
+  self  ctl-p4 a/b: 14/20 prompts identical, |dlogprob| mean 0.0440 max 0.6107
+  self  ctl-p5 a/b: 10/20 prompts identical, |dlogprob| mean 0.0432 max 0.5611
+  self  ctl-p6 a/b: 12/20 prompts identical, |dlogprob| mean 0.0341 max 0.3261
+  self  arm-p3 a/b: 10/20 prompts identical, |dlogprob| mean 0.0402 max 0.6909
+  self  arm-p4 a/b: 11/20 prompts identical, |dlogprob| mean 0.0362 max 0.4416
+  self  arm-p5 a/b: 8/20 prompts identical, |dlogprob| mean 0.0385 max 0.3740
+  self  arm-p6 a/b: 9/20 prompts identical, |dlogprob| mean 0.0390 max 0.4460
+  cross ctl-p3/arm-p3: 11/20 prompts identical, |dlogprob| mean 0.0361 max 0.4232
+  cross ctl-p4/arm-p4: 12/20 prompts identical, |dlogprob| mean 0.0489 max 0.5262
+  cross ctl-p5/arm-p5: 8/20 prompts identical, |dlogprob| mean 0.0386 max 0.5834
+  cross ctl-p6/arm-p6: 11/20 prompts identical, |dlogprob| mean 0.0367 max 0.3175
+reason: benchy pp2048 (c1) -6.11% (noise 2.05%)
+better: none
+VERDICT=KILL
+== boot-level Welch 95% CI, benchy cells (reported; the rule uses the noise bands above)
+  pp2048 (c1)   -6.11%  CI [-7.48,-4.73]  control 1788.6 1782.6 1770.1 1806.8 | arm 1674.8 1687.2 1662.9 1686.7
+  tg512 (c1)    -0.06%  CI [-5.54,+5.42]  control 56.5 55.2 59.9 58.3 | arm 58.3 57.6 58.0 56.0
+  tg512 (c8)    +4.91%  CI [-3.51,+13.33]  control 134.9 140.1 124.2 138.2 | arm 141.9 139.0 136.9 146.1
+== post checks per boot
+  ctl-p3 -> k102s-1x-prefill-chunk-count-20261015-1315/ab-01/ctl-p1: kv 993,754 ok
+  ctl-p4 -> k102s-1x-prefill-chunk-count-20261015-1315/ab-01/ctl-p2: kv 993,754 ok
+  ctl-p5 -> k102s-1x-prefill-chunk-count-20261015-1315/ab-01/ctl-p3: kv 993,754 ok
+  ctl-p6 -> k102s-1x-prefill-chunk-count-20261015-1315/ab-01/ctl-p4: kv 993,754 ok
+  arm-p3 -> k102s-1x-prefill-chunk-count-20261015-1315/ab-01/arm-p1: kv 993,754 ok
+  arm-p4 -> k102s-1x-prefill-chunk-count-20261015-1315/ab-01/arm-p2: kv 993,754 ok
+  arm-p5 -> k102s-1x-prefill-chunk-count-20261015-1315/ab-01/arm-p3: kv 993,754 ok
+  arm-p6 -> k102s-1x-prefill-chunk-count-20261015-1315/ab-01/arm-p4: kv 993,754 ok
+worse: benchy pp2048 (c1)   -6.11%  noise  2.05%  WORSE>2x  control 1787.0 arm 1677.9 t/s (boots 4/4)
+better: none
+RULE=FAIL
