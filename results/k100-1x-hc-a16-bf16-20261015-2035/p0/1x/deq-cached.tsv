@@ -1,0 +1,12 @@
+deq-cached	down	8192	256	0.0496	35.5	deq-cached	torch.mm	032ec28476e57020	0.001659	captured 16384 rows
+deq-cached	down	8192	512	0.0741	47.6	deq-cached	torch.mm	fc3f8cb2bf793be6	0.001664	captured 16384 rows
+deq-cached	down	8192	1024	0.1547	45.5	deq-cached	torch.mm	8811fe0983f64cd9	0.001660	captured 16384 rows
+deq-cached	down	8192	1264	0.1726	50.4	deq-cached	torch.mm	a98e9b004a13cf98	0.001680	captured 16384 rows
+deq-cached	down	8192	2048	0.2723	51.7	deq-cached	torch.mm	dfb5e19fc2d5c5f0	0.001646	captured 16384 rows
+deq-cached	down	8192	2064	0.2865	49.6	deq-cached	torch.mm	5327b130496ce4e3	0.001673	captured 16384 rows
+deq-cached	down	8192	2864	0.3582	55.0	deq-cached	torch.mm	f00d7d5fcd3a7191	0.001657	captured 16384 rows
+deq-cached	down	8192	3024	0.3752	55.5	deq-cached	torch.mm	92b38c69d8d83724	0.001656	captured 16384 rows
+deq-cached	down	8192	4536	0.5935	52.6	deq-cached	torch.mm	828911b84050aaf5	0.001672	captured 16384 rows
+deq-cached	down	8192	5728	0.7312	53.9	deq-cached	torch.mm	1b6627e4d32d64f7	0.001653	captured 16384 rows
+deq-cached	down	8192	6048	0.7547	55.1	deq-cached	torch.mm	b21b2b315457817d	0.001666	captured 16384 rows
+deq-cached	down	8192	8192	1.0551	53.4	deq-cached	torch.mm	b96c485f93e5b0a1	0.001665	captured 16384 rows

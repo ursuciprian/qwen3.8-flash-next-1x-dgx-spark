@@ -1,0 +1,20 @@
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+........................                                                 [100%]
+=============================== warnings summary ===============================
+test_blockscaled_a16_dequant.py::test_plan_regimes_routes_large_rows_through_bf16_and_keeps_the_kernel_below
+  /usr/local/lib/python3.12/dist-packages/b12x/_lib/dense_gemm.py:4625: DeprecationWarning: Migrated to examples/CuTeDSL/helpers/static_persistent_tile_scheduler.py (BSD-3). The wheel copy will be removed in a future release.
+    tile_sched_params = utils.PersistentTileSchedulerParams(
+
+test_blockscaled_a16_dequant.py::test_plan_regimes_routes_large_rows_through_bf16_and_keeps_the_kernel_below
+test_blockscaled_a16_dequant.py::test_plan_regimes_routes_large_rows_through_bf16_and_keeps_the_kernel_below
+test_blockscaled_a16_dequant.py::test_plan_regimes_routes_large_rows_through_bf16_and_keeps_the_kernel_below
+test_blockscaled_a16_dequant.py::test_plan_regimes_routes_large_rows_through_bf16_and_keeps_the_kernel_below
+  /usr/local/lib/python3.12/dist-packages/nvidia_cutlass_dsl/dsl_packages/cutlass/_mlir_helpers/op.py:294: DeprecationWarning: FastDivmodDivisor is deprecated in favor of cute.FastDivmodDivisorV2 / cute.fast_divmod_create_divisor_v2. V2 additionally carries the scalar divisor across kernel boundaries (2 MLIR values per object instead of 1), so '.divisor' is readable inside kernels; arithmetic (divmod, //, %) is unchanged.
+    res_or_list = opFunc(*args, **kwargs, loc=loc)
+
+test_blockscaled_a16_dequant.py::test_plan_regimes_routes_large_rows_through_bf16_and_keeps_the_kernel_below
+  /usr/local/lib/python3.12/dist-packages/nvidia_cutlass_dsl/dsl_packages/cutlass/utils/static_persistent_tile_scheduler.py:292: DeprecationWarning: Migrated to examples/CuTeDSL/helpers/static_persistent_tile_scheduler.py (BSD-3). The wheel copy will be removed in a future release.
+    new_params = PersistentTileSchedulerParams(*(tuple(obj_list)), loc=self._loc)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+24 passed, 6 warnings in 6.53s

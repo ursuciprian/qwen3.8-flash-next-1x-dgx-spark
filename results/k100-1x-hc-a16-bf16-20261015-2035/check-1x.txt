@@ -1,0 +1,4 @@
+seed /opt/b12x-seed/preparation/33d9b32e995b59bc4b0d3cdfb5fc2247f3c7b2151c09569ffd3dbaf85c4562e3.json
+shipped image: no _a16_dequant
+activation_mode auto workspace_nbytes 2000000000
+check ok

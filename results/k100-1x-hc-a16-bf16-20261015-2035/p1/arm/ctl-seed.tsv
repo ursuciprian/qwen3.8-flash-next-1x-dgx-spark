@@ -1,0 +1,24 @@
+ctl-seed	down	8192	256	0.0719	24.5	a16 n128 k64 s1 [seed hit]	bf16-deq>=1024	771d5a835e00a272	0.001659	captured 16384 rows
+ctl-seed	down	8192	512	0.1361	25.9	a16 n128 k64 s1 [seed hit]	bf16-deq>=1024	12706cb1dcaf3671	0.001664	captured 16384 rows
+ctl-seed	down	8192	1024	0.2669	26.4	a16 n128 k64 s1 [seed hit]	bf16-deq>=1024	58983437c64ca5bf	0.001660	captured 16384 rows
+ctl-seed	down	8192	1264	0.2883	30.2	a16 n128 k64 s1 [seed hit]	bf16-deq>=1024	a98e9b004a13cf98	0.001680	captured 16384 rows
+ctl-seed	down	8192	2048	0.3653	38.6	a16 n128 k64 s1 [seed hit]	bf16-deq>=1024	dfb5e19fc2d5c5f0	0.001646	captured 16384 rows
+ctl-seed	down	8192	2064	0.3817	37.2	a16 n128 k64 s1 [seed hit]	bf16-deq>=1024	5327b130496ce4e3	0.001673	captured 16384 rows
+ctl-seed	down	8192	2864	0.4715	41.8	a16 n128 k64 s1 [seed hit]	bf16-deq>=1024	f00d7d5fcd3a7191	0.001657	captured 16384 rows
+ctl-seed	down	8192	3024	0.4865	42.8	a16 n128 k64 s1 [seed hit]	bf16-deq>=1024	92b38c69d8d83724	0.001656	captured 16384 rows
+ctl-seed	down	8192	4536	0.7132	43.8	a16 n128 k64 s1 [seed hit]	bf16-deq>=1024	828911b84050aaf5	0.001672	captured 16384 rows
+ctl-seed	down	8192	5728	0.8641	45.6	a16 n128 k64 s1 [seed hit]	bf16-deq>=1024	1b6627e4d32d64f7	0.001653	captured 16384 rows
+ctl-seed	down	8192	6048	0.8673	48.0	a16 n128 k64 s1 [seed hit]	bf16-deq>=1024	b21b2b315457817d	0.001666	captured 16384 rows
+ctl-seed	down	8192	8192	1.1807	47.7	a16 n128 k64 s1 [seed hit]	bf16-deq>=1024	b96c485f93e5b0a1	0.001665	captured 16384 rows
+ctl-seed	up	8192	256	0.0748	22.4	quantized [seed hit]	(64, 128)/BK128/u1	f25d89d6620b4b90	0.017936	captured 16384 rows
+ctl-seed	up	8192	512	0.0771	43.5	quantized [seed hit]	(64, 128)/BK128/u1	05f0e348f71cb465	0.018133	captured 16384 rows
+ctl-seed	up	8192	1024	0.1383	48.5	quantized [seed hit]	(64, 128)/BK128/u1	c8c33569b192a0e5	0.017596	captured 16384 rows
+ctl-seed	up	8192	1264	0.1692	49.0	quantized [seed hit]	(64, 128)/BK128/u1	cbebb8075ce7b944	0.018099	captured 16384 rows
+ctl-seed	up	8192	2048	0.2702	49.7	quantized [seed hit]	(64, 128)/BK128/u1	3c30ebef4bca09a6	0.017589	captured 16384 rows
+ctl-seed	up	8192	2064	0.2767	48.9	quantized [seed hit]	(64, 128)/BK128/u1	ff41b9750e0974d1	0.018235	captured 16384 rows
+ctl-seed	up	8192	2864	0.3487	53.8	quantized [seed hit]	(64, 128)/BK128/u1	a5d714f638d9f203	0.016682	captured 16384 rows
+ctl-seed	up	8192	3024	0.3971	49.9	quantized [seed hit]	(64, 128)/BK128/u1	87489eb0b740a093	0.017657	captured 16384 rows
+ctl-seed	up	8192	4536	0.5383	55.2	quantized [seed hit]	(64, 128)/BK128/u1	c464d2f98f8cc4bc	0.016939	captured 16384 rows
+ctl-seed	up	8192	5728	0.6906	54.4	quantized [seed hit]	(64, 128)/BK128/u1	8cdb71cf8f093ded	0.016487	captured 16384 rows
+ctl-seed	up	8192	6048	0.7266	54.6	quantized [seed hit]	(64, 128)/BK128/u1	0802f65f27f25afa	0.016917	captured 16384 rows
+ctl-seed	up	8192	8192	1.0004	53.7	quantized [seed hit]	(64, 128)/BK128/u1	1b072a65024dc1d2	0.017324	captured 16384 rows
