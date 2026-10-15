@@ -1,0 +1,12 @@
+{"ttft_s": 7.701231956481934, "prompt_tokens": 16384, "len": 16384, "rep": 0}
+{"ttft_s": 7.618526220321655, "prompt_tokens": 16384, "len": 16384, "rep": 1}
+{"ttft_s": 7.800153732299805, "prompt_tokens": 16384, "len": 16384, "rep": 2}
+{"ttft_s": 32.46262168884277, "prompt_tokens": 65536, "len": 65536, "rep": 0}
+{"ttft_s": 33.64268398284912, "prompt_tokens": 65536, "len": 65536, "rep": 1}
+{"ttft_s": 33.67902946472168, "prompt_tokens": 65536, "len": 65536, "rep": 2}
+{"ttft_s": 76.77873635292053, "prompt_tokens": 131072, "len": 131072, "rep": 0}
+{"ttft_s": 74.48778939247131, "prompt_tokens": 131072, "len": 131072, "rep": 1}
+{"ttft_s": 74.49907183647156, "prompt_tokens": 131072, "len": 131072, "rep": 2}
+16384: n=3 prompt 16384 tok, TTFT mean 7.71 s min 7.62 s, 2126 tok/s (each [2127, 2151, 2100])
+65536: n=3 prompt 65536 tok, TTFT mean 33.26 s min 32.46 s, 1970 tok/s (each [2019, 1948, 1946])
+131072: n=3 prompt 131072 tok, TTFT mean 75.26 s min 74.49 s, 1742 tok/s (each [1707, 1760, 1759])

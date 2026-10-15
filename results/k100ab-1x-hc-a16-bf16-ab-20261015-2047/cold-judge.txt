@@ -1,0 +1,9 @@
+arm-01   16K: control   2126 arm   2196 tok/s (+3.3%, noise 1.0%) better
+arm-01   64K: control   1980 arm   2047 tok/s (+3.4%, noise 1.3%) better
+arm-01  128K: control   1755 arm   1804 tok/s (+2.8%, noise 1.1%) better
+arm-01 COLD=PASS
+arm-02   16K: control   2123 arm   2186 tok/s (+3.0%, noise 1.0%) better
+arm-02   64K: control   1992 arm   2065 tok/s (+3.7%, noise 1.7%) better
+arm-02  128K: control   1757 arm   1804 tok/s (+2.7%, noise 1.0%) better
+arm-02 COLD=PASS
+COLD_ALL=PASS

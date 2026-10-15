@@ -1,0 +1,153 @@
+{
+ "label": "warm",
+ "args": {
+  "base": "http://<cx7-ip-a>:8000",
+  "model": "qwen3.8-flash-next",
+  "corpus": "/home/nvidia/GEN-AI/qwen3.8-flash-next-dgx-spark-tp-2/results/corpus-code.txt",
+  "depth": 4096,
+  "new": 2048,
+  "max_tokens": 512,
+  "temperature": 0.0,
+  "repeats": 1,
+  "concurrency": 1,
+  "stall_ms": 250.0,
+  "trigger_cmd": "",
+  "trigger_repeat": 2,
+  "trigger_after_chunks": 20,
+  "offset": 900000,
+  "prompt": "",
+  "label": "warm",
+  "out": "/home/nvidia/GEN-AI/qwen3.8-flash-next-dgx-spark-tp-2/results/k100ab-1x-hc-a16-bf16-ab-20261015-2047/arm-01/arm-p3/probe-warm.json"
+ },
+ "rows": [
+  {
+   "index": 0,
+   "ctx": {
+    "prompt_tokens": 4106,
+    "completion_tokens": 512,
+    "ttft_s": 2.2833980439972947,
+    "decode_tps": 66.64561972777315,
+    "decode_tps_no_stalls": 66.64561972777315,
+    "gap_ms_p50": 56.72883299848763,
+    "gap_ms_p95": 60.661559997242875,
+    "gap_ms_max": 64.642189994629,
+    "stalls": 0,
+    "stall_s": 0,
+    "accept_rate": 0.7018518518518518,
+    "prefix_hit_tokens": 0.0
+   },
+   "inf": {
+    "prompt_tokens": 6155,
+    "completion_tokens": 512,
+    "ttft_s": 1.731488471996272,
+    "decode_tps": 69.85482327571575,
+    "decode_tps_no_stalls": 69.85482327571575,
+    "gap_ms_p50": 56.38292999719852,
+    "gap_ms_p95": 59.76356300379848,
+    "gap_ms_max": 62.043013000220526,
+    "stalls": 0,
+    "stall_s": 0,
+    "accept_rate": 0.7403846153846154,
+    "prefix_hit_tokens": 3024.0
+   }
+  }
+ ],
+ "summary": {
+  "ctx": {
+   "decode_tps": {
+    "mean": 66.64561972777315,
+    "min": 66.64561972777315,
+    "max": 66.64561972777315
+   },
+   "decode_tps_no_stalls": {
+    "mean": 66.64561972777315,
+    "min": 66.64561972777315,
+    "max": 66.64561972777315
+   },
+   "ttft_s": {
+    "mean": 2.2833980439972947,
+    "min": 2.2833980439972947,
+    "max": 2.2833980439972947
+   },
+   "gap_ms_p50": {
+    "mean": 56.72883299848763,
+    "min": 56.72883299848763,
+    "max": 56.72883299848763
+   },
+   "gap_ms_p95": {
+    "mean": 60.661559997242875,
+    "min": 60.661559997242875,
+    "max": 60.661559997242875
+   },
+   "gap_ms_max": {
+    "mean": 64.642189994629,
+    "min": 64.642189994629,
+    "max": 64.642189994629
+   },
+   "accept_rate": {
+    "mean": 0.7018518518518518,
+    "min": 0.7018518518518518,
+    "max": 0.7018518518518518
+   },
+   "prefix_hit_tokens": {
+    "mean": 0.0,
+    "min": 0.0,
+    "max": 0.0
+   },
+   "prompt_tokens": {
+    "mean": 4106,
+    "min": 4106,
+    "max": 4106
+   },
+   "stalls_total": 0
+  },
+  "inf": {
+   "decode_tps": {
+    "mean": 69.85482327571575,
+    "min": 69.85482327571575,
+    "max": 69.85482327571575
+   },
+   "decode_tps_no_stalls": {
+    "mean": 69.85482327571575,
+    "min": 69.85482327571575,
+    "max": 69.85482327571575
+   },
+   "ttft_s": {
+    "mean": 1.731488471996272,
+    "min": 1.731488471996272,
+    "max": 1.731488471996272
+   },
+   "gap_ms_p50": {
+    "mean": 56.38292999719852,
+    "min": 56.38292999719852,
+    "max": 56.38292999719852
+   },
+   "gap_ms_p95": {
+    "mean": 59.76356300379848,
+    "min": 59.76356300379848,
+    "max": 59.76356300379848
+   },
+   "gap_ms_max": {
+    "mean": 62.043013000220526,
+    "min": 62.043013000220526,
+    "max": 62.043013000220526
+   },
+   "accept_rate": {
+    "mean": 0.7403846153846154,
+    "min": 0.7403846153846154,
+    "max": 0.7403846153846154
+   },
+   "prefix_hit_tokens": {
+    "mean": 3024.0,
+    "min": 3024.0,
+    "max": 3024.0
+   },
+   "prompt_tokens": {
+    "mean": 6155,
+    "min": 6155,
+    "max": 6155
+   },
+   "stalls_total": 0
+  }
+ }
+}

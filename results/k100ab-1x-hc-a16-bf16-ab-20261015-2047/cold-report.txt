@@ -1,0 +1,8 @@
+== arm-01: cold prefill tok/s per boot (hook, prompt tokens / mean TTFT, 3 reps)
+  16K: ctl-p1 2126 ctl-p2 2123 ctl-p3 2138 ctl-p4 2119 arm-p1 2196 arm-p2 2196 arm-p3 2197 arm-p4 2194, arm vs ctl +3.3%
+  64K: ctl-p1 1970 ctl-p2 1995 ctl-p3 1972 ctl-p4 1980 arm-p1 2057 arm-p2 2052 arm-p3 2047 arm-p4 2032, arm vs ctl +3.4%
+  128K: ctl-p1 1742 ctl-p2 1760 ctl-p3 1758 ctl-p4 1760 arm-p1 1795 arm-p2 1804 arm-p3 1809 arm-p4 1810, arm vs ctl +2.8%
+== arm-02: cold prefill tok/s per boot (hook, prompt tokens / mean TTFT, 3 reps)
+  16K: ctl-p1 2125 ctl-p2 2126 ctl-p3 2117 ctl-p4 2123 arm-p1 2181 arm-p2 2200 arm-p3 2172 arm-p4 2193, arm vs ctl +3.0%
+  64K: ctl-p1 1974 ctl-p2 2007 ctl-p3 1986 ctl-p4 2000 arm-p1 2055 arm-p2 2070 arm-p3 2061 arm-p4 2074, arm vs ctl +3.7%
+  128K: ctl-p1 1753 ctl-p2 1765 ctl-p3 1760 ctl-p4 1749 arm-p1 1804 arm-p2 1805 arm-p3 1803 arm-p4 1805, arm vs ctl +2.7%
