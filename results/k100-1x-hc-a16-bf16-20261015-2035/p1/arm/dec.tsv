@@ -1,0 +1,26 @@
+dec	down	8192	1	0.0664	0.1	a16 n64 k128 s4 [seed hit]	exact -	db1967b55f369c3f	0.002104	captured 16384 rows
+dec	down	8192	2	0.0646	0.2	a16 n64 k128 s8 [seed hit]	exact -	200ea5519d1cd4f0	0.001907	captured 16384 rows
+dec	down	8192	3	0.0647	0.3	a16 n64 k128 s8 [seed hit]	exact -	2e5fca814f29a028	0.001811	captured 16384 rows
+dec	down	8192	4	0.0646	0.4	a16 n64 k128 s4 [seed hit]	exact -	c1643f5320d5cd14	0.001783	captured 16384 rows
+dec	down	8192	5	0.0649	0.5	a16 n64 k128 s4 [seed hit]	exact -	b958f7f660994470	0.001756	captured 16384 rows
+dec	down	8192	8	0.0644	0.9	a16 n64 k128 s4 [seed hit]	exact -	e4e5eb5ab41167cb	0.001700	captured 16384 rows
+dec	down	8192	10	0.0646	1.1	a16 n64 k128 s8 [seed hit]	exact -	40374381b3c1cd8d	0.001716	captured 16384 rows
+dec	down	8192	15	0.0643	1.6	a16 n64 k128 s8 [seed hit]	exact -	a8834594f3e8bdf2	0.001701	captured 16384 rows
+dec	down	8192	16	0.0705	1.6	a16 n128 k64 s1 [seed hit]	bf16-deq>=1024	1c3e16520598cc35	0.001695	captured 16384 rows
+dec	down	8192	20	0.0651	2.1	a16 n64 k64 s8 [seed hit]	exact -	07fc46a1c56e4888	0.001709	captured 16384 rows
+dec	down	8192	25	0.0650	2.6	a16 n64 k64 s8 [seed hit]	exact -	f366c62bd8d62be7	0.001692	captured 16384 rows
+dec	down	8192	32	0.0704	3.1	a16 n128 k64 s1 [seed hit]	bf16-deq>=1024	4f169b89f81c89e0	0.001692	captured 16384 rows
+dec	down	8192	40	0.0648	4.2	a16 n64 k64 s4 [seed hit]	exact -	53d55293abdcb827	0.001681	captured 16384 rows
+dec	up	8192	1	0.0521	0.1	a16 n64 k64 s1 [seed hit]	exact -	c8a6bf888ff6e25c	0.001681	captured 16384 rows
+dec	up	8192	2	0.0526	0.2	a16 n64 k64 s1 [seed hit]	exact -	896618137ace7058	0.001659	captured 16384 rows
+dec	up	8192	3	0.0524	0.4	a16 n64 k64 s1 [seed hit]	exact -	da9574a236f27f7a	0.001660	captured 16384 rows
+dec	up	8192	4	0.0527	0.5	a16 n64 k64 s1 [seed hit]	exact -	0a03919333e50404	0.001655	captured 16384 rows
+dec	up	8192	5	0.0524	0.6	a16 n64 k64 s1 [seed hit]	exact -	8fc945081288cd05	0.001655	captured 16384 rows
+dec	up	8192	8	0.0520	1.0	a16 n64 k64 s1 [seed hit]	exact -	20daf2f6fef32a70	0.001651	captured 16384 rows
+dec	up	8192	10	0.0525	1.2	a16 n128 k64 s1 [seed hit]	exact -	05c99df61889bc5f	0.001651	captured 16384 rows
+dec	up	8192	15	0.0522	1.9	a16 n64 k64 s1 [seed hit]	exact -	b589a2ff23ae43e9	0.001648	captured 16384 rows
+dec	up	8192	16	0.0744	1.4	quantized [seed hit]	(64, 128)/BK128/u1	192d94c0fedb4426	0.017756	captured 16384 rows
+dec	up	8192	20	0.0524	2.5	a16 n64 k64 s1 [seed hit]	exact -	cf2cd91719f0a91d	0.001649	captured 16384 rows
+dec	up	8192	25	0.0525	3.1	a16 n64 k64 s1 [seed hit]	exact -	2e3a3a3d0d2d6029	0.001649	captured 16384 rows
+dec	up	8192	32	0.0748	2.8	quantized [seed hit]	(64, 128)/BK128/u1	dd2b4b211670d035	0.018309	captured 16384 rows
+dec	up	8192	40	0.0527	5.0	a16 n64 k64 s1 [seed hit]	exact -	9eaec2c5f2e8e358	0.001650	captured 16384 rows

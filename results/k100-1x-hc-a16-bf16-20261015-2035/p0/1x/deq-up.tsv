@@ -1,0 +1,12 @@
+deq-up	up	8192	256	0.2309	7.3	deq-up	torch.mm	81b121acf358876c	0.001647	captured 16384 rows
+deq-up	up	8192	512	0.3543	9.5	deq-up	torch.mm	af90674195182958	0.001647	captured 16384 rows
+deq-up	up	8192	1024	0.6097	11.0	deq-up	torch.mm	99ccc6278bd65a1d	0.001651	captured 16384 rows
+deq-up	up	8192	1264	0.7717	10.7	deq-up	torch.mm	dea37fa3e43c91ac	0.001649	captured 16384 rows
+deq-up	up	8192	2048	1.1584	11.6	deq-up	torch.mm	33edde3cdf032af2	0.001651	captured 16384 rows
+deq-up	up	8192	2064	1.2176	11.1	deq-up	torch.mm	e2bf2a0707b6359e	0.001650	captured 16384 rows
+deq-up	up	8192	2864	1.5740	11.9	deq-up	torch.mm	3bb474dc908ba6ab	0.001657	captured 16384 rows
+deq-up	up	8192	3024	1.6405	12.1	deq-up	torch.mm	ec56f6ffc0288e83	0.001652	captured 16384 rows
+deq-up	up	8192	4536	2.5572	11.6	deq-up	torch.mm	480a2c15789798f1	0.001653	captured 16384 rows
+deq-up	up	8192	5728	2.9703	12.6	deq-up	torch.mm	4d260d3882233c70	0.001661	captured 16384 rows
+deq-up	up	8192	6048	3.3662	11.8	deq-up	torch.mm	a6604425ba9a441d	0.001655	captured 16384 rows
+deq-up	up	8192	8192	4.4365	12.1	deq-up	torch.mm	f8c8dc2f801a2fdc	0.001656	captured 16384 rows

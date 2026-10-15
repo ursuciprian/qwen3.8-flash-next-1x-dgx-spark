@@ -1,0 +1,58 @@
+setup 1x: seed 33d9b32e, 16K chunks [6048, 6048, 3024, 1264], cold 16K TTFT 7.71 s (k90 arm dgx-01, 2125 tok/s)
+inputs: captured 16384 rows; weights: layer 5 attention HC, online MXFP8 g32
+
+== down K10240 N336: full-op ms per call, x = control / variant; numerics vs control: '=' bit-equal, '~' within gate, '!' fails. Control: ctl-seed at capacity 8192, ctl (forced served config) above
+cap      M           ctl-seed            deq-pc               ctl        deq-cached           deq-b16   control plan
+ 8192    256              0.072      0.160 x0.45~               n/a      0.050 x1.45~      0.155 x0.47~   a16 n128 k64 s1 [seed hit] -
+ 8192    512              0.136      0.195 x0.70~               n/a      0.074 x1.83~      0.180 x0.75~   a16 n128 k64 s1 [seed hit] -
+ 8192   1024              0.267      0.273 x0.98~               n/a      0.155 x1.73~      0.259 x1.03~   a16 n128 k64 s1 [seed hit] -
+ 8192   1264              0.337      0.284 x1.18=               n/a      0.173 x1.95=      0.276 x1.22=   a16 n128 k64 s1 [seed hit] -
+ 8192   2048              0.674      0.374 x1.80=               n/a      0.272 x2.47=      0.360 x1.87=   a16 n128 k64 s1 [seed hit] -
+ 8192   2064              0.686      0.383 x1.79=               n/a      0.286 x2.40=      0.375 x1.83=   a16 n128 k64 s1 [seed hit] -
+ 8192   2864              0.925      0.474 x1.95=               n/a      0.358 x2.58=      0.457 x2.03=   a16 n128 k64 s1 [seed hit] -
+ 8192   3024              0.946      0.475 x1.99=               n/a      0.375 x2.52=      0.461 x2.05=   a16 n128 k64 s1 [seed hit] -
+ 8192   4536              1.391      0.700 x1.99=               n/a      0.594 x2.34=      0.662 x2.10=   a16 n128 k64 s1 [seed hit] -
+ 8192   5728              1.850      0.829 x2.23=               n/a      0.731 x2.53=      0.810 x2.28=   a16 n128 k64 s1 [seed hit] -
+ 8192   6048              1.921      0.859 x2.24=               n/a      0.755 x2.55=      0.803 x2.39=   a16 n128 k64 s1 [seed hit] -
+ 8192   8192              2.563      1.176 x2.18=               n/a      1.055 x2.43=      1.070 x2.39=   a16 n128 k64 s1 [seed hit] -
+ 9072   9072                n/a      1.273 x2.23=             2.838               n/a               n/a   a16 n128 k64 s1 -
+12096  12096                n/a      1.651 x2.24=             3.699               n/a               n/a   a16 n128 k64 s1 -
+
+== up K320 N10240: full-op ms per call, x = control / variant; numerics vs control: '=' bit-equal, '~' within gate, '!' fails. Control: ctl-seed at capacity 8192, ctl (forced served config) above
+cap      M           ctl-seed               ctl            deq-up   control plan
+ 8192    256              0.076               n/a      0.231 x0.33!   quantized [seed hit] (64, 128)/BK128/u1
+ 8192    512              0.078               n/a      0.354 x0.22!   quantized [seed hit] (64, 128)/BK128/u1
+ 8192   1024              0.140               n/a      0.610 x0.23!   quantized [seed hit] (64, 128)/BK128/u1
+ 8192   1264              0.171               n/a      0.772 x0.22!   quantized [seed hit] (64, 128)/BK128/u1
+ 8192   2048              0.273               n/a      1.158 x0.24!   quantized [seed hit] (64, 128)/BK128/u1
+ 8192   2064              0.273               n/a      1.218 x0.22!   quantized [seed hit] (64, 128)/BK128/u1
+ 8192   2864              0.354               n/a      1.574 x0.22!   quantized [seed hit] (64, 128)/BK128/u1
+ 8192   3024              0.391               n/a      1.641 x0.24!   quantized [seed hit] (64, 128)/BK128/u1
+ 8192   4536              0.539               n/a      2.557 x0.21!   quantized [seed hit] (64, 128)/BK128/u1
+ 8192   5728              0.668               n/a      2.970 x0.22!   quantized [seed hit] (64, 128)/BK128/u1
+ 8192   6048              0.723               n/a      3.366 x0.21!   quantized [seed hit] (64, 128)/BK128/u1
+ 8192   8192              0.938               n/a      4.436 x0.21!   quantized [seed hit] (64, 128)/BK128/u1
+ 9072   9072                n/a             1.034               n/a   quantized (64, 128)/BK128/u1
+12096  12096                n/a             1.460               n/a   quantized (64, 128)/BK128/u1
+
+== decode/drafter rows (capacity 8192, exact-M regimes [1, 2, 3, 4, 5, 6, 7, 8, 10, 15, 20, 25, 30, 35, 40]): ms per call, plan; the job compares their bytes between the shipped and the arm image
+  down: M1 0.0650 (a16 n64 k128 s4, exact)  M2 0.0639 (a16 n64 k128 s8, exact)  M3 0.0639 (a16 n64 k128 s8, exact)  M4 0.0636 (a16 n64 k128 s4, exact)  M5 0.0640 (a16 n64 k128 s4, exact)  M8 0.0637 (a16 n64 k128 s4, exact)  M10 0.0637 (a16 n64 k128 s8, exact)  M15 0.0636 (a16 n64 k128 s8, exact)  M16 0.0705 (a16 n128 k64 s1)  M20 0.0639 (a16 n64 k64 s8, exact)  M25 0.0639 (a16 n64 k64 s8, exact)  M32 0.0705 (a16 n128 k64 s1)  M40 0.0637 (a16 n64 k64 s4, exact)
+  up: M1 0.0515 (a16 n64 k64 s1, exact)  M2 0.0512 (a16 n64 k64 s1, exact)  M3 0.0512 (a16 n64 k64 s1, exact)  M4 0.0512 (a16 n64 k64 s1, exact)  M5 0.0511 (a16 n64 k64 s1, exact)  M8 0.0507 (a16 n64 k64 s1, exact)  M10 0.0508 (a16 n128 k64 s1, exact)  M15 0.0513 (a16 n64 k64 s1, exact)  M16 0.0737 (quantized)  M20 0.0516 (a16 n64 k64 s1, exact)  M25 0.0517 (a16 n64 k64 s1, exact)  M32 0.0730 (quantized)  M40 0.0517 (a16 n64 k64 s1, exact)
+
+== HC norm/mix kernels as served (b12x.norm.hyperconnection, capacity 8192, seed [seed hit]): ms per call
+op                       1        5       40     1264     3024     6048     8192   us/token at 6048
+grouped_rmsnorm     0.0320   0.0319   0.0317   0.2348   0.5545   1.1075   1.4949   0.18
+scaled_silu         0.0328   0.0324   0.0326   0.0325   0.0325   0.0330   0.0335   0.01
+gate_mean           0.0318   0.0315   0.0315   0.2623   0.6181   1.2285   1.6622   0.20
+combine             0.0307   0.0305   0.0305   0.2729   0.6538   1.3056   1.8129   0.22
+combine_norm        0.0412   0.0411   0.0410   0.4897   1.1499   2.2765   3.0861   0.38
+
+== anchor: control down+up = 41.8 us/token over [6048, 6048, 3024, 1264] vs k81 dense-HC class 48.7 (ratio 0.86); ANCHOR=OK (OK = within 15%)
+== projection: seconds saved per cold 16K prompt = sum over [6048, 6048, 3024, 1264] of (control - variant) ms x 96 down calls per step, k81-scaled headline (raw beside it)
+  deq-pc: +0.296 s (+3.8% of 7.71 s), +0.254 s raw
+  deq-cached: +0.343 s (+4.5% of 7.71 s), +0.295 s raw
+  deq-b16: +0.311 s (+4.0% of 7.71 s), +0.267 s raw
+
+== numerics gate per variant: deq-pc=PASS deq-cached=PASS deq-b16=PASS deq-up=FAIL
+PREDICT=GO deq-pc +0.296 s (+3.8%)
+VERDICT setup=1x served=hit anchor=OK predict=GO deq-pc=PASS deq-cached=PASS deq-b16=PASS deq-up=FAIL deq-pc=+0.296s

@@ -1,0 +1,14 @@
+deq-pc	down	8192	256	0.1605	11.0	deq-pc	torch.mm	032ec28476e57020	0.001659	captured 16384 rows
+deq-pc	down	8192	512	0.1890	18.6	deq-pc	torch.mm	fc3f8cb2bf793be6	0.001664	captured 16384 rows
+deq-pc	down	8192	1024	0.2611	27.0	deq-pc	torch.mm	8811fe0983f64cd9	0.001660	captured 16384 rows
+deq-pc	down	8192	1264	0.2837	30.7	deq-pc	torch.mm	a98e9b004a13cf98	0.001680	captured 16384 rows
+deq-pc	down	8192	2048	0.3659	38.5	deq-pc	torch.mm	dfb5e19fc2d5c5f0	0.001646	captured 16384 rows
+deq-pc	down	8192	2064	0.3777	37.6	deq-pc	torch.mm	5327b130496ce4e3	0.001673	captured 16384 rows
+deq-pc	down	8192	2864	0.4670	42.2	deq-pc	torch.mm	f00d7d5fcd3a7191	0.001657	captured 16384 rows
+deq-pc	down	8192	3024	0.4644	44.8	deq-pc	torch.mm	92b38c69d8d83724	0.001656	captured 16384 rows
+deq-pc	down	8192	4536	0.7035	44.4	deq-pc	torch.mm	828911b84050aaf5	0.001672	captured 16384 rows
+deq-pc	down	8192	5728	0.8301	47.5	deq-pc	torch.mm	1b6627e4d32d64f7	0.001653	captured 16384 rows
+deq-pc	down	8192	6048	0.8423	49.4	deq-pc	torch.mm	b21b2b315457817d	0.001666	captured 16384 rows
+deq-pc	down	8192	8192	1.1746	48.0	deq-pc	torch.mm	b96c485f93e5b0a1	0.001665	captured 16384 rows
+deq-pc	down	9072	9072	1.2320	50.7	deq-pc	torch.mm	0899c08cc9a475b4	0.001668	captured 16384 rows
+deq-pc	down	12096	12096	1.5918	52.3	deq-pc	torch.mm	f79c3ff39e5367e5	0.001656	captured 16384 rows
