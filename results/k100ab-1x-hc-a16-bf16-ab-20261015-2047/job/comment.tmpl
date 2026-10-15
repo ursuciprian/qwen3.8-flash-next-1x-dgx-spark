@@ -1,0 +1,13 @@
+k100-1x-hc-a16-bf16 result: a BF16 path for the hyperconnection down projection (K10240 to N336) in prefill, against the 1x v2.3.0 stack.
+
+Background: k96 showed that the down projection is served A16 (BF16 activations, plan record a16 n128 k64 s1, 1.883 ms at M 6048), so k90's quantized 128x128/BK64 candidate does not apply to the served path. The A16 kernel only has 16-row M tiles and dequantizes the 3.4 MB weight again for every 16 rows. My b12x branch exp/k100-hc-a16-bf16 (5b77e18e) sends prefill calls of 1024 rows or more to an exact BF16 dequantization of the weight plus one BF16 GEMM with FP32 accumulation. Decode (exact-M regimes), smaller calls and every other shape keep the A16 kernel. Plan records and plan population do not change.
+
+The job runs a probe first: identical captured inputs and real layer 5 weights, the served plan seed as control, numerics before speed (k96 gate), decode rows M 1 to 40, the HC norm/mix kernels as separate rows, and the TP=2 row on the 2x image. The serving A/B (4 boots per side per Spark, ctl arm arm ctl ctl arm arm ctl, cold TTFT 16K/64K/128K, llama-benchy c1/c4/c8, MTP acceptance per position) only runs when the probe projects at least 2% on cold 16K TTFT.
+
+RULE={RULE}
+
+```
+{REPORT}
+```
+
+Results: {RESULTS_URL}

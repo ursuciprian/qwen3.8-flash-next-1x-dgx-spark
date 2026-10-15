@@ -1,0 +1,45 @@
+== acceptance per draft position (T=0 probe cells, pooled)
+  pos 0: control 0.852 arm 0.852 shift +0.001
+  pos 1: control 0.704 arm 0.705 shift +0.001
+  pos 2: control 0.578 arm 0.580 shift +0.003
+  pos 3: control 0.472 arm 0.476 shift +0.004
+== cells: arm vs control % (noise = the cell's noise band, %)
+  probe  fresh-c1      -1.66%  noise  3.29%            n=8 CI [-4.9,+1.7] control boot-to-boot -1.10%, step -0.02%
+  probe  fresh-c4      +1.36%  noise  4.57%            n=32 CI [-0.2,+2.9] control boot-to-boot -4.57%, step -0.49%
+  probe  fresh-c8      +0.58%  noise  3.17%            n=64 CI [-0.7,+1.7] control boot-to-boot +3.17%, step +0.05%
+  benchy pp2048 (c1)   +2.21%  noise  2.01%  better    control 1794.3 arm 1834.0 t/s (boots 4/4)
+  benchy tg512 (c1)    -2.96%  noise 14.42%            control 59.0 arm 57.2 t/s (boots 4/4)
+  benchy tg512 (c4)    +0.15%  noise  6.90%            control 110.2 arm 110.3 t/s (boots 4/4)
+  benchy tg512 (c8)    +6.05%  noise  5.42%  better    control 133.8 arm 141.8 t/s (boots 4/4)
+== logits_equiv (reported, not judged)
+  self  ctl-p3 a/b: 12/20 prompts identical, |dlogprob| mean 0.0346 max 0.4594
+  self  ctl-p4 a/b: 12/20 prompts identical, |dlogprob| mean 0.0357 max 0.4697
+  self  ctl-p5 a/b: 11/20 prompts identical, |dlogprob| mean 0.0377 max 0.5549
+  self  ctl-p6 a/b: 12/20 prompts identical, |dlogprob| mean 0.0353 max 0.3986
+  self  arm-p3 a/b: 11/20 prompts identical, |dlogprob| mean 0.0330 max 0.3484
+  self  arm-p4 a/b: 10/20 prompts identical, |dlogprob| mean 0.0354 max 0.4301
+  self  arm-p5 a/b: 10/20 prompts identical, |dlogprob| mean 0.0307 max 0.4777
+  self  arm-p6 a/b: 13/20 prompts identical, |dlogprob| mean 0.0396 max 0.8502
+  cross ctl-p3/arm-p3: 11/20 prompts identical, |dlogprob| mean 0.0301 max 0.3002
+  cross ctl-p4/arm-p4: 10/20 prompts identical, |dlogprob| mean 0.0428 max 0.3938
+  cross ctl-p5/arm-p5: 11/20 prompts identical, |dlogprob| mean 0.0330 max 0.4824
+  cross ctl-p6/arm-p6: 11/20 prompts identical, |dlogprob| mean 0.0391 max 0.6979
+better: benchy pp2048 (c1) +2.21% (noise 2.01%); benchy tg512 (c8) +6.05% (noise 5.42%)
+VERDICT=PROMOTE
+== boot-level Welch 95% CI, benchy cells (reported; the rule uses the noise bands above)
+  pp2048 (c1)   +2.21%  CI [+0.69,+3.74]  control 1792.4 1774.2 1810.3 1800.1 | arm 1853.1 1836.6 1828.5 1817.7
+  tg512 (c1)    -2.96%  CI [-14.49,+8.57]  control 54.4 62.9 56.3 62.3 | arm 55.3 56.4 60.7 56.5
+  tg512 (c4)    +0.15%  CI [-6.22,+6.53]  control 112.2 109.0 105.9 113.5 | arm 110.2 104.4 114.2 112.5
+  tg512 (c8)    +6.05%  CI [+0.61,+11.49]  control 134.5 131.2 138.3 131.0 | arm 136.3 143.2 140.8 147.1
+== post checks per boot
+  ctl-p3 -> k100ab-1x-hc-a16-bf16-ab-20261015-2047/arm-02/ctl-p1: kv 993,754 ok
+  ctl-p4 -> k100ab-1x-hc-a16-bf16-ab-20261015-2047/arm-02/ctl-p2: kv 993,754 ok
+  ctl-p5 -> k100ab-1x-hc-a16-bf16-ab-20261015-2047/arm-02/ctl-p3: kv 993,754 ok
+  ctl-p6 -> k100ab-1x-hc-a16-bf16-ab-20261015-2047/arm-02/ctl-p4: kv 993,754 ok
+  arm-p3 -> k100ab-1x-hc-a16-bf16-ab-20261015-2047/arm-02/arm-p1: kv 993,754 ok
+  arm-p4 -> k100ab-1x-hc-a16-bf16-ab-20261015-2047/arm-02/arm-p2: kv 993,754 ok
+  arm-p5 -> k100ab-1x-hc-a16-bf16-ab-20261015-2047/arm-02/arm-p3: kv 993,754 ok
+  arm-p6 -> k100ab-1x-hc-a16-bf16-ab-20261015-2047/arm-02/arm-p4: kv 993,754 ok
+worse: none
+better: benchy pp2048 (c1)   +2.21%  noise  2.01%  better    control 1794.3 arm 1834.0 t/s (boots 4/4); benchy tg512 (c8)    +6.05%  noise  5.42%  better    control 133.8 arm 141.8 t/s (boots 4/4)
+RULE=PASS
