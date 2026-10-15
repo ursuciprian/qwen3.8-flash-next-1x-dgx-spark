@@ -1,0 +1,6 @@
+boot 166 s, KV pool 6442450944 bytes, min MemAvailable 21.92 GiB
+      1 Directly load AOT compilation
+      1 Dynamo bytecode transform time
+plans measured: 0
+views lines: 1
+pong: pong

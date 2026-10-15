@@ -1,0 +1,10 @@
+vllm:spec_decode_num_draft_tokens_total{engine="0",model_name="qwen3.8-flash-next"} 18212.0
+vllm:spec_decode_num_accepted_tokens_total{engine="0",model_name="qwen3.8-flash-next"} 11838.0
+vllm:spec_decode_num_accepted_tokens_per_pos_total{engine="0",model_name="qwen3.8-flash-next",position="0"} 3902.0
+vllm:spec_decode_num_accepted_tokens_per_pos_total{engine="0",model_name="qwen3.8-flash-next",position="1"} 3203.0
+vllm:spec_decode_num_accepted_tokens_per_pos_total{engine="0",model_name="qwen3.8-flash-next",position="2"} 2611.0
+vllm:spec_decode_num_accepted_tokens_per_pos_total{engine="0",model_name="qwen3.8-flash-next",position="3"} 2122.0
+vllm:spec_decode_num_draft_tokens_per_pos_total{engine="0",model_name="qwen3.8-flash-next",position="0"} 4553.0
+vllm:spec_decode_num_draft_tokens_per_pos_total{engine="0",model_name="qwen3.8-flash-next",position="1"} 4553.0
+vllm:spec_decode_num_draft_tokens_per_pos_total{engine="0",model_name="qwen3.8-flash-next",position="2"} 4553.0
+vllm:spec_decode_num_draft_tokens_per_pos_total{engine="0",model_name="qwen3.8-flash-next",position="3"} 4553.0

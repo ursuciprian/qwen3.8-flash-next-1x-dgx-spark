@@ -1,0 +1,27 @@
+k101 2x 2026-10-15 18:32:35 EEST: VLLM_GDN_PREFILL_VIEWS=1 on the 2x v2.1.0 (spark-vllm-b12x:k101-gv-10d0acc8-d21d7ade) vs shipped
+bake: prebake boot 172s Dynamo bytecode transform time; full boot 172s Directly load AOT compilation; rank 0 measured 0
+screen (ctl:1 arm:1 arm:2 ctl:2 ctl:3 arm:3 arm:4 ctl:4):
+== cold TTFT (s, mean of 3 per boot); noise = larger boot-to-boot spread of either side (floor 0.5%)
+  16K: ctl 5.64 5.60 5.65 5.63 | arm 5.44 5.54 5.47 5.50 -> -2.5% (-0.14 s; noise 1.9%) better
+  64K: ctl 24.64 24.62 24.60 24.63 | arm 24.11 24.05 23.97 24.04 -> -2.4% (-0.58 s; noise 0.6%) better
+  128K: ctl 55.29 55.28 55.22 55.29 | arm 53.82 54.22 53.82 54.30 -> -2.2% (-1.23 s; noise 0.9%) better
+== llama-benchy pp2048 + tg512 (tok/s, side means; band = max(k92 band, side spread))
+  pp2048 (c1): ctl 2758.0 arm 2892.4 +4.9% (band 4.2%)
+  tg512 (c1): ctl 78.4 arm 84.9 +8.3% (band 15.5%)
+  tg512 (c4): ctl 160.4 arm 166.2 +3.6% (band 10.6%)
+  tg512 (c8): ctl 193.2 arm 195.2 +1.0% (band 11.7%)
+== MTP acceptance per draft position (fresh c8, T=0), pooled per side
+  ctl: 0.844 0.696 0.571 0.466
+  arm: 0.850 0.704 0.576 0.470
+== path: views lines (rank 0 / rank 1) and KV pool per boot
+  ctl-p1: views lines 0 / 0; KV 3525263 tokens, 29.3 GiB available for KV
+  ctl-p2: views lines 0 / 0; KV 3528961 tokens, 29.33 GiB available for KV
+  ctl-p3: views lines 0 / 0; KV 3521751 tokens, 29.27 GiB available for KV
+  ctl-p4: views lines 0 / 0; KV 3529885 tokens, 29.34 GiB available for KV
+  arm-p1: views lines 1 / 1; KV 3521381 tokens, 29.27 GiB available for KV
+  arm-p2: views lines 1 / 1; KV 3522120 tokens, 29.27 GiB available for KV
+  arm-p3: views lines 1 / 1; KV 3524709 tokens, 29.29 GiB available for KV
+  arm-p4: views lines 1 / 1; KV 3528406 tokens, 29.32 GiB available for KV
+  KV pool arm vs ctl: -0.1% tokens, -0.02 GiB per rank
+better: 16K, 64K, 128K
+RULE2=WIN

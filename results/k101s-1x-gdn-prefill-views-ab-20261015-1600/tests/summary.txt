@@ -1,0 +1,33 @@
+arm image:
+  test_gdn_prefill_b12x.py::test_group_worklist_copies_update_captured_buffers_without_aliasing PASSED
+  test_gdn_prefill_b12x.py::test_mixed_gdn_graph_replays_prefill_decode_verification_and_empty_worklists PASSED
+  test_gdn_prefill_b12x.py::test_prefill_capacity_family_covers_exact_scheduler_limit[128-expected3] PASSED
+  test_gdn_prefill_b12x.py::test_prefill_capacity_family_covers_exact_scheduler_limit[16-expected1] PASSED
+  test_gdn_prefill_b12x.py::test_prefill_capacity_family_covers_exact_scheduler_limit[1-expected0] PASSED
+  test_gdn_prefill_b12x.py::test_prefill_capacity_family_covers_exact_scheduler_limit[33-expected2] PASSED
+  test_gdn_prefill_b12x.py::test_prefill_pooled_state_graph_replays_changed_lengths_and_slots PASSED
+  test_gdn_prefill_b12x.py::test_prepared_gdn_decode_plan_is_scoped_to_the_bound_recurrent_pool PASSED
+  test_gdn_prefill_views.py::test_identity_tokens_follow_worklist_copies PASSED
+  test_gdn_prefill_views.py::test_identity_tokens_match_the_device_worklist PASSED
+  test_gdn_prefill_views.py::test_views_condition_is_host_only[overrides0-40] PASSED
+  test_gdn_prefill_views.py::test_views_condition_is_host_only[overrides1-64] PASSED
+  test_gdn_prefill_views.py::test_views_condition_is_host_only[overrides2-None] PASSED
+  test_gdn_prefill_views.py::test_views_condition_is_host_only[overrides3-None] PASSED
+  test_gdn_prefill_views.py::test_views_condition_is_host_only[overrides4-None] PASSED
+  test_gdn_prefill_views.py::test_views_condition_is_host_only[overrides5-None] PASSED
+  test_gdn_prefill_views.py::test_views_condition_is_host_only[overrides6-None] PASSED
+  test_gdn_prefill_views.py::test_views_condition_is_host_only[overrides7-None] PASSED
+  test_gdn_prefill_views.py::test_views_condition_is_host_only[overrides8-None] PASSED
+  test_gdn_prefill_views.py::test_views_condition_is_host_only[overrides9-None] PASSED
+  test_gdn_prefill_views.py::test_views_path_is_bit_identical_to_the_general_path PASSED
+shipped image, pinned tests:
+  test_gdn_prefill_b12x.py::test_group_worklist_copies_update_captured_buffers_without_aliasing PASSED
+  test_gdn_prefill_b12x.py::test_mixed_gdn_graph_replays_prefill_decode_verification_and_empty_worklists PASSED
+  test_gdn_prefill_b12x.py::test_prefill_capacity_family_covers_exact_scheduler_limit[128-expected3] PASSED
+  test_gdn_prefill_b12x.py::test_prefill_capacity_family_covers_exact_scheduler_limit[16-expected1] PASSED
+  test_gdn_prefill_b12x.py::test_prefill_capacity_family_covers_exact_scheduler_limit[1-expected0] PASSED
+  test_gdn_prefill_b12x.py::test_prefill_capacity_family_covers_exact_scheduler_limit[33-expected2] PASSED
+  test_gdn_prefill_b12x.py::test_prefill_pooled_state_graph_replays_changed_lengths_and_slots PASSED
+  test_gdn_prefill_b12x.py::test_prepared_gdn_decode_plan_is_scoped_to_the_bound_recurrent_pool PASSED
+pinned tests failing on the arm but passing on the control: none
+TESTS=PASS

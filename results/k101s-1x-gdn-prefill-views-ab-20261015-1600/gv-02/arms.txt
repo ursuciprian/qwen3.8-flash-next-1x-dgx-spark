@@ -1,0 +1,2 @@
+arm gv /home/nvidia/GEN-AI/backlog/k101s/rec/gv.yaml
+ctl base /home/nvidia/GEN-AI/backlog/k101s/rec/base.yaml
