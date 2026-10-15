@@ -1,0 +1,9 @@
+gv-01   16K: control   2128 arm   2227 tok/s (+4.7%, noise 1.0%) better
+gv-01   64K: control   1987 arm   2068 tok/s (+4.1%, noise 1.4%) better
+gv-01  128K: control   1756 arm   1820 tok/s (+3.6%, noise 1.0%) better
+gv-01 COLD=PASS
+gv-02   16K: control   2121 arm   2221 tok/s (+4.8%, noise 1.0%) better
+gv-02   64K: control   2002 arm   2084 tok/s (+4.1%, noise 1.0%) better
+gv-02  128K: control   1763 arm   1818 tok/s (+3.2%, noise 1.0%) better
+gv-02 COLD=PASS
+COLD_ALL=PASS

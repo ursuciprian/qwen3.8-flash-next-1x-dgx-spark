@@ -1,0 +1,6 @@
+== acceptance per draft position (T=0 probe cells, pooled)
+  pos 0: control 0.849 arm 0.862 shift +0.013
+  pos 1: control 0.693 arm 0.711 shift +0.018
+  pos 2: control 0.568 arm 0.581 shift +0.012
+  pos 3: control 0.463 arm 0.478 shift +0.015
+ACC=OK
