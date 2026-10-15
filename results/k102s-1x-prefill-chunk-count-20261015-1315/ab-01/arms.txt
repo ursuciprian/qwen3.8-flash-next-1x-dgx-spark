@@ -1,0 +1,2 @@
+arm b12096 /home/nvidia/GEN-AI/backlog/k102s/rec/b12096.yaml
+ctl base /home/nvidia/GEN-AI/backlog/k102s/rec/base.yaml

@@ -1,0 +1,378 @@
+  prompt 4106: 2 steps [3024, 1082]
+          0 +   3024  last-cache-position
+       3024 +   1082  prompt-end
+  prompt 6155: 2 steps [3024, 107]  NOT CHAINED (cut after the split)
+       3024 +   3024  last-cache-position
+       6048 +    107  prompt-end
+  prompt 266: 1 steps [266]
+          0 +    266  prompt-end
+  prompt 2315: 1 steps [2315]
+          0 +   2315  prompt-end
+  prompt 263: 1 steps [263]
+          0 +    263  prompt-end
+  prompt 2310: 1 steps [2310]
+          0 +   2310  prompt-end
+  prompt 266: 1 steps [266]
+          0 +    266  prompt-end
+  prompt 265: 1 steps [265]
+          0 +    265  prompt-end
+  prompt 266: 1 steps [266]
+          0 +    266  prompt-end
+  prompt 265: 1 steps [265]
+          0 +    265  prompt-end
+  prompt 2313: 1 steps [2313]
+          0 +   2313  prompt-end
+  prompt 2315: 1 steps [2315]
+          0 +   2315  prompt-end
+  prompt 2314: 1 steps [2314]
+          0 +   2314  prompt-end
+  prompt 2315: 1 steps [2315]
+          0 +   2315  prompt-end
+  prompt 264: 1 steps [264]
+          0 +    264  prompt-end
+  prompt 266: 1 steps [266]
+          0 +    266  prompt-end
+  prompt 266: 1 steps [266]
+          0 +    266  prompt-end
+  prompt 266: 1 steps [266]
+          0 +    266  prompt-end
+  prompt 2311: 1 steps [2311]
+          0 +   2311  prompt-end
+  prompt 2313: 1 steps [2313]
+          0 +   2313  prompt-end
+  prompt 2315: 1 steps [2315]
+          0 +   2315  prompt-end
+  prompt 2314: 1 steps [2314]
+          0 +   2314  prompt-end
+  prompt 266: 1 steps [266]
+          0 +    266  prompt-end
+  prompt 264: 1 steps [264]
+          0 +    264  prompt-end
+  prompt 266: 1 steps [266]
+          0 +    266  prompt-end
+  prompt 264: 1 steps [264]
+          0 +    264  prompt-end
+  prompt 266: 1 steps [266]
+          0 +    266  prompt-end
+  prompt 266: 1 steps [266]
+          0 +    266  prompt-end
+  prompt 266: 1 steps [266]
+          0 +    266  prompt-end
+  prompt 266: 1 steps [266]
+          0 +    266  prompt-end
+  prompt 2315: 1 steps [2315]
+          0 +   2315  prompt-end
+  prompt 2314: 1 steps [2314]
+          0 +   2314  prompt-end
+  prompt 2315: 1 steps [2315]
+          0 +   2315  prompt-end
+  prompt 2313: 1 steps [2313]
+          0 +   2313  prompt-end
+  prompt 2314: 1 steps [2314]
+          0 +   2314  prompt-end
+  prompt 2313: 1 steps [2313]
+          0 +   2313  prompt-end
+  prompt 2314: 1 steps [2314]
+          0 +   2314  prompt-end
+  prompt 2314: 1 steps [2314]
+          0 +   2314  prompt-end
+  prompt 266: 1 steps [266]
+          0 +    266  prompt-end
+  prompt 265: 1 steps [265]
+          0 +    265  prompt-end
+  prompt 266: 1 steps [266]
+          0 +    266  prompt-end
+  prompt 266: 1 steps [266]
+          0 +    266  prompt-end
+  prompt 266: 1 steps [266]
+          0 +    266  prompt-end
+  prompt 266: 1 steps [266]
+          0 +    266  prompt-end
+  prompt 265: 1 steps [265]
+          0 +    265  prompt-end
+  prompt 266: 1 steps [266]
+          0 +    266  prompt-end
+  prompt 2315: 1 steps [2315]
+          0 +   2315  prompt-end
+  prompt 2315: 1 steps [2315]
+          0 +   2315  prompt-end
+  prompt 2314: 1 steps [2314]
+          0 +   2314  prompt-end
+  prompt 2314: 1 steps [2314]
+          0 +   2314  prompt-end
+  prompt 2315: 1 steps [2315]
+          0 +   2315  prompt-end
+  prompt 2315: 1 steps [2315]
+          0 +   2315  prompt-end
+  prompt 2315: 1 steps [2315]
+          0 +   2315  prompt-end
+  prompt 2313: 1 steps [2313]
+          0 +   2313  prompt-end
+  prompt 5: 1 steps [5]
+          0 +      5  prompt-end
+  prompt 15: 1 steps [15]
+          0 +     15  prompt-end
+  prompt 9: 1 steps [9]
+          0 +      9  prompt-end
+  prompt 11: 1 steps [11]
+          0 +     11  prompt-end
+  prompt 15: 1 steps [15]
+          0 +     15  prompt-end
+  prompt 9: 1 steps [9]
+          0 +      9  prompt-end
+  prompt 8: 1 steps [8]
+          0 +      8  prompt-end
+  prompt 14: 1 steps [14]
+          0 +     14  prompt-end
+  prompt 10: 1 steps [10]
+          0 +     10  prompt-end
+  prompt 8: 1 steps [8]
+          0 +      8  prompt-end
+  prompt 17: 1 steps [17]
+          0 +     17  prompt-end
+  prompt 11: 1 steps [11]
+          0 +     11  prompt-end
+  prompt 10: 1 steps [10]
+          0 +     10  prompt-end
+  prompt 6: 1 steps [6]
+          0 +      6  prompt-end
+  prompt 8: 1 steps [8]
+          0 +      8  prompt-end
+  prompt 9: 1 steps [9]
+          0 +      9  prompt-end
+  prompt 5: 1 steps [5]
+          0 +      5  prompt-end
+  prompt 13: 1 steps [13]
+          0 +     13  prompt-end
+  prompt 21: 1 steps [21]
+          0 +     21  prompt-end
+  prompt 8: 1 steps [8]
+          0 +      8  prompt-end
+  prompt 5: 1 steps [5]
+          0 +      5  prompt-end
+  prompt 15: 1 steps [15]
+          0 +     15  prompt-end
+  prompt 9: 1 steps [9]
+          0 +      9  prompt-end
+  prompt 11: 1 steps [11]
+          0 +     11  prompt-end
+  prompt 15: 1 steps [15]
+          0 +     15  prompt-end
+  prompt 9: 1 steps [9]
+          0 +      9  prompt-end
+  prompt 8: 1 steps [8]
+          0 +      8  prompt-end
+  prompt 14: 1 steps [14]
+          0 +     14  prompt-end
+  prompt 10: 1 steps [10]
+          0 +     10  prompt-end
+  prompt 8: 1 steps [8]
+          0 +      8  prompt-end
+  prompt 17: 1 steps [17]
+          0 +     17  prompt-end
+  prompt 11: 1 steps [11]
+          0 +     11  prompt-end
+  prompt 10: 1 steps [10]
+          0 +     10  prompt-end
+  prompt 6: 1 steps [6]
+          0 +      6  prompt-end
+  prompt 8: 1 steps [8]
+          0 +      8  prompt-end
+  prompt 9: 1 steps [9]
+          0 +      9  prompt-end
+  prompt 5: 1 steps [5]
+          0 +      5  prompt-end
+  prompt 13: 1 steps [13]
+          0 +     13  prompt-end
+  prompt 21: 1 steps [21]
+          0 +     21  prompt-end
+  prompt 8: 1 steps [8]
+          0 +      8  prompt-end
+  prompt 30: 1 steps [30]
+          0 +     30  prompt-end
+  prompt 36: 1 steps [36]
+          0 +     36  prompt-end
+  prompt 23: 1 steps [23]
+          0 +     23  prompt-end
+  prompt 2097: 1 steps [2097]
+          0 +   2097  prompt-end
+  prompt 2095: 1 steps [2095]
+          0 +   2095  prompt-end
+  prompt 2097: 1 steps [2097]
+          0 +   2097  prompt-end
+  prompt 2097: 1 steps [2097]
+          0 +   2097  prompt-end
+  prompt 2097: 1 steps [2097]
+          0 +   2097  prompt-end
+  prompt 2089: 1 steps [2089]
+          0 +   2089  prompt-end
+  prompt 2095: 1 steps [2095]
+          0 +   2095  prompt-end
+  prompt 2097: 1 steps [2097]
+          0 +   2097  prompt-end
+  prompt 2093: 1 steps [2093]
+          0 +   2093  prompt-end
+  prompt 2096: 1 steps [2096]
+          0 +   2096  prompt-end
+  prompt 2098: 1 steps [2098]
+          0 +   2098  prompt-end
+  prompt 2097: 1 steps [2097]
+          0 +   2097  prompt-end
+  prompt 2093: 1 steps [2093]
+          0 +   2093  prompt-end
+  prompt 2097: 1 steps [2097]
+          0 +   2097  prompt-end
+  prompt 2095: 1 steps [2095]
+          0 +   2095  prompt-end
+  prompt 2093: 1 steps [2093]
+          0 +   2093  prompt-end
+  prompt 2093: 1 steps [2093]
+          0 +   2093  prompt-end
+  prompt 2096: 1 steps [2096]
+          0 +   2096  prompt-end
+  prompt 2098: 1 steps [2098]
+          0 +   2098  prompt-end
+  prompt 2098: 1 steps [2098]
+          0 +   2098  prompt-end
+  prompt 2098: 1 steps [2098]
+          0 +   2098  prompt-end
+  prompt 2093: 1 steps [2093]
+          0 +   2093  prompt-end
+  prompt 2097: 1 steps [2097]
+          0 +   2097  prompt-end
+  prompt 2093: 1 steps [2093]
+          0 +   2093  prompt-end
+  prompt 2098: 1 steps [2098]
+          0 +   2098  prompt-end
+  prompt 2095: 1 steps [2095]
+          0 +   2095  prompt-end
+  prompt 2096: 1 steps [2096]
+          0 +   2096  prompt-end
+  prompt 2096: 1 steps [2096]
+          0 +   2096  prompt-end
+  prompt 2091: 1 steps [2091]
+          0 +   2091  prompt-end
+  prompt 2095: 1 steps [2095]
+          0 +   2095  prompt-end
+  prompt 2093: 1 steps [2093]
+          0 +   2093  prompt-end
+  prompt 2097: 1 steps [2097]
+          0 +   2097  prompt-end
+  prompt 2098: 1 steps [2098]
+          0 +   2098  prompt-end
+  prompt 2093: 1 steps [2093]
+          0 +   2093  prompt-end
+  prompt 2097: 1 steps [2097]
+          0 +   2097  prompt-end
+  prompt 2098: 1 steps [2098]
+          0 +   2098  prompt-end
+  prompt 2088: 1 steps [2088]
+          0 +   2088  prompt-end
+  prompt 2098: 1 steps [2098]
+          0 +   2098  prompt-end
+  prompt 2097: 1 steps [2097]
+          0 +   2097  prompt-end
+  prompt 2092: 1 steps [2092]
+          0 +   2092  prompt-end
+  prompt 2095: 1 steps [2095]
+          0 +   2095  prompt-end
+  prompt 2091: 1 steps [2091]
+          0 +   2091  prompt-end
+  prompt 2097: 1 steps [2097]
+          0 +   2097  prompt-end
+  prompt 2095: 1 steps [2095]
+          0 +   2095  prompt-end
+  prompt 2093: 1 steps [2093]
+          0 +   2093  prompt-end
+  prompt 2097: 1 steps [2097]
+          0 +   2097  prompt-end
+  prompt 2096: 1 steps [2096]
+          0 +   2096  prompt-end
+  prompt 2095: 1 steps [2095]
+          0 +   2095  prompt-end
+  prompt 2097: 1 steps [2097]
+          0 +   2097  prompt-end
+  prompt 2098: 1 steps [2098]
+          0 +   2098  prompt-end
+  prompt 2094: 1 steps [2094]
+          0 +   2094  prompt-end
+  prompt 2095: 1 steps [2095]
+          0 +   2095  prompt-end
+  prompt 16384: 3 steps [12096, 3024, 1264]
+          0 +  12096  budget
+      12096 +   3024  last-cache-position
+      15120 +   1264  prompt-end
+  prompt 16384: 3 steps [12096, 3024, 1264]
+          0 +  12096  budget
+      12096 +   3024  last-cache-position
+      15120 +   1264  prompt-end
+  prompt 16384: 3 steps [12096, 3024, 1264]
+          0 +  12096  budget
+      12096 +   3024  last-cache-position
+      15120 +   1264  prompt-end
+  prompt 65536: 7 steps [12096, 12096, 12096, 12096, 12096, 3024, 2032]
+          0 +  12096  budget
+      12096 +  12096  budget
+      24192 +  12096  budget
+      36288 +  12096  budget
+      48384 +  12096  budget
+      60480 +   3024  last-cache-position
+      63504 +   2032  prompt-end
+  prompt 65536: 7 steps [12096, 12096, 12096, 12096, 12096, 3024, 2032]
+          0 +  12096  budget
+      12096 +  12096  budget
+      24192 +  12096  budget
+      36288 +  12096  budget
+      48384 +  12096  budget
+      60480 +   3024  last-cache-position
+      63504 +   2032  prompt-end
+  prompt 65536: 7 steps [12096, 12096, 12096, 12096, 12096, 3024, 2032]
+          0 +  12096  budget
+      12096 +  12096  budget
+      24192 +  12096  budget
+      36288 +  12096  budget
+      48384 +  12096  budget
+      60480 +   3024  last-cache-position
+      63504 +   2032  prompt-end
+  prompt 131072: 13 steps [12096, 12096, 12096, 12096, 12096, 12096, 12096, 12096, 12096, 12096, 6048, 3024, 1040]
+          0 +  12096  budget
+      12096 +  12096  budget
+      24192 +  12096  budget
+      36288 +  12096  budget
+      48384 +  12096  budget
+      60480 +  12096  budget
+      72576 +  12096  budget
+      84672 +  12096  budget
+      96768 +  12096  budget
+     108864 +  12096  budget
+     120960 +   6048  reachable
+     127008 +   3024  last-cache-position
+     130032 +   1040  prompt-end
+  prompt 131072: 13 steps [12096, 12096, 12096, 12096, 12096, 12096, 12096, 12096, 12096, 12096, 6048, 3024, 1040]
+          0 +  12096  budget
+      12096 +  12096  budget
+      24192 +  12096  budget
+      36288 +  12096  budget
+      48384 +  12096  budget
+      60480 +  12096  budget
+      72576 +  12096  budget
+      84672 +  12096  budget
+      96768 +  12096  budget
+     108864 +  12096  budget
+     120960 +   6048  reachable
+     127008 +   3024  last-cache-position
+     130032 +   1040  prompt-end
+  prompt 131072: 13 steps [12096, 12096, 12096, 12096, 12096, 12096, 12096, 12096, 12096, 12096, 6048, 3024, 1040]
+          0 +  12096  budget
+      12096 +  12096  budget
+      24192 +  12096  budget
+      36288 +  12096  budget
+      48384 +  12096  budget
+      60480 +  12096  budget
+      72576 +  12096  budget
+      84672 +  12096  budget
+      96768 +  12096  budget
+     108864 +  12096  budget
+     120960 +   6048  reachable
+     127008 +   3024  last-cache-position
+     130032 +   1040  prompt-end

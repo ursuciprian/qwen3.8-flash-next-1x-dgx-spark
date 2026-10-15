@@ -1,0 +1,16 @@
+test_mamba_prefill_split_log.py::test_debug_log_is_off_by_default PASSED
+test_mamba_prefill_split_log.py::test_debug_log_names_each_stop PASSED
+test_mamba_prefill_split_log.py::test_predicted_schedules[131072-12096-steps5] PASSED
+test_mamba_prefill_split_log.py::test_predicted_schedules[131072-8192-steps4] PASSED
+test_mamba_prefill_split_log.py::test_predicted_schedules[16384-12096-steps0] PASSED
+test_mamba_prefill_split_log.py::test_predicted_schedules[65536-12096-steps3] PASSED
+test_mamba_prefill_split_log.py::test_predicted_schedules[65536-8192-steps1] PASSED
+test_mamba_prefill_split_log.py::test_predicted_schedules[65536-9072-steps2] PASSED
+test_mamba_prefill_split_log.py::test_reproduces_the_profiled_16k_schedules PASSED
+test_mamba_sparse_cleanup.py::test_async_sparse_cleanup[256-0] PASSED
+test_mamba_sparse_cleanup.py::test_async_sparse_cleanup[256-3] PASSED
+test_mamba_sparse_cleanup.py::test_async_sparse_cleanup[256-7] PASSED
+test_mamba_sparse_cleanup.py::test_async_sparse_cleanup[64-0] PASSED
+test_mamba_sparse_cleanup.py::test_async_sparse_cleanup[64-3] PASSED
+test_mamba_sparse_cleanup.py::test_async_sparse_cleanup[64-7] PASSED
+test_mamba_sparse_cleanup.py::test_cleanup_does_not_rescan_history_or_advance_past_table PASSED

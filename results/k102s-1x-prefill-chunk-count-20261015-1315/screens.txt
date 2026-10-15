@@ -1,0 +1,1 @@
+budget 12096: thunderdome exit 0 (DONE: b12096=KILL b12096=INCONCLUSIVE); per Spark: ab-01=FAIL(acceptance) ab-02=PASS; cold FAIL; chunk check: ok

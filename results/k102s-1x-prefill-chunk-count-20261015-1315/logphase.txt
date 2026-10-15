@@ -1,0 +1,145 @@
+== chunks per cold prompt (split log) and min MemAvailable (GiB: boot incl. compile/autotune, prompts; guard aborts < 2)
+-- dgx01 budget 8192: mem 14.39 13.55; plans measured: 0 GPU KV cache size: 993,754 tokens Directly load AOT: 2; Dynamo bytecode transform: 0 reachable boundaries [16383] -> [15120, 12096] (lookup alignment 3024, state alignment 3024, eagle True, lookup drops eagle block True) reachable boundaries [16383] -> [15120, 12096] (lookup alignment 3024, state alignment 3024, eagle True, lookup drops eagle block True) reachable boundaries [16383] -> [15120, 12096] (lookup alignment 3024, state alignment 3024, eagle True, lookup drops eagle block True) 
+  prompt 16384: 4 steps [6048, 6048, 3024, 1264]
+          0 +   6048  block-align
+       6048 +   6048  block-align
+      12096 +   3024  last-cache-position
+      15120 +   1264  prompt-end
+  prompt 65536: 12 steps [6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 3024, 2032]
+          0 +   6048  block-align
+       6048 +   6048  block-align
+      12096 +   6048  block-align
+      18144 +   6048  block-align
+      24192 +   6048  block-align
+      30240 +   6048  block-align
+      36288 +   6048  block-align
+      42336 +   6048  block-align
+      48384 +   6048  block-align
+      54432 +   6048  block-align
+      60480 +   3024  last-cache-position
+      63504 +   2032  prompt-end
+  prompt 131072: 23 steps [6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 3024, 1040]
+          0 +   6048  block-align
+       6048 +   6048  block-align
+      12096 +   6048  block-align
+      18144 +   6048  block-align
+      24192 +   6048  block-align
+      30240 +   6048  block-align
+      36288 +   6048  block-align
+      42336 +   6048  block-align
+      48384 +   6048  block-align
+      54432 +   6048  block-align
+      60480 +   6048  block-align
+      66528 +   6048  block-align
+      72576 +   6048  block-align
+      78624 +   6048  block-align
+      84672 +   6048  block-align
+      90720 +   6048  block-align
+      96768 +   6048  block-align
+     102816 +   6048  block-align
+     108864 +   6048  block-align
+     114912 +   6048  block-align
+     120960 +   6048  block-align
+     127008 +   3024  last-cache-position
+     130032 +   1040  prompt-end
+-- dgx01 budget 12096: mem 4.36 9.35; plans measured: 7887 GPU KV cache size: 993,754 tokens Directly load AOT: 0; Dynamo bytecode transform: 2 reachable boundaries [16383] -> [15120, 12096] (lookup alignment 3024, state alignment 3024, eagle True, lookup drops eagle block True) reachable boundaries [16383] -> [15120, 12096] (lookup alignment 3024, state alignment 3024, eagle True, lookup drops eagle block True) reachable boundaries [16383] -> [15120, 12096] (lookup alignment 3024, state alignment 3024, eagle True, lookup drops eagle block True) 
+  prompt 16384: 3 steps [12096, 3024, 1264]
+          0 +  12096  budget
+      12096 +   3024  last-cache-position
+      15120 +   1264  prompt-end
+  prompt 65536: 7 steps [12096, 12096, 12096, 12096, 12096, 3024, 2032]
+          0 +  12096  budget
+      12096 +  12096  budget
+      24192 +  12096  budget
+      36288 +  12096  budget
+      48384 +  12096  budget
+      60480 +   3024  last-cache-position
+      63504 +   2032  prompt-end
+  prompt 131072: 13 steps [12096, 12096, 12096, 12096, 12096, 12096, 12096, 12096, 12096, 12096, 6048, 3024, 1040]
+          0 +  12096  budget
+      12096 +  12096  budget
+      24192 +  12096  budget
+      36288 +  12096  budget
+      48384 +  12096  budget
+      60480 +  12096  budget
+      72576 +  12096  budget
+      84672 +  12096  budget
+      96768 +  12096  budget
+     108864 +  12096  budget
+     120960 +   6048  reachable
+     127008 +   3024  last-cache-position
+     130032 +   1040  prompt-end
+-- dgx02 budget 8192: mem 14.88 13.94; plans measured: 0 GPU KV cache size: 993,754 tokens Directly load AOT: 2; Dynamo bytecode transform: 0 reachable boundaries [16383] -> [15120, 12096] (lookup alignment 3024, state alignment 3024, eagle True, lookup drops eagle block True) reachable boundaries [16383] -> [15120, 12096] (lookup alignment 3024, state alignment 3024, eagle True, lookup drops eagle block True) reachable boundaries [16383] -> [15120, 12096] (lookup alignment 3024, state alignment 3024, eagle True, lookup drops eagle block True) 
+  prompt 16384: 4 steps [6048, 6048, 3024, 1264]
+          0 +   6048  block-align
+       6048 +   6048  block-align
+      12096 +   3024  last-cache-position
+      15120 +   1264  prompt-end
+  prompt 65536: 12 steps [6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 3024, 2032]
+          0 +   6048  block-align
+       6048 +   6048  block-align
+      12096 +   6048  block-align
+      18144 +   6048  block-align
+      24192 +   6048  block-align
+      30240 +   6048  block-align
+      36288 +   6048  block-align
+      42336 +   6048  block-align
+      48384 +   6048  block-align
+      54432 +   6048  block-align
+      60480 +   3024  last-cache-position
+      63504 +   2032  prompt-end
+  prompt 131072: 23 steps [6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 6048, 3024, 1040]
+          0 +   6048  block-align
+       6048 +   6048  block-align
+      12096 +   6048  block-align
+      18144 +   6048  block-align
+      24192 +   6048  block-align
+      30240 +   6048  block-align
+      36288 +   6048  block-align
+      42336 +   6048  block-align
+      48384 +   6048  block-align
+      54432 +   6048  block-align
+      60480 +   6048  block-align
+      66528 +   6048  block-align
+      72576 +   6048  block-align
+      78624 +   6048  block-align
+      84672 +   6048  block-align
+      90720 +   6048  block-align
+      96768 +   6048  block-align
+     102816 +   6048  block-align
+     108864 +   6048  block-align
+     114912 +   6048  block-align
+     120960 +   6048  block-align
+     127008 +   3024  last-cache-position
+     130032 +   1040  prompt-end
+-- dgx02 budget 12096: mem 11.51 9.70; plans measured: 0 GPU KV cache size: 993,754 tokens Directly load AOT: 1; Dynamo bytecode transform: 1 reachable boundaries [16383] -> [15120, 12096] (lookup alignment 3024, state alignment 3024, eagle True, lookup drops eagle block True) reachable boundaries [16383] -> [15120, 12096] (lookup alignment 3024, state alignment 3024, eagle True, lookup drops eagle block True) reachable boundaries [16383] -> [15120, 12096] (lookup alignment 3024, state alignment 3024, eagle True, lookup drops eagle block True) 
+  prompt 16384: 3 steps [12096, 3024, 1264]
+          0 +  12096  budget
+      12096 +   3024  last-cache-position
+      15120 +   1264  prompt-end
+  prompt 65536: 7 steps [12096, 12096, 12096, 12096, 12096, 3024, 2032]
+          0 +  12096  budget
+      12096 +  12096  budget
+      24192 +  12096  budget
+      36288 +  12096  budget
+      48384 +  12096  budget
+      60480 +   3024  last-cache-position
+      63504 +   2032  prompt-end
+  prompt 131072: 13 steps [12096, 12096, 12096, 12096, 12096, 12096, 12096, 12096, 12096, 12096, 6048, 3024, 1040]
+          0 +  12096  budget
+      12096 +  12096  budget
+      24192 +  12096  budget
+      36288 +  12096  budget
+      48384 +  12096  budget
+      60480 +  12096  budget
+      72576 +  12096  budget
+      84672 +  12096  budget
+      96768 +  12096  budget
+     108864 +  12096  budget
+     120960 +   6048  reachable
+     127008 +   3024  last-cache-position
+     130032 +   1040  prompt-end
+== steps per cold prompt (dgx01 dgx02)
+    8192:  16K 4 4  64K 12 12 128K 23 23
+   12096:  16K 3 3  64K 7 7 128K 13 13
+A/B budget: 12096 (16K steps 3 vs 4 at 8192)
