@@ -1,0 +1,2 @@
+dgx01: views lines 1, plans measured 0, AOT load 2, Traceback 0
+dgx02: views lines 1, plans measured 0, AOT load 2, Traceback 0
