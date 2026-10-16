@@ -1,0 +1,123 @@
+k105 result: I reran single-Spark c1 decode with GDN prefill views off and on, on the same image (the k103 candidate), the same recipe, KV pool and runtime cache; only `VLLM_GDN_PREFILL_VIEWS` differs (0 vs 1). 6 boots per side on each Spark, interleaved ctl arm arm ctl. Measured per boot: paired c1 decode on fixed prompts (T=0), llama-benchy tg512 c1, MTP acceptance during the benchy phase, GPU clocks and temperature.
+
+Why: in k101s the dgx-01 tg512 c1 cell was -5.91% with a boot-level 95% CI of [-10.31, -1.50]. My old rule called it flat because it sat inside the 6.27% control band. The rule here: LOSS if the paired c1 CI or the tg512 c1 CI lies wholly below -1% on either Spark.
+
+`RULE=PASS`. Per Spark: `v-01=PASS v-02=PASS`.
+
+Neither c1 measurement is below -1% beyond its interval on either Spark, so the k101 signal did not reproduce with the flag as the only change. The release gate (k103g) may run.
+
+```
+k105 2026-10-16 16:34:48 EEST: VLLM_GDN_PREFILL_VIEWS=0 vs 1 on ghcr.io/ursuciprian/spark-vllm-b12x:k103-20261015-a1ad1b69-10d0acc8, same recipe and cache, 6 boots per side per Spark
+RULE=PASS  per Spark: v-01=PASS v-02=PASS  (thunderdome exit 0: DONE: on=PROMOTE on=PROMOTE)
+
+== v-01
+  paired c1 tok_s        n= 48   +0.64%  CI95 [-1.02, +2.29]  arm better 24/48
+  paired c1 step_ms      n= 48   -0.22%  CI95 [-0.49, +0.04]  arm better 25/48
+  paired c1 tok_per_step n= 48   +0.42%  CI95 [-1.18, +2.03]  arm better 25/48
+  benchy tg512 (c1)   -1.94%  CI [-6.84, +2.96]  control 58.3 60.9 58.4 58.8 59.7 64.6 | arm 60.9 60.0 60.7 56.7 56.0 59.4
+  benchy pp2048 (c1)  +3.74%  CI [+2.70, +4.77]  (reported, not judged)
+  benchy acceptance ctl: 0.6317 pooled; per boot p1:0.636 p2:0.653 p3:0.608 p4:0.598 p5:0.596 p6:0.709
+  benchy acceptance arm: 0.6120 pooled; per boot p1:0.626 p2:0.639 p3:0.627 p4:0.601 p5:0.573 p6:0.612
+  ctl-p1: views env 0 log lines 0; SM MHz median 2177 min 2171, temp max 59.0, power mean 25.0 W, event-reason samples 0/230
+  ctl-p2: views env 0 log lines 0; SM MHz median 2177 min 2171, temp max 60.0, power mean 25.2 W, event-reason samples 0/229
+  ctl-p3: views env 0 log lines 0; SM MHz median 2177 min 2171, temp max 60.0, power mean 25.2 W, event-reason samples 0/224
+  ctl-p4: views env 0 log lines 0; SM MHz median 2177 min 2171, temp max 60.0, power mean 25.2 W, event-reason samples 0/228
+  ctl-p5: views env 0 log lines 0; SM MHz median 2177 min 2171, temp max 60.0, power mean 25.1 W, event-reason samples 0/225
+  ctl-p6: views env 0 log lines 0; SM MHz median 2177 min 2171, temp max 59.0, power mean 25.2 W, event-reason samples 0/220
+  arm-p1: views env 1 log lines 1; SM MHz median 2177 min 2171, temp max 60.0, power mean 25.2 W, event-reason samples 0/224
+  arm-p2: views env 1 log lines 1; SM MHz median 2177 min 2171, temp max 60.0, power mean 25.3 W, event-reason samples 0/215
+  arm-p3: views env 1 log lines 1; SM MHz median 2177 min 2171, temp max 60.0, power mean 25.3 W, event-reason samples 0/225
+  arm-p4: views env 1 log lines 1; SM MHz median 2177 min 2171, temp max 61.0, power mean 25.2 W, event-reason samples 0/220
+  arm-p5: views env 1 log lines 1; SM MHz median 2177 min 2171, temp max 60.0, power mean 25.3 W, event-reason samples 0/228
+  arm-p6: views env 1 log lines 1; SM MHz median 2177 min 2171, temp max 60.0, power mean 25.2 W, event-reason samples 0/225
+  v-01: PASS
+== v-02
+  paired c1 tok_s        n= 48   +1.65%  CI95 [+0.08, +3.21]  arm better 30/48
+  paired c1 step_ms      n= 48   -0.07%  CI95 [-0.30, +0.19]  arm better 29/48
+  paired c1 tok_per_step n= 48   +1.61%  CI95 [+0.02, +3.14]  arm better 29/48
+  benchy tg512 (c1)   -0.81%  CI [-4.35, +2.74]  control 58.3 61.5 58.4 56.5 59.3 57.3 | arm 58.6 57.0 55.9 59.9 59.0 57.9
+  benchy pp2048 (c1)  +3.67%  CI [+2.43, +4.92]  (reported, not judged)
+  benchy acceptance ctl: 0.6141 pooled; per boot p1:0.617 p2:0.654 p3:0.595 p4:0.607 p5:0.616 p6:0.594
+  benchy acceptance arm: 0.6043 pooled; per boot p1:0.625 p2:0.581 p3:0.559 p4:0.644 p5:0.600 p6:0.602
+  ctl-p1: views env 0 log lines 0; SM MHz median 2184 min 2171, temp max 67.0, power mean 24.2 W, event-reason samples 0/232
+  ctl-p2: views env 0 log lines 0; SM MHz median 2177 min 2171, temp max 69.0, power mean 24.6 W, event-reason samples 0/227
+  ctl-p3: views env 0 log lines 0; SM MHz median 2177 min 2171, temp max 69.0, power mean 24.7 W, event-reason samples 0/220
+  ctl-p4: views env 0 log lines 0; SM MHz median 2177 min 2171, temp max 69.0, power mean 24.6 W, event-reason samples 0/218
+  ctl-p5: views env 0 log lines 0; SM MHz median 2177 min 2171, temp max 70.0, power mean 24.6 W, event-reason samples 0/233
+  ctl-p6: views env 0 log lines 0; SM MHz median 2177 min 2171, temp max 69.0, power mean 24.6 W, event-reason samples 0/232
+  arm-p1: views env 1 log lines 1; SM MHz median 2177 min 2171, temp max 68.0, power mean 24.5 W, event-reason samples 0/229
+  arm-p2: views env 1 log lines 1; SM MHz median 2177 min 2171, temp max 69.0, power mean 24.6 W, event-reason samples 0/225
+  arm-p3: views env 1 log lines 1; SM MHz median 2177 min 2171, temp max 70.0, power mean 24.7 W, event-reason samples 0/222
+  arm-p4: views env 1 log lines 1; SM MHz median 2177 min 2171, temp max 69.0, power mean 24.6 W, event-reason samples 0/230
+  arm-p5: views env 1 log lines 1; SM MHz median 2177 min 2171, temp max 69.0, power mean 24.7 W, event-reason samples 0/224
+  arm-p6: views env 1 log lines 1; SM MHz median 2177 min 2171, temp max 70.0, power mean 24.8 W, event-reason samples 0/220
+  v-02: PASS
+SPARKS: v-01=PASS v-02=PASS
+RULE=PASS
+
+-- v-01 Thunderdome report (fresh-c1 + benchy c1; reported, the rule is judge.py)
+== acceptance per draft position (T=0 probe cells, pooled)
+  pos 0: control 0.863 arm 0.858 shift -0.004
+  pos 1: control 0.716 arm 0.710 shift -0.005
+  pos 2: control 0.592 arm 0.588 shift -0.004
+  pos 3: control 0.485 arm 0.480 shift -0.005
+== cells: arm vs control % (noise = the cell's noise band, %)
+  probe  fresh-c1      +0.64%  noise  1.65%            n=48 CI [-1.0,+2.3] control boot-to-boot -1.04%, step -0.22%
+  benchy pp2048        +3.74%  noise  2.57%  better    control 1819.0 arm 1887.0 t/s (boots 6/6)
+  benchy tg512         -1.94%  noise 10.51%            control 60.1 arm 59.0 t/s (boots 6/6)
+== logits_equiv (reported, not judged)
+  self  ctl-p1 a/b: 11/20 prompts identical, |dlogprob| mean 0.0449 max 1.0581
+  self  ctl-p2 a/b: 11/20 prompts identical, |dlogprob| mean 0.0307 max 0.4026
+  self  ctl-p3 a/b: 10/20 prompts identical, |dlogprob| mean 0.0383 max 0.5048
+  self  ctl-p4 a/b: 9/20 prompts identical, |dlogprob| mean 0.0405 max 0.5169
+  self  ctl-p5 a/b: 11/20 prompts identical, |dlogprob| mean 0.0296 max 0.4898
+  self  ctl-p6 a/b: 10/20 prompts identical, |dlogprob| mean 0.0416 max 0.9161
+  self  arm-p1 a/b: 11/20 prompts identical, |dlogprob| mean 0.0395 max 0.3763
+  self  arm-p2 a/b: 14/20 prompts identical, |dlogprob| mean 0.0425 max 0.7129
+  self  arm-p3 a/b: 13/20 prompts identical, |dlogprob| mean 0.0400 max 0.6049
+  self  arm-p4 a/b: 12/20 prompts identical, |dlogprob| mean 0.0392 max 0.5079
+  self  arm-p5 a/b: 12/20 prompts identical, |dlogprob| mean 0.0294 max 0.2913
+  self  arm-p6 a/b: 9/20 prompts identical, |dlogprob| mean 0.0313 max 0.3667
+  cross ctl-p1/arm-p1: 12/20 prompts identical, |dlogprob| mean 0.0407 max 0.4958
+  cross ctl-p2/arm-p2: 12/20 prompts identical, |dlogprob| mean 0.0334 max 0.7483
+  cross ctl-p3/arm-p3: 12/20 prompts identical, |dlogprob| mean 0.0420 max 0.4369
+  cross ctl-p4/arm-p4: 14/20 prompts identical, |dlogprob| mean 0.0446 max 0.5359
+  cross ctl-p5/arm-p5: 11/20 prompts identical, |dlogprob| mean 0.0362 max 0.4225
+  cross ctl-p6/arm-p6: 9/20 prompts identical, |dlogprob| mean 0.0366 max 0.5518
+better: benchy pp2048 +3.74% (noise 2.57%)
+VERDICT=PROMOTE
+
+-- v-02 Thunderdome report (fresh-c1 + benchy c1; reported, the rule is judge.py)
+== acceptance per draft position (T=0 probe cells, pooled)
+  pos 0: control 0.856 arm 0.862 shift +0.006
+  pos 1: control 0.708 arm 0.714 shift +0.006
+  pos 2: control 0.586 arm 0.596 shift +0.010
+  pos 3: control 0.481 arm 0.488 shift +0.007
+== cells: arm vs control % (noise = the cell's noise band, %)
+  probe  fresh-c1      +1.65%  noise  1.56%  better    n=48 CI [+0.1,+3.2] control boot-to-boot -0.06%, step -0.07%
+  benchy pp2048        +3.67%  noise  2.95%  better    control 1820.8 arm 1887.6 t/s (boots 6/6)
+  benchy tg512         -0.81%  noise  8.47%            control 58.5 arm 58.1 t/s (boots 6/6)
+== logits_equiv (reported, not judged)
+  self  ctl-p1 a/b: 12/20 prompts identical, |dlogprob| mean 0.0389 max 0.6116
+  self  ctl-p2 a/b: 13/20 prompts identical, |dlogprob| mean 0.0380 max 0.8555
+  self  ctl-p3 a/b: 10/20 prompts identical, |dlogprob| mean 0.0366 max 0.4524
+  self  ctl-p4 a/b: 10/20 prompts identical, |dlogprob| mean 0.0361 max 0.6083
+  self  ctl-p5 a/b: 10/20 prompts identical, |dlogprob| mean 0.0388 max 0.6883
+  self  ctl-p6 a/b: 13/20 prompts identical, |dlogprob| mean 0.0411 max 0.4278
+  self  arm-p1 a/b: 10/20 prompts identical, |dlogprob| mean 0.0344 max 0.6621
+  self  arm-p2 a/b: 11/20 prompts identical, |dlogprob| mean 0.0296 max 0.3031
+  self  arm-p3 a/b: 9/20 prompts identical, |dlogprob| mean 0.0359 max 0.4036
+  self  arm-p4 a/b: 14/20 prompts identical, |dlogprob| mean 0.0464 max 0.5135
+  self  arm-p5 a/b: 9/20 prompts identical, |dlogprob| mean 0.0358 max 0.5246
+  self  arm-p6 a/b: 10/20 prompts identical, |dlogprob| mean 0.0299 max 0.4600
+  cross ctl-p1/arm-p1: 13/20 prompts identical, |dlogprob| mean 0.0311 max 0.6161
+  cross ctl-p2/arm-p2: 13/20 prompts identical, |dlogprob| mean 0.0392 max 0.7274
+  cross ctl-p3/arm-p3: 10/20 prompts identical, |dlogprob| mean 0.0373 max 0.6041
+  cross ctl-p4/arm-p4: 11/20 prompts identical, |dlogprob| mean 0.0429 max 0.5348
+  cross ctl-p5/arm-p5: 12/20 prompts identical, |dlogprob| mean 0.0402 max 0.5107
+  cross ctl-p6/arm-p6: 11/20 prompts identical, |dlogprob| mean 0.0349 max 0.7592
+better: probe fresh-c1 +1.65% (noise 1.56%); benchy pp2048 +3.67% (noise 2.95%)
+VERDICT=PROMOTE
+```
+
+Results: {RESULTS_URL}

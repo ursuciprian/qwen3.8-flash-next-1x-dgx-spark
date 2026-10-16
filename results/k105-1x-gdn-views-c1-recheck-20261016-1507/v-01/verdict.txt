@@ -1,0 +1,30 @@
+== acceptance per draft position (T=0 probe cells, pooled)
+  pos 0: control 0.863 arm 0.858 shift -0.004
+  pos 1: control 0.716 arm 0.710 shift -0.005
+  pos 2: control 0.592 arm 0.588 shift -0.004
+  pos 3: control 0.485 arm 0.480 shift -0.005
+== cells: arm vs control % (noise = the cell's noise band, %)
+  probe  fresh-c1      +0.64%  noise  1.65%            n=48 CI [-1.0,+2.3] control boot-to-boot -1.04%, step -0.22%
+  benchy pp2048        +3.74%  noise  2.57%  better    control 1819.0 arm 1887.0 t/s (boots 6/6)
+  benchy tg512         -1.94%  noise 10.51%            control 60.1 arm 59.0 t/s (boots 6/6)
+== logits_equiv (reported, not judged)
+  self  ctl-p1 a/b: 11/20 prompts identical, |dlogprob| mean 0.0449 max 1.0581
+  self  ctl-p2 a/b: 11/20 prompts identical, |dlogprob| mean 0.0307 max 0.4026
+  self  ctl-p3 a/b: 10/20 prompts identical, |dlogprob| mean 0.0383 max 0.5048
+  self  ctl-p4 a/b: 9/20 prompts identical, |dlogprob| mean 0.0405 max 0.5169
+  self  ctl-p5 a/b: 11/20 prompts identical, |dlogprob| mean 0.0296 max 0.4898
+  self  ctl-p6 a/b: 10/20 prompts identical, |dlogprob| mean 0.0416 max 0.9161
+  self  arm-p1 a/b: 11/20 prompts identical, |dlogprob| mean 0.0395 max 0.3763
+  self  arm-p2 a/b: 14/20 prompts identical, |dlogprob| mean 0.0425 max 0.7129
+  self  arm-p3 a/b: 13/20 prompts identical, |dlogprob| mean 0.0400 max 0.6049
+  self  arm-p4 a/b: 12/20 prompts identical, |dlogprob| mean 0.0392 max 0.5079
+  self  arm-p5 a/b: 12/20 prompts identical, |dlogprob| mean 0.0294 max 0.2913
+  self  arm-p6 a/b: 9/20 prompts identical, |dlogprob| mean 0.0313 max 0.3667
+  cross ctl-p1/arm-p1: 12/20 prompts identical, |dlogprob| mean 0.0407 max 0.4958
+  cross ctl-p2/arm-p2: 12/20 prompts identical, |dlogprob| mean 0.0334 max 0.7483
+  cross ctl-p3/arm-p3: 12/20 prompts identical, |dlogprob| mean 0.0420 max 0.4369
+  cross ctl-p4/arm-p4: 14/20 prompts identical, |dlogprob| mean 0.0446 max 0.5359
+  cross ctl-p5/arm-p5: 11/20 prompts identical, |dlogprob| mean 0.0362 max 0.4225
+  cross ctl-p6/arm-p6: 9/20 prompts identical, |dlogprob| mean 0.0366 max 0.5518
+better: benchy pp2048 +3.74% (noise 2.57%)
+VERDICT=PROMOTE

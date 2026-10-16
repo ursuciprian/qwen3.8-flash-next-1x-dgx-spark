@@ -1,0 +1,44 @@
+== v-01
+  paired c1 tok_s        n= 48   +0.64%  CI95 [-1.02, +2.29]  arm better 24/48
+  paired c1 step_ms      n= 48   -0.22%  CI95 [-0.49, +0.04]  arm better 25/48
+  paired c1 tok_per_step n= 48   +0.42%  CI95 [-1.18, +2.03]  arm better 25/48
+  benchy tg512 (c1)   -1.94%  CI [-6.84, +2.96]  control 58.3 60.9 58.4 58.8 59.7 64.6 | arm 60.9 60.0 60.7 56.7 56.0 59.4
+  benchy pp2048 (c1)  +3.74%  CI [+2.70, +4.77]  (reported, not judged)
+  benchy acceptance ctl: 0.6317 pooled; per boot p1:0.636 p2:0.653 p3:0.608 p4:0.598 p5:0.596 p6:0.709
+  benchy acceptance arm: 0.6120 pooled; per boot p1:0.626 p2:0.639 p3:0.627 p4:0.601 p5:0.573 p6:0.612
+  ctl-p1: views env 0 log lines 0; SM MHz median 2177 min 2171, temp max 59.0, power mean 25.0 W, event-reason samples 0/230
+  ctl-p2: views env 0 log lines 0; SM MHz median 2177 min 2171, temp max 60.0, power mean 25.2 W, event-reason samples 0/229
+  ctl-p3: views env 0 log lines 0; SM MHz median 2177 min 2171, temp max 60.0, power mean 25.2 W, event-reason samples 0/224
+  ctl-p4: views env 0 log lines 0; SM MHz median 2177 min 2171, temp max 60.0, power mean 25.2 W, event-reason samples 0/228
+  ctl-p5: views env 0 log lines 0; SM MHz median 2177 min 2171, temp max 60.0, power mean 25.1 W, event-reason samples 0/225
+  ctl-p6: views env 0 log lines 0; SM MHz median 2177 min 2171, temp max 59.0, power mean 25.2 W, event-reason samples 0/220
+  arm-p1: views env 1 log lines 1; SM MHz median 2177 min 2171, temp max 60.0, power mean 25.2 W, event-reason samples 0/224
+  arm-p2: views env 1 log lines 1; SM MHz median 2177 min 2171, temp max 60.0, power mean 25.3 W, event-reason samples 0/215
+  arm-p3: views env 1 log lines 1; SM MHz median 2177 min 2171, temp max 60.0, power mean 25.3 W, event-reason samples 0/225
+  arm-p4: views env 1 log lines 1; SM MHz median 2177 min 2171, temp max 61.0, power mean 25.2 W, event-reason samples 0/220
+  arm-p5: views env 1 log lines 1; SM MHz median 2177 min 2171, temp max 60.0, power mean 25.3 W, event-reason samples 0/228
+  arm-p6: views env 1 log lines 1; SM MHz median 2177 min 2171, temp max 60.0, power mean 25.2 W, event-reason samples 0/225
+  v-01: PASS
+== v-02
+  paired c1 tok_s        n= 48   +1.65%  CI95 [+0.08, +3.21]  arm better 30/48
+  paired c1 step_ms      n= 48   -0.07%  CI95 [-0.30, +0.19]  arm better 29/48
+  paired c1 tok_per_step n= 48   +1.61%  CI95 [+0.02, +3.14]  arm better 29/48
+  benchy tg512 (c1)   -0.81%  CI [-4.35, +2.74]  control 58.3 61.5 58.4 56.5 59.3 57.3 | arm 58.6 57.0 55.9 59.9 59.0 57.9
+  benchy pp2048 (c1)  +3.67%  CI [+2.43, +4.92]  (reported, not judged)
+  benchy acceptance ctl: 0.6141 pooled; per boot p1:0.617 p2:0.654 p3:0.595 p4:0.607 p5:0.616 p6:0.594
+  benchy acceptance arm: 0.6043 pooled; per boot p1:0.625 p2:0.581 p3:0.559 p4:0.644 p5:0.600 p6:0.602
+  ctl-p1: views env 0 log lines 0; SM MHz median 2184 min 2171, temp max 67.0, power mean 24.2 W, event-reason samples 0/232
+  ctl-p2: views env 0 log lines 0; SM MHz median 2177 min 2171, temp max 69.0, power mean 24.6 W, event-reason samples 0/227
+  ctl-p3: views env 0 log lines 0; SM MHz median 2177 min 2171, temp max 69.0, power mean 24.7 W, event-reason samples 0/220
+  ctl-p4: views env 0 log lines 0; SM MHz median 2177 min 2171, temp max 69.0, power mean 24.6 W, event-reason samples 0/218
+  ctl-p5: views env 0 log lines 0; SM MHz median 2177 min 2171, temp max 70.0, power mean 24.6 W, event-reason samples 0/233
+  ctl-p6: views env 0 log lines 0; SM MHz median 2177 min 2171, temp max 69.0, power mean 24.6 W, event-reason samples 0/232
+  arm-p1: views env 1 log lines 1; SM MHz median 2177 min 2171, temp max 68.0, power mean 24.5 W, event-reason samples 0/229
+  arm-p2: views env 1 log lines 1; SM MHz median 2177 min 2171, temp max 69.0, power mean 24.6 W, event-reason samples 0/225
+  arm-p3: views env 1 log lines 1; SM MHz median 2177 min 2171, temp max 70.0, power mean 24.7 W, event-reason samples 0/222
+  arm-p4: views env 1 log lines 1; SM MHz median 2177 min 2171, temp max 69.0, power mean 24.6 W, event-reason samples 0/230
+  arm-p5: views env 1 log lines 1; SM MHz median 2177 min 2171, temp max 69.0, power mean 24.7 W, event-reason samples 0/224
+  arm-p6: views env 1 log lines 1; SM MHz median 2177 min 2171, temp max 70.0, power mean 24.8 W, event-reason samples 0/220
+  v-02: PASS
+SPARKS: v-01=PASS v-02=PASS
+RULE=PASS
