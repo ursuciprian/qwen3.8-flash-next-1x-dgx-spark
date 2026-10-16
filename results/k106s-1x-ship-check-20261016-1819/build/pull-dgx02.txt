@@ -1,0 +1,1 @@
+ghcr.io/ursuciprian/spark-vllm-b12x:k106s-20261017-a1ad1b69-5dad364d-10d0acc8-warm
