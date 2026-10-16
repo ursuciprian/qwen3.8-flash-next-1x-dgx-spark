@@ -1,0 +1,9 @@
+cb-01   16K: control   2132 arm   2306 tok/s (+8.2%, noise 1.1%) better
+cb-01   64K: control   1998 arm   2133 tok/s (+6.8%, noise 1.0%) better
+cb-01  128K: control   1768 arm   1872 tok/s (+5.9%, noise 1.0%) better
+cb-01 COLD=PASS
+cb-02   16K: control   2129 arm   2300 tok/s (+8.1%, noise 1.0%) better
+cb-02   64K: control   2020 arm   2162 tok/s (+7.0%, noise 1.0%) better
+cb-02  128K: control   1764 arm   1873 tok/s (+6.2%, noise 1.0%) better
+cb-02 COLD=PASS
+COLD_ALL=PASS

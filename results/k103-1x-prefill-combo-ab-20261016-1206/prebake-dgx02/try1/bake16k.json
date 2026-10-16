@@ -1,0 +1,24 @@
+{
+ "seed": "k103bake",
+ "corpus_tokens": 27256,
+ "rows": [
+  {
+   "ttft_s": 7.5083043575286865,
+   "prompt_tokens": 16384,
+   "len": 16384,
+   "rep": 0
+  }
+ ],
+ "summary": {
+  "16384": {
+   "n": 1,
+   "prompt_tokens": 16384,
+   "ttft_mean_s": 7.5083043575286865,
+   "ttft_min_s": 7.5083043575286865,
+   "tok_s": 2182.1171891588974,
+   "tok_s_each": [
+    2182
+   ]
+  }
+ }
+}

@@ -1,0 +1,2 @@
+{"ttft_s": 7.775036334991455, "prompt_tokens": 16384, "len": 16384, "rep": 0}
+16384: n=1 prompt 16384 tok, TTFT mean 7.78 s min 7.78 s, 2107 tok/s (each [2107])

@@ -1,0 +1,261 @@
+k103 result: I tested the two prefill changes together, the BF16 path for the hyperconnection down projection (b12x `a1ad1b69`) and GDN prefill without token gathers (vLLM `10d0acc85f`, `VLLM_GDN_PREFILL_VIEWS=1`), in one image built on top of the v2.3.0 image, against the shipped 1x v2.3.0. 4 boots per side on each Spark in the order ctl arm arm ctl ctl arm arm ctl. Each change won its own A/B before this run. Measure only; nothing ships from this job.
+
+`RULE=WIN`. Per Spark: `cb-01=PASS cb-02=PASS`. Cold TTFT: `COLD_ALL=PASS`. Quality identity:` cb-01=UNSTABLE cb-02=UNSTABLE`. GDN data-movement kernels per cold 16K prompt (arm - control):` cb-01:-389.0 ms cb-02:-387.7 ms`.
+
+Cold prefill is faster beyond boot noise at 16K on both Sparks and no decode, probe or acceptance cell is worse. The release quality gate runs next (k103g).
+
+```
+k103 2026-10-16 14:33:47 EEST: 1x v2.3.0 on ghcr.io/ursuciprian/spark-vllm-b12x:k103-20261015-a1ad1b69-10d0acc8 (b12x a1ad1b69 + vLLM 10d0acc8) + VLLM_GDN_PREFILL_VIEWS=1 vs shipped, 4 boots per side per Spark
+RULE=WIN
+
+thunderdome exit 0 (DONE: cb=INCONCLUSIVE cb=INCONCLUSIVE); per Spark: cb-01=PASS cb-02=PASS; cold PASS; ident: cb-01=UNSTABLE cb-02=UNSTABLE; views: cb-01:ok cb-02:ok; GDN data movement per 16K: cb-01:-389.0 ms cb-02:-387.7 ms
+
+-- cb-01 (dgx-01)
+== acceptance per draft position (T=0 probe cells, pooled)
+  pos 0: control 0.847 arm 0.853 shift +0.006
+  pos 1: control 0.697 arm 0.705 shift +0.008
+  pos 2: control 0.572 arm 0.578 shift +0.006
+  pos 3: control 0.465 arm 0.466 shift +0.001
+== cells: arm vs control % (noise = the cell's noise band, %)
+  probe  fresh-c1      +2.19%  noise  2.64%            n=8 CI [-0.6,+4.7] control boot-to-boot -2.43%, step +0.41%
+  probe  fresh-c4      +1.15%  noise  1.49%            n=32 CI [-0.3,+2.6] control boot-to-boot -0.20%, step +0.66%
+  probe  fresh-c8      +0.00%  noise  1.30%            n=64 CI [-1.3,+1.3] control boot-to-boot -0.43%, step +0.11%
+  benchy pp2048 (c1)   +6.59%  noise  1.00%  better    control 1797.2 arm 1915.6 t/s (boots 4/4)
+  benchy tg512 (c1)    +0.73%  noise  9.04%            control 58.0 arm 58.4 t/s (boots 4/4)
+  benchy tg512 (c4)    +0.83%  noise 10.02%            control 113.0 arm 113.9 t/s (boots 4/4)
+  benchy tg512 (c8)    +0.05%  noise  7.13%            control 136.1 arm 136.2 t/s (boots 4/4)
+== logits_equiv (reported, not judged)
+better: benchy pp2048 (c1) +6.59% (noise 1.00%)
+VERDICT=PROMOTE
+== boot-level Welch 95% CI, benchy cells (rule: a whole CI below -1% is worse, as a noise-band worse)
+  pp2048 (c1)   +6.59%  CI [+5.26,+7.91]  control 1789.4 1803.2 1790.1 1805.9 | arm 1911.1 1917.9 1934.3 1898.9
+  tg512 (c1)    +0.73%  CI [-6.91,+8.38]  control 55.7 58.4 57.0 60.9 | arm 55.9 59.6 61.5 56.6
+  tg512 (c4)    +0.83%  CI [-6.61,+8.26]  control 114.9 108.0 109.5 119.4 | arm 111.0 111.2 113.8 119.5
+  tg512 (c8)    +0.05%  CI [-5.06,+5.16]  control 135.8 133.5 142.5 132.8 | arm 140.5 135.5 135.9 133.0
+== post checks per boot
+  ctl-p3 -> k103-1x-prefill-combo-ab-20261016-1206/cb-01/ctl-p1: kv 993,754 ok
+  ctl-p4 -> k103-1x-prefill-combo-ab-20261016-1206/cb-01/ctl-p2: kv 993,754 ok
+  ctl-p5 -> k103-1x-prefill-combo-ab-20261016-1206/cb-01/ctl-p3: kv 993,754 ok
+  ctl-p6 -> k103-1x-prefill-combo-ab-20261016-1206/cb-01/ctl-p4: kv 993,754 ok
+  arm-p3 -> k103-1x-prefill-combo-ab-20261016-1206/cb-01/arm-p1: kv 993,754 ok
+  arm-p4 -> k103-1x-prefill-combo-ab-20261016-1206/cb-01/arm-p2: kv 993,754 ok
+  arm-p5 -> k103-1x-prefill-combo-ab-20261016-1206/cb-01/arm-p3: kv 993,754 ok
+  arm-p6 -> k103-1x-prefill-combo-ab-20261016-1206/cb-01/arm-p4: kv 993,754 ok
+worse: none
+better: benchy pp2048 (c1)   +6.59%  noise  1.00%  better    control 1797.2 arm 1915.6 t/s (boots 4/4)
+RULE=PASS
+ident: 0 prompts stable across 4 control boots, arm identical on 0; 8 control-unstable (not judged)
+  prompt 0: control boots disagree (4 variants), arm matches one: False
+  prompt 1: control boots disagree (4 variants), arm matches one: False
+  prompt 2: control boots disagree (4 variants), arm matches one: False
+  prompt 3: control boots disagree (4 variants), arm matches one: False
+  prompt 4: control boots disagree (4 variants), arm matches one: False
+  prompt 5: control boots disagree (4 variants), arm matches one: False
+  prompt 6: control boots disagree (3 variants), arm matches one: False
+  prompt 7: control boots disagree (4 variants), arm matches one: False
+IDENT=UNSTABLE
+== GDN data-movement kernels, one cold 16K prompt (ctl-p1 vs arm-p1)
+class                      ctl calls    ctl ms arm calls    arm ms arm-ctl ms
+scatter (GDN output)             288      90.8         0       0.0      -90.8
+gather (index_select)           1560     191.4       408       1.0     -190.4
+memcpy DtoD                      976     120.0       544      15.7     -104.4
+copy kernel                      152       0.3      1784      33.5      +33.2
+fill / memset                   1751      39.6      1607       3.0      -36.7
+conv1d (kept)                    288     162.6       144     185.0      +22.4
+gated norm (kept)                144      91.1       144     169.3      +78.2
+GDN delta rule (kept)            720     394.4       720     402.0       +7.5
+data movement (non-kept rows) arm - ctl: -389.0 ms
+  arm-p1 hook: plans_measured 0 kv GPU KV cache size: 993,754 tokens aot Directly load AOT compilation mnbt max_num_batched_tokens': 8192 views 1 
+  arm-p2 hook: plans_measured 0 kv GPU KV cache size: 993,754 tokens aot Directly load AOT compilation mnbt max_num_batched_tokens': 8192 views 1 
+  arm-p3 hook: plans_measured 0 kv GPU KV cache size: 993,754 tokens aot Directly load AOT compilation mnbt max_num_batched_tokens': 8192 views 1 
+  arm-p4 hook: plans_measured 0 kv GPU KV cache size: 993,754 tokens aot Directly load AOT compilation mnbt max_num_batched_tokens': 8192 views 1 
+  ctl-p1 hook: plans_measured 0 kv GPU KV cache size: 993,754 tokens aot Directly load AOT compilation mnbt max_num_batched_tokens': 8192 views 0 
+  ctl-p2 hook: plans_measured 0 kv GPU KV cache size: 993,754 tokens aot Directly load AOT compilation mnbt max_num_batched_tokens': 8192 views 0 
+  ctl-p3 hook: plans_measured 0 kv GPU KV cache size: 993,754 tokens aot Directly load AOT compilation mnbt max_num_batched_tokens': 8192 views 0 
+  ctl-p4 hook: plans_measured 0 kv GPU KV cache size: 993,754 tokens aot Directly load AOT compilation mnbt max_num_batched_tokens': 8192 views 0 
+
+-- cb-02 (dgx-02)
+== acceptance per draft position (T=0 probe cells, pooled)
+  pos 0: control 0.849 arm 0.855 shift +0.006
+  pos 1: control 0.700 arm 0.706 shift +0.006
+  pos 2: control 0.576 arm 0.580 shift +0.005
+  pos 3: control 0.473 arm 0.474 shift +0.002
+== cells: arm vs control % (noise = the cell's noise band, %)
+  probe  fresh-c1      -0.04%  noise  6.81%            n=8 CI [-5.5,+5.3] control boot-to-boot +6.81%, step -0.18%
+  probe  fresh-c4      +0.89%  noise  2.93%            n=32 CI [-0.7,+2.4] control boot-to-boot -2.93%, step -1.11%
+  probe  fresh-c8      +0.35%  noise  1.74%            n=64 CI [-0.9,+1.6] control boot-to-boot +1.74%, step -0.15%
+  benchy pp2048 (c1)   +6.29%  noise  1.48%  better    control 1804.9 arm 1918.5 t/s (boots 4/4)
+  benchy tg512 (c1)    +0.83%  noise  5.58%            control 55.9 arm 56.3 t/s (boots 4/4)
+  benchy tg512 (c4)    +2.18%  noise  7.53%            control 110.9 arm 113.3 t/s (boots 4/4)
+  benchy tg512 (c8)    +4.85%  noise  5.89%            control 136.0 arm 142.6 t/s (boots 4/4)
+== logits_equiv (reported, not judged)
+better: benchy pp2048 (c1) +6.29% (noise 1.48%)
+VERDICT=PROMOTE
+== boot-level Welch 95% CI, benchy cells (rule: a whole CI below -1% is worse, as a noise-band worse)
+  pp2048 (c1)   +6.29%  CI [+5.15,+7.43]  control 1787.7 1804.4 1814.5 1813.2 | arm 1931.7 1907.6 1920.4 1914.4
+  tg512 (c1)    +0.83%  CI [-2.79,+4.45]  control 55.7 57.7 54.6 55.5 | arm 55.8 56.9 55.8 56.9
+  tg512 (c4)    +2.18%  CI [-2.23,+6.59]  control 109.8 113.1 111.6 109.2 | arm 117.3 111.7 110.4 114.0
+  tg512 (c8)    +4.85%  CI [-0.72,+10.42]  control 139.9 133.3 131.9 139.0 | arm 144.2 142.0 147.3 137.0
+== post checks per boot
+  ctl-p3 -> k103-1x-prefill-combo-ab-20261016-1206/cb-02/ctl-p1: kv 993,754 ok
+  ctl-p4 -> k103-1x-prefill-combo-ab-20261016-1206/cb-02/ctl-p2: kv 993,754 ok
+  ctl-p5 -> k103-1x-prefill-combo-ab-20261016-1206/cb-02/ctl-p3: kv 993,754 ok
+  ctl-p6 -> k103-1x-prefill-combo-ab-20261016-1206/cb-02/ctl-p4: kv 993,754 ok
+  arm-p3 -> k103-1x-prefill-combo-ab-20261016-1206/cb-02/arm-p1: kv 993,754 ok
+  arm-p4 -> k103-1x-prefill-combo-ab-20261016-1206/cb-02/arm-p2: kv 993,754 ok
+  arm-p5 -> k103-1x-prefill-combo-ab-20261016-1206/cb-02/arm-p3: kv 993,754 ok
+  arm-p6 -> k103-1x-prefill-combo-ab-20261016-1206/cb-02/arm-p4: kv 993,754 ok
+worse: none
+better: benchy pp2048 (c1)   +6.29%  noise  1.48%  better    control 1804.9 arm 1918.5 t/s (boots 4/4)
+RULE=PASS
+ident: 0 prompts stable across 4 control boots, arm identical on 0; 8 control-unstable (not judged)
+  prompt 0: control boots disagree (4 variants), arm matches one: False
+  prompt 1: control boots disagree (4 variants), arm matches one: False
+  prompt 2: control boots disagree (4 variants), arm matches one: False
+  prompt 3: control boots disagree (4 variants), arm matches one: False
+  prompt 4: control boots disagree (4 variants), arm matches one: False
+  prompt 5: control boots disagree (4 variants), arm matches one: False
+  prompt 6: control boots disagree (4 variants), arm matches one: False
+  prompt 7: control boots disagree (4 variants), arm matches one: False
+IDENT=UNSTABLE
+== GDN data-movement kernels, one cold 16K prompt (ctl-p1 vs arm-p1)
+class                      ctl calls    ctl ms arm calls    arm ms arm-ctl ms
+scatter (GDN output)             288      85.5         0       0.0      -85.5
+gather (index_select)           1560     191.5       408       1.1     -190.5
+memcpy DtoD                      976     122.1       544      15.3     -106.8
+copy kernel                      152       0.3      1784      32.8      +32.5
+fill / memset                   1751      40.3      1607       2.8      -37.6
+conv1d (kept)                    288     122.6       144     212.8      +90.2
+gated norm (kept)                144      91.3       144     143.4      +52.1
+GDN delta rule (kept)            720     385.8       720     375.4      -10.4
+data movement (non-kept rows) arm - ctl: -387.7 ms
+  arm-p1 hook: plans_measured 0 kv GPU KV cache size: 993,754 tokens aot Directly load AOT compilation mnbt max_num_batched_tokens': 8192 views 1 
+  arm-p2 hook: plans_measured 0 kv GPU KV cache size: 993,754 tokens aot Directly load AOT compilation mnbt max_num_batched_tokens': 8192 views 1 
+  arm-p3 hook: plans_measured 0 kv GPU KV cache size: 993,754 tokens aot Directly load AOT compilation mnbt max_num_batched_tokens': 8192 views 1 
+  arm-p4 hook: plans_measured 0 kv GPU KV cache size: 993,754 tokens aot Directly load AOT compilation mnbt max_num_batched_tokens': 8192 views 1 
+  ctl-p1 hook: plans_measured 0 kv GPU KV cache size: 993,754 tokens aot Directly load AOT compilation mnbt max_num_batched_tokens': 8192 views 0 
+  ctl-p2 hook: plans_measured 0 kv GPU KV cache size: 993,754 tokens aot Directly load AOT compilation mnbt max_num_batched_tokens': 8192 views 0 
+  ctl-p3 hook: plans_measured 0 kv GPU KV cache size: 993,754 tokens aot Directly load AOT compilation mnbt max_num_batched_tokens': 8192 views 0 
+  ctl-p4 hook: plans_measured 0 kv GPU KV cache size: 993,754 tokens aot Directly load AOT compilation mnbt max_num_batched_tokens': 8192 views 0 
+
+== cold TTFT
+cb-01   16K: control   2132 arm   2306 tok/s (+8.2%, noise 1.1%) better
+cb-01   64K: control   1998 arm   2133 tok/s (+6.8%, noise 1.0%) better
+cb-01  128K: control   1768 arm   1872 tok/s (+5.9%, noise 1.0%) better
+cb-01 COLD=PASS
+cb-02   16K: control   2129 arm   2300 tok/s (+8.1%, noise 1.0%) better
+cb-02   64K: control   2020 arm   2162 tok/s (+7.0%, noise 1.0%) better
+cb-02  128K: control   1764 arm   1873 tok/s (+6.2%, noise 1.0%) better
+cb-02 COLD=PASS
+COLD_ALL=PASS
+== cb-01: cold prefill tok/s per boot (hook, prompt tokens / mean TTFT, 3 reps)
+  16K: ctl-p1 2124 ctl-p2 2143 arm-p1 2299 arm-p2 2310, arm vs ctl +8.0%
+  64K: ctl-p1 1996 ctl-p2 1998 arm-p1 2130 arm-p2 2135, arm vs ctl +6.8%
+  128K: ctl-p1 1765 ctl-p2 1770 arm-p1 1872 arm-p2 1877, arm vs ctl +6.1%
+== cb-02: cold prefill tok/s per boot (hook, prompt tokens / mean TTFT, 3 reps)
+  16K: ctl-p1 2130 ctl-p2 2127 arm-p1 2304 arm-p2 2308, arm vs ctl +8.3%
+  64K: ctl-p1 2016 ctl-p2 2013 arm-p1 2155 arm-p2 2151, arm vs ctl +6.9%
+  128K: ctl-p1 1767 ctl-p2 1763 arm-p1 1871 arm-p2 1874, arm vs ctl +6.1%
+
+== profile cb-01 ctl-p1 (one cold 16K prompt, k81 classes)
+== dp0_pp0_tp0_dcp0_ep0_rank0.1792143163164151327.pt.trace.json.gz: 4 prefill chunks (6048, 6048, 3024, 1264 tokens), GPU time per op class
+op class                                       chunk1 ms   chunk2 ms   chunk3 ms   chunk4 ms  us/token  % busy  TFLOPS  fixed ms marg us/t
+routed MoE (b12x NVFP4 W4A4)                       653.1       602.8       416.2       320.1     121.6   25.5%    38.8     230.0      65.4
+GDN core (conv, chunk delta, norm)                 466.0       354.9       176.7        77.4      65.6   13.7%             -22.4      71.1
+attention (QSA indexer + sparse)                   356.8       370.9       200.0        87.1      61.9   13.0%              19.7      57.1
+norms / hyperconnection                            378.3       355.3       180.0        71.9      60.2   12.6%              -6.2      61.7
+dense: b12x other                                  404.4       294.0       154.8        66.0      56.1   11.8%             -16.7      60.2
+MTP drafter (prefill)                              191.4       195.3        95.3        34.7      31.5    6.6%              -6.1      33.0
+dense: GDN in_proj (qkvz+ba)                       254.4       150.4        77.6        31.0      31.3    6.6%    96.9     -22.7      36.9
+dense: GDN out_proj                                120.1        90.2        39.5        14.5      16.1    3.4%    70.2     -13.7      19.5
+shared expert + router                              90.6        81.0        38.3        15.3      13.8    2.9%    43.5      -4.8      14.9
+dense: attention o_proj                             39.1        40.8        22.7         7.2       6.7    1.4%    56.4       0.3       6.6
+fused elementwise (inductor)                        39.1        35.2        17.9         7.4       6.1    1.3%              -0.7       6.3
+PLE embedding                                       26.7        10.2         4.5         1.8       2.6    0.6%              -4.3       3.7
+sampler / bookkeeping                                8.1         8.9         7.6         7.3       2.0    0.4%               6.9       0.3
+dense: BF16 cuBLAS in compiled graph                 7.2         4.7         2.9         1.0       1.0    0.2%              -0.3       1.0
+step setup (inputs, KV, metadata)                    2.4         3.6         3.3         2.9       0.7    0.2%               3.0      -0.0
+GPU busy (sum of kernels)                         3037.8      2598.0      1437.3       745.7     477.2                     161.9     437.7
+GPU idle inside the step                           187.0       157.2        95.3        46.1      29.6
+step span (first kernel to last)                  3223.6      2753.7      1531.9       788.8     506.5                     173.8     464.0
+fixed ms / marg us/t: least-squares line over the chunks, ms = fixed + marginal x chunk tokens (attention also grows with context)
+GPU idle between prefill chunks (CPU scheduling under the profiler): 0.0, 0.0, 0.0 ms
+
+== profile cb-01 arm-p1 (one cold 16K prompt, k81 classes)
+== dp0_pp0_tp0_dcp0_ep0_rank0.1792144196843925330.pt.trace.json.gz: 4 prefill chunks (6048, 6048, 3024, 1264 tokens), GPU time per op class
+op class                                       chunk1 ms   chunk2 ms   chunk3 ms   chunk4 ms  us/token  % busy  TFLOPS  fixed ms marg us/t
+routed MoE (b12x NVFP4 W4A4)                       633.7       618.4       455.9       317.1     123.6   26.7%    38.2     248.3      63.0
+attention (QSA indexer + sparse)                   340.9       373.8       263.4        87.1      65.0   14.1%              55.0      51.6
+norms / hyperconnection                            372.4       353.6       196.4        72.1      60.7   13.1%               4.0      59.7
+dense: b12x other                                  329.6       207.9       247.5        57.5      51.4   11.1%              59.2      37.0
+GDN core (conv, chunk delta, norm)                 311.9       217.6       179.9        50.5      46.4   10.0%              19.8      41.6
+dense: GDN in_proj (qkvz+ba)                       216.5       152.6       161.2        32.4      34.3    7.4%    88.4      29.4      27.2
+MTP drafter (prefill)                              189.1       193.9        93.3        34.9      31.2    6.7%              -6.0      32.7
+dense: GDN out_proj                                106.5        87.1        56.5        14.7      16.2    3.5%    70.0      -1.0      16.4
+shared expert + router                              87.2        79.5        47.4        15.1      14.0    3.0%    42.7       0.8      13.8
+dense: attention o_proj                             38.2        38.8        25.7         7.1       6.7    1.4%    56.4       2.4       6.1
+fused elementwise (inductor)                        38.4        35.6        20.5         7.6       6.2    1.3%               0.9       6.0
+PLE embedding                                       25.8         7.8        10.9         1.8       2.8    0.6%              -0.3       2.9
+sampler / bookkeeping                                8.1         8.2         8.4         7.3       1.9    0.4%               7.4       0.1
+dense: BF16 cuBLAS in compiled graph                 7.1         4.8         4.2         1.2       1.1    0.2%               0.6       0.9
+step setup (inputs, KV, metadata)                    2.6         4.0         3.5         2.8       0.8    0.2%               2.9       0.1
+GPU busy (sum of kernels)                         2708.1      2383.6      1774.7       709.2     462.4                     423.4     359.0
+GPU idle inside the step                           171.9       161.4        92.7        46.6      28.9
+step span (first kernel to last)                  2878.6      2543.3      1866.7       752.8     490.8                     436.7     384.2
+fixed ms / marg us/t: least-squares line over the chunks, ms = fixed + marginal x chunk tokens (attention also grows with context)
+GPU idle between prefill chunks (CPU scheduling under the profiler): 0.0, 0.0, 0.0 ms
+
+== profile cb-02 ctl-p1 (one cold 16K prompt, k81 classes)
+== dp0_pp0_tp0_dcp0_ep0_rank0.1792143222666232635.pt.trace.json.gz: 4 prefill chunks (6048, 6048, 3024, 1264 tokens), GPU time per op class
+op class                                       chunk1 ms   chunk2 ms   chunk3 ms   chunk4 ms  us/token  % busy  TFLOPS  fixed ms marg us/t
+routed MoE (b12x NVFP4 W4A4)                       599.3       605.2       452.4       317.7     120.5   25.8%    39.2     257.9      57.6
+attention (QSA indexer + sparse)                   315.5       372.3       257.1        86.3      62.9   13.5%              57.1      49.0
+GDN core (conv, chunk delta, norm)                 352.6       356.2       238.2        77.2      62.5   13.4%              34.2      54.2
+norms / hyperconnection                            354.5       354.3       196.5        72.1      59.7   12.8%               8.0      57.7
+dense: b12x other                                  294.0       294.3       216.8        65.7      53.2   11.4%              39.7      43.5
+MTP drafter (prefill)                              190.7       193.6        95.2        34.5      31.4    6.7%              -5.8      32.8
+dense: GDN in_proj (qkvz+ba)                       148.2       149.6       157.8        32.6      29.8    6.4%   101.9      44.0      19.1
+dense: GDN out_proj                                 90.1        92.7        56.0        14.3      15.4    3.3%    73.3       0.8      15.3
+shared expert + router                              78.5        78.6        44.8        14.5      13.2    2.8%    45.2       1.0      13.0
+dense: attention o_proj                             37.9        40.1        24.9         7.1       6.7    1.4%    56.2       1.8       6.3
+fused elementwise (inductor)                        35.5        35.8        20.4         7.3       6.0    1.3%               1.1       5.8
+sampler / bookkeeping                                8.1         8.9         8.1         8.1       2.0    0.4%               7.9       0.1
+PLE embedding                                        7.8         7.9        10.5         1.7       1.7    0.4%               3.4       0.9
+dense: BF16 cuBLAS in compiled graph                 5.1         4.4         4.0         1.1       0.9    0.2%               0.9       0.7
+step setup (inputs, KV, metadata)                    2.4         4.1         3.1         3.0       0.8    0.2%               2.9       0.1
+GPU busy (sum of kernels)                         2520.3      2598.3      1785.8       743.2     466.8                     455.0     355.7
+GPU idle inside the step                           169.3       152.7        89.7        42.9      27.8
+step span (first kernel to last)                  2688.7      2749.6      1874.8       783.3     494.2                     465.8     380.4
+fixed ms / marg us/t: least-squares line over the chunks, ms = fixed + marginal x chunk tokens (attention also grows with context)
+GPU idle between prefill chunks (CPU scheduling under the profiler): 0.0, 0.0, 0.0 ms
+
+== profile cb-02 arm-p1 (one cold 16K prompt, k81 classes)
+== dp0_pp0_tp0_dcp0_ep0_rank0.1792144272142830702.pt.trace.json.gz: 4 prefill chunks (6048, 6048, 3024, 1264 tokens), GPU time per op class
+op class                                       chunk1 ms   chunk2 ms   chunk3 ms   chunk4 ms  us/token  % busy  TFLOPS  fixed ms marg us/t
+routed MoE (b12x NVFP4 W4A4)                       601.9       656.8       415.4       315.9     121.5   27.2%    38.8     225.0      66.5
+attention (QSA indexer + sparse)                   318.4       418.4       199.4        87.1      62.5   14.0%              17.3      58.2
+norms / hyperconnection                            355.7       377.4       178.3        72.1      60.0   13.4%              -6.8      61.7
+dense: b12x other                                  222.1       384.1       112.7        57.0      47.4   10.6%             -25.9      53.7
+GDN core (conv, chunk delta, norm)                 208.7       369.3       105.6        51.3      44.9   10.0%             -28.4      51.8
+dense: GDN in_proj (qkvz+ba)                       152.0       256.5        74.0        31.2      31.4    7.0%    96.9     -25.2      37.5
+MTP drafter (prefill)                              188.8       191.2        93.7        34.9      31.0    7.0%              -5.2      32.3
+dense: GDN out_proj                                 86.8       108.0        40.0        14.2      15.2    3.4%    74.5     -10.3      17.7
+shared expert + router                              80.5        91.8        40.1        14.7      13.9    3.1%    43.1      -4.6      15.0
+dense: attention o_proj                             37.2        43.9        21.0         7.1       6.7    1.5%    56.6      -0.9       6.9
+fused elementwise (inductor)                        35.3        38.4        17.6         7.7       6.0    1.4%              -0.4       6.1
+PLE embedding                                        8.3        25.5         3.9         1.8       2.4    0.5%              -3.9       3.4
+sampler / bookkeeping                                8.2         8.1         8.3         7.8       2.0    0.4%               7.9       0.0
+dense: BF16 cuBLAS in compiled graph                 4.8         7.0         2.4         1.0       0.9    0.2%              -0.5       1.0
+step setup (inputs, KV, metadata)                    2.4         4.0         3.6         2.8       0.8    0.2%               3.0       0.0
+GPU busy (sum of kernels)                         2311.1      2980.2      1315.9       706.8     446.4                     141.2     411.9
+GPU idle inside the step                           173.0       161.2        96.4        50.5      29.4
+step span (first kernel to last)                  2483.0      3139.6      1411.6       754.4     475.4                     160.0     436.3
+fixed ms / marg us/t: least-squares line over the chunks, ms = fixed + marginal x chunk tokens (attention also grows with context)
+GPU idle between prefill chunks (CPU scheduling under the profiler): 0.0, 0.0, 0.0 ms
+
+== prebakes
+-- prebake-dgx01/try1  boot 151 s, KV pool 6442450944 bytes, min MemAvailable 22.07 GiB       2 Directly load AOT compilation plans measured: 0 views lines: 1 pong: pong 
+-- prebake-dgx02/try1  boot 142 s, KV pool 6442450944 bytes, min MemAvailable 22.17 GiB       1 Directly load AOT compilation       1 Dynamo bytecode transform time plans measured: 0 views lines: 1 pong: pong 
+```
+
+Traces stay on dgx-01 in `/home/nvidia/GEN-AI/qwen3.8-flash-next-dgx-spark-tp-2/results/k103-1x-prefill-combo-ab-20261016-1206`. Results: {RESULTS_URL}
