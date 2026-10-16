@@ -1,6 +1,6 @@
 # Routed-MoE prefill dispatch: options and the k91 result
 
-Status: design note, 2026-10-11, updated 2026-10-12 with the k91 measurement. Tracks #27. Verdict: the MoE backend is not the prefill lever. Nothing here ships.
+Status: design note, 2026-10-11; updated 2026-10-15 with k96/k97/k99/k100/k101/k102 outcomes. Tracks #27. Keep the shipped MoE backend. Experiments: [#64](https://github.com/ursuciprian/qwen3.8-flash-next-1x-dgx-spark/issues/64) (k96, k100), [#65](https://github.com/ursuciprian/qwen3.8-flash-next-1x-dgx-spark/issues/65) (k101), [#66](https://github.com/ursuciprian/qwen3.8-flash-next-1x-dgx-spark/issues/66) (k97, k102) and [TP=2 #174](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/issues/174) (k99).
 
 ## Where the time goes
 
@@ -14,7 +14,16 @@ Per layer per chunk, that is 12.6 ms at 6048 tokens, 9.0 ms at 3024 and 6.7 ms a
 
 The 248 ms is the expert weight stream: 48 layers x 1.42 GB = 68 GB per step at about 270 GB/s. Every grouped-GEMM backend pays it once per step, because at prefill sizes every expert has work. With top-10 of 512, the mean is 24.7 routed rows per expert at 1264 tokens and 118 at 6048. Skipping idle experts saves nothing here.
 
-A 16K prompt takes 4 steps, because the 3024-token mamba alignment cuts a budget of 8192 to 6048-token steps. That puts about 1.0 s of the 7.9 s TTFT in weight streaming, whatever the MoE backend. 16K in 2 steps instead of 4 would save about 0.5 s. k88 tried 9072 (3 steps) and lost 4.5% / 5.5% cold 16K because of the K6144 N2560 MXFP8 tile cliff above about 4.5K rows. k90 fixed that tile and gave +1.6% (64K) and +2.3% (128K) cold prefill ([results/k90-1x-tile-fix-20261011-2132](../../results/k90-1x-tile-fix-20261011-2132)); its decode recheck (k90b) is pending.
+A 16K prompt takes four steps: 6048, 6048, 3024, 1264 tokens. The k88
+9072-budget experiment also took four: 9072, 3024, 3024, 1264. It did not remove
+an expert-weight pass; the earlier three-step description was incorrect. k97
+and k102 logged the recurrent-state reuse boundary that forces the extra split.
+12096 does remove one step, but k102s on the tile-fixed v2.3.0 still lost cold
+16K prefill by 12.9 to 18.3%, and lost at 64K/128K too. Keep budget 8192.
+
+k90's K6144/N2560 tile fix shipped in v2.3.0 after the k90b decode recheck;
+it improved cold prefill by 1.6 to 2.3%. Fewer chunks alone do not establish a
+speedup when their larger kernels cost more per token.
 
 ## What the shipped b12x path does at prefill
 
@@ -48,13 +57,35 @@ All rows assume the weights stay where b12x prepared them (packed E2M1 payload, 
 
 Serving #5863 would still need a vendored copy with the FC1 half-order swap, per-expert FC2 activation scales (`a2[e]`), token-bucket padding with warmup, and an M threshold declared in `vllm/envs.py`.
 
-## Recommendation
+## Recommendation (updated 2026-10-15)
 
-1. Keep b12x M32 for prefill. It is the fastest b12x variant; M64 is a tie, and M128 and both layer-max variants are slower.
-2. Do not build the #5863 path. It is the only faster backend, at 1.08x to 1.13x. Applied to the k81 per-chunk times over 48 layers, that is about 0.1 s of the 7.93 s 16K TTFT on the two 6048-token steps, and about 0.2 s (2.5%) if it also takes the 3024 and 1264 chunks. That gain does not pay for a vendored kernel, a second MoE dispatch path and a quality gate.
-3. Spend prefill effort on:
-   - the hyperconnection, about 22% of prefill in k81: the combine/norm kernel runs under 40% of bandwidth and the skinny HC GEMMs reach about 30 TFLOPS;
-   - chunking: fewer, larger steps cut the fixed 248 ms weight stream for every backend. Rerun the 9072 A/B on top of k90 once k90b clears decode.
+1. Keep the shipped b12x prefill path. k91's alternatives did not justify
+   integration. The newer FlashInfer #5168 path was subsequently tested on TP=2
+   in k99: cold TTFT changed only -0.3 to -0.5%, within noise, while KV capacity
+   fell 15% (about 4.4 GiB per rank). The in-place expert layout still needed
+   substantial scale/workspace caches. Do not ship it on the operator gain alone.
+2. Keep `max_num_batched_tokens=8192`. k102s tested 12096 with the intended
+   chunk reduction and failed. Reopen only with a measured large-M kernel fix.
+3. Stop treating the k90 HC candidate column as a speedup. The fair k96 probe
+   used the served seed, identical inputs, and full-operation timing; no tested
+   alternative cleared its numerical gate with a useful gain. The earlier
+   apparent 2x comparison also omitted activation quantization on one side.
+4. GDN views are the best measured candidate: k101s gained 3.2 to 4.8% cold-prefill
+   throughput on 1x and reduced TP=2 TTFT by 2.2 to 2.5%, with essentially unchanged
+   KV capacity. Before shipping 1x, resolve its -5.9% c1 decode reading on dgx-01
+   (95% interval entirely negative), then run release quality and boot checks.
+   The recorded noise-band `WIN` alone is insufficient to dismiss that signal.
+5. The k100ab serving A/B is recorded in [#64](https://github.com/ursuciprian/qwen3.8-flash-next-1x-dgx-spark/issues/64). The HC down-projection BF16
+   path passes its operator gate and projects 3.8% less 1x TTFT / 4.7% less
+   TP=2 TTFT. This is a different approach from k96.
+   Tested b12x `a1ad1b69` starts at 1264 rows, despite the issue text saying 1024.
+6. Profile QSA at 128K and HC combine/norm after qualifying the candidates.
+   These remain separate opportunities; neither is a demonstrated new speedup.
+
+Results and the next checks: k96 and k100 in [#64](https://github.com/ursuciprian/qwen3.8-flash-next-1x-dgx-spark/issues/64), k101 in
+[#65](https://github.com/ursuciprian/qwen3.8-flash-next-1x-dgx-spark/issues/65), k97 and k102 in [#66](https://github.com/ursuciprian/qwen3.8-flash-next-1x-dgx-spark/issues/66), k99 in
+[TP=2 #174](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/issues/174). The table above keeps the original k91
+measurements as historical operator evidence.
 
 ## How k91 measured
 
