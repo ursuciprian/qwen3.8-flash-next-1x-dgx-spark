@@ -6,6 +6,7 @@ Each file's header says what changed and links its results.
 
 | recipe | build | image | results |
 |---|---|---|---|
+| [`qwen3.8-flash-next-1x-dgx-spark-v2.2.0-20261013.yaml`](qwen3.8-flash-next/qwen3.8-flash-next-1x-dgx-spark-v2.2.0-20261013.yaml) | v2.2.0, 2026-10-10 | `tp1-d3-hf-20261010-21e0b201-5dad364d-warm` (also `1x-v2.2.0`) | [`results/thunderdome-k56c-20261009-1421/`](../../results/thunderdome-k56c-20261009-1421/) |
 | [`qwen3.8-flash-next-1x-dgx-spark-v2.1.0-20261010.yaml`](qwen3.8-flash-next/qwen3.8-flash-next-1x-dgx-spark-v2.1.0-20261010.yaml) | v2.1.0 (old name v3e), 2026-10-08 | `tp1-v3e-hf-20261008-21e0b201-5dad364d-warm` | [`results/tp1-v3e-hf-20261008/`](../../results/tp1-v3e-hf-20261008/) |
 | [`qwen3.8-flash-next-1x-dgx-spark-v2.0.0-20261008.yaml`](qwen3.8-flash-next/qwen3.8-flash-next-1x-dgx-spark-v2.0.0-20261008.yaml) | v2.0.0 (old name v3d), 2026-10-05 | `tp1-v3d-hf-20261005-21e0b201-5dad364d-warm` | [`results/tp1-v3d-20261005/`](../../results/tp1-v3d-20261005/) |
 | [`qwen3.8-flash-next-1x-dgx-spark-v3c-20261005.yaml`](qwen3.8-flash-next/qwen3.8-flash-next-1x-dgx-spark-v3c-20261005.yaml) | v3c, 2026-10-05 | `tp1-v3c-20261005-21e0b201-50330171-warm` | [`results/tp1-v3c-20261005/`](../../results/tp1-v3c-20261005/) |

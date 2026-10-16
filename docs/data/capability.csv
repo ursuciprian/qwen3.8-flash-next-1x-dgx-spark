@@ -1259,3 +1259,15 @@ dp2,v2.1.0,v3e,2026-10-10,k76-capability-matrix,kv_tokens,,,,1987508,,"2 replica
 1x,v2.3.0,,2026-10-13,promotion gate,gate_tc45,,,,100.0,,quality gate,,,1x:results/k95-1x-ship-check-20261013-0937/k95.txt,
 1x,v2.3.0,,2026-10-13,promotion gate,gate_stragglers,,,,"none, c8-c16",,quality gate,,,1x:results/k95-1x-ship-check-20261013-0937/k95.txt,
 1x,v2.3.0,,2026-10-13,promotion gate,gate_retrieval,,,,20/20,,quality gate,,,1x:results/k95f-1x-ship-check-fidelity-20261013-0937/k95f.txt,
+1x,v2.4.0,,2026-10-16,promotion A/B,ttft_s,1,16384,,7.104,0.016,"mean of 4 boots x 3 cold prompts, sd between boots","T=0, 1 token out",cold.py (k101),1x:results/k103-1x-prefill-combo-ab-20261016-1206/cb-01/,long-prompt
+1x,v2.4.0,,2026-10-16,promotion A/B,pp,1,16384,,2306.4,5.2,"mean of 4 boots x 3 cold prompts, sd between boots","T=0, 1 token out",cold.py (k101),1x:results/k103-1x-prefill-combo-ab-20261016-1206/cb-01/,long-prompt
+1x,v2.4.0,,2026-10-16,promotion A/B,ttft_s,1,65536,,30.723,0.060,"mean of 4 boots x 3 cold prompts, sd between boots","T=0, 1 token out",cold.py (k101),1x:results/k103-1x-prefill-combo-ab-20261016-1206/cb-01/,long-prompt
+1x,v2.4.0,,2026-10-16,promotion A/B,pp,1,65536,,2133.2,4.2,"mean of 4 boots x 3 cold prompts, sd between boots","T=0, 1 token out",cold.py (k101),1x:results/k103-1x-prefill-combo-ab-20261016-1206/cb-01/,long-prompt
+1x,v2.4.0,,2026-10-16,promotion A/B,ttft_s,1,131072,,70.000,0.137,"mean of 4 boots x 3 cold prompts, sd between boots","T=0, 1 token out",cold.py (k101),1x:results/k103-1x-prefill-combo-ab-20261016-1206/cb-01/,long-prompt
+1x,v2.4.0,,2026-10-16,promotion A/B,pp,1,131072,,1872.5,3.7,"mean of 4 boots x 3 cold prompts, sd between boots","T=0, 1 token out",cold.py (k101),1x:results/k103-1x-prefill-combo-ab-20261016-1206/cb-01/,long-prompt
+1x,v2.4.0,,2026-10-16,promotion A/B,pp_benchy,1,2048,,1915.555,14.777,"mean of 4 boots x 3 runs, sd between boots","T=1.0 top-p 0.95 top-k 20, thinking on",llama-benchy task mode,1x:results/k103-1x-prefill-combo-ab-20261016-1206/cb-01/,chat
+1x,v2.4.0,,2026-10-16,promotion A/B,ttft_benchy_s,1,2048,,1.097,0.009,"mean of 4 boots x 3 runs, sd between boots","T=1.0 top-p 0.95 top-k 20, thinking on",llama-benchy task mode,1x:results/k103-1x-prefill-combo-ab-20261016-1206/cb-01/,chat
+1x,v2.4.0,,2026-10-16,promotion gate,gate_hardmode,,,,92.0,,quality gate,,,1x:results/k103g-1x-combo-gate-20261016-1641/k103g.txt,
+1x,v2.4.0,,2026-10-16,promotion gate,gate_tc45,,,,100.0,,quality gate,,,1x:results/k103g-1x-combo-gate-20261016-1641/k103g.txt,
+1x,v2.4.0,,2026-10-16,promotion gate,gate_retrieval,,,,20/20,,quality gate,,,1x:results/k103g-1x-combo-gate-20261016-1641/k103g.txt,
+1x,v2.4.0,,2026-10-16,promotion gate,gate_stragglers,,,,"none, c7-c16",,quality gate,,,1x:results/k103g-1x-combo-gate-20261016-1641/k103g.txt,

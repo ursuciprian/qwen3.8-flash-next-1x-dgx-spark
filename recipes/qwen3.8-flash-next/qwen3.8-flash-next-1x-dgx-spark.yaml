@@ -1,4 +1,42 @@
-# Release: v2.3.0
+# Release: v2.4.0
+# EXPERIMENTAL single-Spark (TP=1) recipe v2.4.0 (2026-10-16): v2.3.0 with two prefill changes, the BF16 path for the
+# hyperconnection down projection (k100) and GDN prefill views (k101).
+#   - b12x a1ad1b69 (exp/k100-hc-a16-bf16, on b45fe867): the hyperconnection down projection (K10240 to N336, served by
+#     the A16 kernel with BF16 activations) runs prefill calls of 1264 rows or more outside graph capture as one exact
+#     BF16 dequantization of the weight plus one BF16 GEMM with FP32 accumulation. The A16 kernel only has 16-row M tiles
+#     and dequantizes the weight again for every 16 rows. Decode (exact-M regimes), smaller calls, graph capture and
+#     every other shape keep the v2.3.0 kernels; plan records and plan population do not change.
+#   - VLLM_GDN_PREFILL_VIEWS=1 (env block) on six files of vLLM 10d0acc8 (exp/k101-gdn-views) over 5dad364d: when a step
+#     has no speculative rows, the GDN layer reads its projections as views and writes its output rows in place, instead
+#     of gathering rows by token index and scattering the output back. Graph capture keeps the gathers. The GPU tests
+#     (k101) found the views path bit-identical to the gather path. The flag is not part of the compile cache key.
+#   - A/B vs v2.3.0 with both changes (k103-1x-prefill-combo-ab, 4 boots per side per Spark, ctl arm arm ctl ctl arm arm
+#     ctl): cold prefill Spark 1 16K +8.2%, 64K +6.8%, 128K +5.9%; Spark 2 +8.1%, +7.0%, +6.2% (noise 1.0-1.1%);
+#     llama-benchy pp2048 c1 +6.6% / +6.3% (noise 1.0% / 1.5%); tg512 c1/c4/c8 inside noise, no boot-level 95% CI wholly
+#     below -1%; MTP acceptance per draft position +0.001 to +0.008; KV pool unchanged (993,754 tokens). Each change won
+#     its own A/B first (k100ab, k101s).
+#   - c1 decode recheck of the views flag alone (k105, off vs on on this image, 6 boots per side per Spark): paired c1
+#     +0.64% CI [-1.02, +2.29] on Spark 1, +1.65% CI [+0.08, +3.21] on Spark 2; tg512 c1 -1.94% / -0.81%, both CIs reach
+#     above zero. PASS.
+#   - Gate (k103g, one boot per Spark of the test image): hardmode 92, TC-45 100, stragglers c7/c8/c12/c16 0
+#     preemptions, fidelity 20/20 at 8k/32k/64k/128k plus two more 128k seeds.
+#   - Compile cache root /cache/runtime/vllm-b12x-a1ad1b69-10d0acc8 (VLLM_CACHE_ROOT, env block): the torch AOT keys are
+#     v2.3.0's, the artifacts are not (new b12x, new GDN files). A root of its own keeps v2.4.0 and v2.3.0 apart in both
+#     directions (upgrade and rollback). The image's AOT seed is copied there. The b12x plan cache stays shared; v2.4.0
+#     adds no record to it.
+#   - Image: the k103 test image (CI build-b12x-overlay on the v2.3.0 image: b12x a1ad1b69 and the vLLM 10d0acc8 files)
+#     plus one layer with the torch AOT cache of the k103 arm boots (keys 246a576d, 5af689ee, f5d573a4); local base on
+#     dgx-01, CI build-b0-warm. Plan seed 33d9b32e (303 records) is v2.3.0's. Tagged 1x-v2.4.0. Digest
+#     sha256:30fe678ed7ae5d4deb277be137497bcf597e46e829471b7bed24edd4294a84f1.
+#   - Ship check (k106s-1x-ship-check): plain `sparkrun run` of this recipe with the plan file and the new root moved out
+#     of the runtime cache: up in 256 s, AOT loaded from the image, 0 plans measured, acceptance and llama-benchy inside
+#     the k103 arm bands (results/k106s-1x-ship-check-20261016-1819).
+#   Results: results/k103-1x-prefill-combo-ab-20261016-1206, results/k105-1x-gdn-views-c1-recheck-20261016-1507,
+#   results/k103g-1x-combo-gate-20261016-1641, results/k100ab-1x-hc-a16-bf16-ab-20261015-2047,
+#   results/k101s-1x-gdn-prefill-views-ab-20261015-1600.
+#   Rollback: qwen3.8-flash-next-1x-dgx-spark-previous (v2.3.0).
+#
+# Base: v2.3.0 header below.
 # EXPERIMENTAL single-Spark (TP=1) recipe v2.3.0 (2026-10-13): v2.2.0 with the b12x large-row MXFP8 tile fix and
 # cached-prompt usage reporting.
 #   - b12x b45fe867 (fix/pf-large-m-regime, base 21e0b201): a packed MXFP8 declaration of >= 4096 rows with K >= 4096
@@ -154,13 +192,15 @@
 
 recipe_version: "1"
 name: qwen3.8-flash-next-1x-dgx-spark
-description: "Experimental (v2.3.0: v2.2.0 with the b12x large-row MXFP8 tile fix). Qwen3.8-Flash-Next on ONE DGX Spark (TP=1, NVFP4 GDN decode / MXFP8 prefill, PLE table through the page cache, NVMe keepalive, prefill read-ahead, 14 GiB KV pool), OpenAI-compatible API on port 8000 (2026-10-13)."
+description: "Experimental (v2.4.0: v2.3.0 with the HC down projection BF16 path and GDN prefill views). Qwen3.8-Flash-Next on ONE DGX Spark (TP=1, NVFP4 GDN decode / MXFP8 prefill, PLE table through the page cache, NVMe keepalive, prefill read-ahead, 14 GiB KV pool), OpenAI-compatible API on port 8000 (2026-10-16)."
 
 model: ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE
 model_revision: 03f4a0570496bbe741189f4a2a7d611679e85406
 # v2.3.0 image (2026-10-13, k95): tile-fix image tf-20261011-b45fe867-5dad364d plus plan 33d9b32e (303 records) and the
 # torch AOT cache of the tile-fix boots (local base on dgx-01, CI build-b0-warm). The same image is also tagged 1x-v2.3.0.
-container: ghcr.io/ursuciprian/spark-vllm-b12x:k95-20261013-b45fe867-5dad364d-warm
+# v2.4.0 image (2026-10-16, k106s; the tag says 20261017): the k103 test image k103-20261015-a1ad1b69-10d0acc8 plus the torch AOT cache of the
+# k103 arm boots (local base on dgx-01, CI build-b0-warm). The same image is also tagged 1x-v2.4.0.
+container: ghcr.io/ursuciprian/spark-vllm-b12x:k106s-20261017-a1ad1b69-5dad364d-10d0acc8-warm
 runtime: vllm
 
 build_args: []
@@ -189,7 +229,10 @@ env:
   # the v2.2.0 artifacts stored under the same keys crash this image at load ("ValueError: plan belongs to moe.decode,
   # not norm.hyperconnection", k95 upgrade-path boot). A compile cache root of its own keeps v2.3.0 and v2.2.0 apart
   # in both directions (upgrade and rollback). The b12x plan cache stays shared: v2.3.0 adds one record to it.
-  VLLM_CACHE_ROOT: "/cache/runtime/vllm-b12x-b45fe867"
+  # v2.4.0: compile cache root of its own (header). The torch AOT keys are the same as v2.3.0's, the artifacts are not.
+  VLLM_CACHE_ROOT: "/cache/runtime/vllm-b12x-a1ad1b69-10d0acc8"
+  # v2.4.0: GDN prefill views (header). Off (unset or 0) is the v2.3.0 gather path on the same image.
+  VLLM_GDN_PREFILL_VIEWS: "1"
   VLLM_B12X_NVFP4_MXFP8_MIN_TOKENS: "41"
   VLLM_B12X_NVFP4_MXFP8_CHECKPOINT: "/cache/huggingface/hub/models--local-inference-lab--Qwen3.8-Flash-Next-NVFP4/snapshots/7c4f1bc1a2d6847e0cbc01ac6b823f00251de8dd"
   VLLM_GDN_SHARED_PREFILL_STAGING: "1"

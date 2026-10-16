@@ -1,6 +1,6 @@
 # Benchmarks: full tables
 
-Release names follow [VERSIONS.md](../VERSIONS.md). Section headings keep the old build names so existing links keep working; each build section opens with its release name. The current default is 1× v2.3.0; every other section is history, kept for comparison. The README's capability table and charts read [`docs/data/capability.csv`](data/capability.csv).
+Release names follow [VERSIONS.md](../VERSIONS.md). Section headings keep the old build names so existing links keep working; each build section opens with its release name. The current default is 1× v2.4.0; every other section is history, kept for comparison. The README's capability table and charts read [`docs/data/capability.csv`](data/capability.csv).
 
 
 Every single-Spark (TP=1) build, newest first, then the runs that compared the 1× and 2× setups side by side. The 2×
@@ -61,9 +61,84 @@ What it shows: the coding probe at T=0 repeats within 0.5% between boots; llama-
 2× build, TG defaults c8 differs most (k76 172.2, k86 195.3 ± 5.1); the README now quotes the multi-boot means. Per-Spark rows, per-boot values and the 1 Hz power traces:
 [k86 results folder in the tp-2 repo](https://github.com/ursuciprian/qwen3.8-flash-next-dgx-spark-tp-2/tree/main/results/k86-boot-noise-power-20261010-1704/).
 
+## Single Spark v2.4.0: HC down projection BF16 path and GDN prefill views (2026-10-16)
+
+Release 1× v2.4.0, the current default. No old build name.
+
+v2.4.0 = v2.3.0 with two prefill changes. Each won its own A/B against v2.3.0 first (k100ab, k101s); k103 then measured
+them together.
+
+- b12x a1ad1b69 (`exp/k100-hc-a16-bf16`, on b45fe867). The hyperconnection down projection (K10240 to N336) is served by
+  the A16 kernel (BF16 activations, plan record a16 n128 k64 s1), which only has 16-row M tiles and dequantizes the
+  3.4 MB weight again for every 16 rows. Prefill calls of 1264 rows or more outside graph capture now run one exact
+  BF16 dequantization of the weight plus one BF16 GEMM with FP32 accumulation. Decode, smaller calls, graph capture and
+  every other shape keep the A16 kernel; plan records and plan population do not change. On identical captured inputs
+  (k100 probe) a call at M 6048 takes 0.86 ms instead of 1.92 ms, and the outputs at 1264 rows and more are bit-equal
+  to the A16 kernel's.
+- GDN prefill views (`VLLM_GDN_PREFILL_VIEWS=1`, six files of vLLM `10d0acc8` over 5dad364d). When a step has no
+  speculative rows, the GDN layer reads its projections as views and writes its output rows in place, instead of
+  gathering rows by token index and scattering the output back. Graph capture keeps the gathers. The GPU tests (k101)
+  found the views path bit-identical to the gather path. GDN data-movement kernels per cold 16K prompt: −389 ms on
+  Spark 1 and −388 ms on Spark 2 (k103 profile of one cold prompt per side).
+
+Same checkpoint (`03f4a057`, drafter D3), flags and env otherwise, plus a compile cache root of its own (below).
+
+Cold prefill against v2.3.0 (k103-1x-prefill-combo-ab, ctl arm arm ctl ctl arm arm ctl on both Sparks, 4 boots per
+side, 3 cold prompts per depth and boot):
+
+| Spark | 16K | 64K | 128K |
+|---|:---:|:---:|:---:|
+| Spark 1 | 2132 → 2306 tok/s (+8.2%, noise 1.1%) | 1998 → 2133 (+6.8%, noise 1.0%) | 1768 → 1872 (+5.9%, noise 1.0%) |
+| Spark 2 | 2129 → 2300 (+8.1%, noise 1.0%) | 2020 → 2162 (+7.0%, noise 1.0%) | 1764 → 1873 (+6.2%, noise 1.0%) |
+
+TTFT on Spark 1, means of 4 boots: 16K 7.69 → 7.10 s, 64K 32.80 → 30.72 s, 128K 74.14 → 70.00 s.
+
+llama-benchy (T=1, 3 runs per boot, 4 boots per side), v2.3.0 → v2.4.0 with the boot-level Welch 95% CI:
+
+| Cell | Spark 1 | Spark 2 |
+|---|---|---|
+| pp2048 c1 | 1797 → 1916 t/s (+6.59%, CI [+5.26, +7.91]) | 1805 → 1919 (+6.29%, CI [+5.15, +7.43]) |
+| tg512 c1 | 58.0 → 58.4 (+0.73%, CI [−6.91, +8.38]) | 55.9 → 56.3 (+0.83%, CI [−2.79, +4.45]) |
+| tg512 c4 | 113.0 → 113.9 (+0.83%, CI [−6.61, +8.26]) | 110.9 → 113.3 (+2.18%, CI [−2.23, +6.59]) |
+| tg512 c8 | 136.1 → 136.2 (+0.05%, CI [−5.06, +5.16]) | 136.0 → 142.6 (+4.85%, CI [−0.72, +10.42]) |
+
+The T=0 probe cells fresh c1/c4/c8 are inside noise on both Sparks, MTP acceptance per draft position moves by +0.001
+to +0.008, and the KV pool is 993,754 tokens on every boot. No CI lies wholly below −1% (the k103 rule), so RULE=WIN.
+
+c1 decode recheck of the views flag alone (k105-1x-gdn-views-c1-recheck, same image, recipe and cache, flag 0 vs 1,
+6 boots per side per Spark): paired c1 decode +0.64% (CI [−1.02, +2.29]) on Spark 1 and +1.65% (CI [+0.08, +3.21]) on
+Spark 2; llama-benchy tg512 c1 −1.94% (CI [−6.84, +2.96]) and −0.81% (CI [−4.35, +2.74]). It checked a −5.91% tg512 c1
+cell of k101s on Spark 1; with the flag as the only change it did not come back. PASS.
+
+Gate (k103g-1x-combo-gate, one boot per Spark of the test image: tools on one, long-context retrieval on the other):
+hardmode 92, TC-45 100, stragglers c7/c8/c12/c16 0 preemptions, fidelity 20/20 at 8k/32k/64k/128k plus two more 128k
+seeds. Both boots loaded the AOT cache, measured 0 b12x plans and logged the views path.
+
+Image and compile cache: the release image is the k103 test image (CI build-b12x-overlay on the v2.3.0 image: b12x
+a1ad1b69 and the vLLM `10d0acc8` files) plus one layer with the torch AOT cache of the k103 arm boots (keys 246a576d,
+5af689ee, f5d573a4). These keys are the same as v2.3.0's, because the key covers neither the b12x build nor these vLLM
+files, but the artifacts are not: v2.3.0's artifacts under the same keys would compile again (new vLLM files) or fail
+(k95: new b12x). The recipe sets `VLLM_CACHE_ROOT=/cache/runtime/vllm-b12x-a1ad1b69-10d0acc8` and seeds the image's
+AOT cache there. The plan seed `33d9b32e` (303 records) is v2.3.0's; v2.4.0 adds no plan record.
+
+Ship check (k106s-1x-ship-check, plain `sparkrun run` of the release recipe on Spark 1 after moving the plan file and
+the new compile cache root out of the runtime cache): up in 256 s, AOT loaded from the image with no compile (2 loads from the new root), 0
+b12x plans measured, 303 plan records, views path on, KV pool 993,754 tokens. T=0 fresh-c8 acceptance per draft position
+0.856/0.707/0.580/0.467 (k103 arm 0.849/0.700/0.577/0.464); llama-benchy pp2048 c1 1901.5 (−0.7% against the k103
+arm, band 1.0%), tg512 c1 60.7, tg512 c8 144.3 tok/s. The release image keeps all 104 layers of the test image and
+the same vLLM and b12x code; Spark 2 pulled it from ghcr with the same Id. Image digest `sha256:30fe678ed7ae5d4deb277be137497bcf597e46e829471b7bed24edd4294a84f1`. Results:
+[`results/k106s-1x-ship-check-20261016-1819/`](../results/k106s-1x-ship-check-20261016-1819/).
+
+Raw files: [`results/k103-1x-prefill-combo-ab-20261016-1206/`](../results/k103-1x-prefill-combo-ab-20261016-1206/),
+[`results/k105-1x-gdn-views-c1-recheck-20261016-1507/`](../results/k105-1x-gdn-views-c1-recheck-20261016-1507/),
+[`results/k103g-1x-combo-gate-20261016-1641/`](../results/k103g-1x-combo-gate-20261016-1641/),
+[`results/k100-1x-hc-a16-bf16-20261015-2035/`](../results/k100-1x-hc-a16-bf16-20261015-2035/),
+[`results/k100ab-1x-hc-a16-bf16-ab-20261015-2047/`](../results/k100ab-1x-hc-a16-bf16-ab-20261015-2047/),
+[`results/k101s-1x-gdn-prefill-views-ab-20261015-1600/`](../results/k101s-1x-gdn-prefill-views-ab-20261015-1600/).
+
 ## Single Spark v2.3.0: b12x large-row MXFP8 tile fix (2026-10-13)
 
-Release 1× v2.3.0, the current default. No old build name.
+Release 1× v2.3.0, the default from 2026-10-13 to 2026-10-16. No old build name.
 
 v2.3.0 = v2.2.0 on b12x b45fe867 (`fix/pf-large-m-regime`, base 21e0b201): a packed MXFP8 declaration of 4096+ rows with
 K >= 4096 and N > 1536 (the max_num_batched_tokens capacity regime of GDN out_proj and attention o_proj, K6144 N2560)
