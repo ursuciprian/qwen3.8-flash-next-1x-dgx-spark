@@ -309,7 +309,7 @@ z
 " clip-path="url(#pe07d026fe8)" style="fill: #1baf7a; opacity: 0.5"/>
    </g>
    <g id="text_3">
-    <!-- 60 -->
+    <!-- 60  (v2.2.0) -->
     <g style="fill: #1f2328" transform="translate(304.707068 182.38335) scale(0.115 -0.115)">
      <defs>
       <path id="Inter-SemiBold-545" d="M 2097 -63 
@@ -356,6 +356,16 @@ z
      </defs>
      <use xlink:href="#Inter-SemiBold-545"/>
      <use xlink:href="#Inter-SemiBold-53d" transform="translate(63.96875 0)"/>
+     <use xlink:href="#Inter-SemiBold-6f1" transform="translate(129.9375 0)"/>
+     <use xlink:href="#Inter-SemiBold-6f1" transform="translate(155.140625 0)"/>
+     <use xlink:href="#Inter-SemiBold-59d" transform="translate(180.34375 0)"/>
+     <use xlink:href="#Inter-SemiBold-3d4" transform="translate(217.65625 0)"/>
+     <use xlink:href="#Inter-SemiBold-53f" transform="translate(276.34375 0)"/>
+     <use xlink:href="#Inter-SemiBold-5de" transform="translate(338.65625 0)"/>
+     <use xlink:href="#Inter-SemiBold-53f" transform="translate(370.546875 0)"/>
+     <use xlink:href="#Inter-SemiBold-5de" transform="translate(432.859375 0)"/>
+     <use xlink:href="#Inter-SemiBold-53d" transform="translate(461.96875 0)"/>
+     <use xlink:href="#Inter-SemiBold-59e" transform="translate(527.9375 0)"/>
     </g>
    </g>
    <g id="text_4">
@@ -534,7 +544,7 @@ z
 " clip-path="url(#p6def355aad)" style="fill: #1baf7a; opacity: 0.5"/>
    </g>
    <g id="text_6">
-    <!-- 137 -->
+    <!-- 137  (v2.2.0) -->
     <g style="fill: #1f2328" transform="translate(298.290597 280.30335) scale(0.115 -0.115)">
      <defs>
       <path id="Inter-SemiBold-541" d="M 2034 -63 
@@ -578,6 +588,16 @@ z
      <use xlink:href="#Inter-SemiBold-53e"/>
      <use xlink:href="#Inter-SemiBold-541" transform="translate(42.28125 0)"/>
      <use xlink:href="#Inter-SemiBold-546" transform="translate(105.90625 0)"/>
+     <use xlink:href="#Inter-SemiBold-6f1" transform="translate(163.53125 0)"/>
+     <use xlink:href="#Inter-SemiBold-6f1" transform="translate(188.734375 0)"/>
+     <use xlink:href="#Inter-SemiBold-59d" transform="translate(213.9375 0)"/>
+     <use xlink:href="#Inter-SemiBold-3d4" transform="translate(251.25 0)"/>
+     <use xlink:href="#Inter-SemiBold-53f" transform="translate(309.9375 0)"/>
+     <use xlink:href="#Inter-SemiBold-5de" transform="translate(372.25 0)"/>
+     <use xlink:href="#Inter-SemiBold-53f" transform="translate(404.140625 0)"/>
+     <use xlink:href="#Inter-SemiBold-5de" transform="translate(466.453125 0)"/>
+     <use xlink:href="#Inter-SemiBold-53d" transform="translate(495.5625 0)"/>
+     <use xlink:href="#Inter-SemiBold-59e" transform="translate(561.53125 0)"/>
     </g>
    </g>
    <g id="text_7">
@@ -679,76 +699,23 @@ z
    </g>
    <g id="patch_11">
     <path d="M 140.4 399.5064 
-L 281.106849 399.5064 
-L 281.106849 387.4536 
+L 320.482583 399.5064 
+L 320.482583 387.4536 
 L 140.4 387.4536 
 z
 " clip-path="url(#pfbb59ff95c)" style="fill: #eb6834; opacity: 0.5"/>
    </g>
    <g id="text_9">
-    <!-- 9.1  (v2.1.0) -->
+    <!-- 7.1 -->
     <g style="fill: #1f2328" transform="translate(372.733333 378.22335) scale(0.115 -0.115)">
-     <defs>
-      <path id="Inter-SemiBold-548" d="M 1953 -66 
-Q 1516 -66 1175 106 
-Q 834 278 625 578 
-Q 416 878 366 1259 
-L 1191 1259 
-Q 1253 991 1450 823 
-Q 1647 656 1953 656 
-Q 2438 656 2700 1079 
-Q 2963 1503 2963 2247 
-L 2931 2247 
-Q 2763 1950 2455 1776 
-Q 2147 1603 1769 1603 
-Q 1359 1603 1032 1798 
-Q 706 1994 514 2337 
-Q 322 2681 322 3119 
-Q 322 3578 533 3943 
-Q 744 4309 1123 4518 
-Q 1503 4728 2006 4722 
-Q 2334 4719 2650 4605 
-Q 2966 4491 3219 4231 
-Q 3472 3972 3622 3539 
-Q 3772 3106 3772 2466 
-Q 3772 1666 3548 1100 
-Q 3325 534 2917 234 
-Q 2509 -66 1953 -66 
-z
-M 1991 2244 
-Q 2241 2244 2439 2367 
-Q 2638 2491 2755 2697 
-Q 2872 2903 2872 3147 
-Q 2872 3384 2759 3589 
-Q 2647 3794 2450 3917 
-Q 2253 4041 2003 4041 
-Q 1756 4041 1559 3920 
-Q 1363 3800 1248 3595 
-Q 1134 3391 1134 3138 
-Q 1134 2884 1245 2682 
-Q 1356 2481 1550 2362 
-Q 1744 2244 1991 2244 
-z
-" transform="scale(0.015625)"/>
-     </defs>
-     <use xlink:href="#Inter-SemiBold-548"/>
-     <use xlink:href="#Inter-SemiBold-5de" transform="translate(61.1875 0)"/>
-     <use xlink:href="#Inter-SemiBold-53e" transform="translate(84.1875 0)"/>
-     <use xlink:href="#Inter-SemiBold-6f1" transform="translate(126.46875 0)"/>
-     <use xlink:href="#Inter-SemiBold-6f1" transform="translate(151.671875 0)"/>
-     <use xlink:href="#Inter-SemiBold-59d" transform="translate(176.875 0)"/>
-     <use xlink:href="#Inter-SemiBold-3d4" transform="translate(214.1875 0)"/>
-     <use xlink:href="#Inter-SemiBold-53f" transform="translate(272.875 0)"/>
-     <use xlink:href="#Inter-SemiBold-5de" transform="translate(335.1875 0)"/>
-     <use xlink:href="#Inter-SemiBold-53e" transform="translate(358.1875 0)"/>
-     <use xlink:href="#Inter-SemiBold-5de" transform="translate(400.46875 0)"/>
-     <use xlink:href="#Inter-SemiBold-53d" transform="translate(429.578125 0)"/>
-     <use xlink:href="#Inter-SemiBold-59e" transform="translate(495.546875 0)"/>
+     <use xlink:href="#Inter-SemiBold-546"/>
+     <use xlink:href="#Inter-SemiBold-5de" transform="translate(45.125 0)"/>
+     <use xlink:href="#Inter-SemiBold-53e" transform="translate(68.125 0)"/>
     </g>
    </g>
    <g id="text_10">
     <!-- 5.6 -->
-    <g style="fill: #59636e" transform="translate(286.773515 397.66335) scale(0.115 -0.115)">
+    <g style="fill: #59636e" transform="translate(326.149249 397.66335) scale(0.115 -0.115)">
      <defs>
       <path id="Inter-Regular-5de" d="M 922 -41 
 Q 747 -41 623 82 

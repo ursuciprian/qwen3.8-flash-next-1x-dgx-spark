@@ -1,8 +1,30 @@
-# Release: v2.2.0
-# Rollback since 2026-10-13: the single-Spark v2.2.0 recipe that was the default from 2026-10-10 to 2026-10-13.
-# Superseded by v2.3.0 (b12x large-row MXFP8 tile fix, cached-prompt usage reporting). Serves
-# ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE @ 03f4a057 with drafter D3 on b12x 21e0b201.
+# Release: v2.3.0
+# Rollback since {MERGE_DATE}: the single-Spark v2.3.0 recipe that was the default from 2026-10-13 to {MERGE_DATE}.
+# Superseded by v2.4.0 (HC down projection BF16 path, GDN prefill views). Serves
+# ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE @ 03f4a057 with drafter D3 on b12x b45fe867.
 #
+# EXPERIMENTAL single-Spark (TP=1) recipe v2.3.0 (2026-10-13): v2.2.0 with the b12x large-row MXFP8 tile fix and
+# cached-prompt usage reporting.
+#   - b12x b45fe867 (fix/pf-large-m-regime, base 21e0b201): a packed MXFP8 declaration of >= 4096 rows with K >= 4096
+#     and N > 1536 (the max_num_batched_tokens capacity regime of GDN out_proj and attention o_proj, K6144 N2560) lowers
+#     to 128x128/BK64 without the large-M unroll on low-SM parts; a 4095-row regime keeps the shipped plan for every live
+#     M below 4096. Decode (exact M) and prefill chunks below 4096 rows run the v2.2.0 kernels. Model, revision, flags
+#     and env are unchanged.
+#   - --enable-prompt-tokens-details: usage.prompt_tokens_details.cached_tokens reports the prompt tokens served from
+#     the prefix cache, so clients see cache reads. It changes only the usage field.
+#   - Cold prefill vs v2.2.0 (k90-1x-tile-fix, ctl arm arm ctl on both Sparks, 3 cold prompts per depth and boot):
+#     Spark 1 16K +1.7%, 64K +1.6%, 128K +2.3%; Spark 2 +2.0% at 16K, 64K and 128K (noise 1.0%).
+#   - Decode (k90b, 4 boots per side per Spark): llama-benchy pp2048 c1, tg512 c1 and tg512 c8 FLAT on both Sparks
+#     (largest difference -2.44%, no boot-level 95% CI entirely below zero).
+#   - Compile cache root /cache/runtime/vllm-b12x-b45fe867 (VLLM_CACHE_ROOT, env block): the AOT key is the same as
+#     v2.2.0's, and loading v2.2.0's artifacts with this b12x fails (k95). The image's AOT seed is copied there.
+#   - Gate and check boots: k95-1x-ship-check, k95f, k95b (results/k95-1x-ship-check-*, k95f-*, k95b-*).
+#   - Image: the tile-fix image (CI build-b12x-overlay on the v2.2.0 image) plus the 303-record plan 33d9b32e (v2.2.0's
+#     302 records + the capacity-regime plan) and the torch AOT cache of the tile-fix boots (k90). Tagged 1x-v2.3.0.
+#   Results: results/k90-1x-tile-fix-20261011-2132, results/k90b-1x-tile-fix-decode-recheck-20261012-1900.
+#   Rollback: qwen3.8-flash-next-1x-dgx-spark-previous (v2.2.0).
+#
+# Base: v2.2.0 header below.
 # EXPERIMENTAL single-Spark (TP=1) recipe v2.2.0 (2026-10-10): v2.1.0 (old name v3e) with MTP drafter D3.
 #   - Model: ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE @ 03f4a057 = 16c9bd54 (v2.1.0) with the dense BF16 mtp.* tensors
 #     of model-00034 retrained again (D3 = refit run 3a, 1x #7): initialized from D1, one pass over 10.66M anchors (D1's
@@ -136,11 +158,13 @@
 
 recipe_version: "1"
 name: qwen3.8-flash-next-1x-dgx-spark-previous
-description: "Rollback (v2.2.0: drafter D3, b12x 21e0b201). Qwen3.8-Flash-Next on ONE DGX Spark (TP=1, NVFP4 GDN decode / MXFP8 prefill, PLE table through the page cache, NVMe keepalive, prefill read-ahead, 14 GiB KV pool), OpenAI-compatible API on port 8000 (2026-10-10)."
+description: "Rollback (v2.3.0: drafter D3, b12x b45fe867 large-row MXFP8 tile fix). Qwen3.8-Flash-Next on ONE DGX Spark (TP=1, NVFP4 GDN decode / MXFP8 prefill, PLE table through the page cache, NVMe keepalive, prefill read-ahead, 14 GiB KV pool), OpenAI-compatible API on port 8000 (2026-10-13)."
 
 model: ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE
 model_revision: 03f4a0570496bbe741189f4a2a7d611679e85406
-container: ghcr.io/ursuciprian/spark-vllm-b12x:tp1-d3-hf-20261010-21e0b201-5dad364d-warm
+# v2.3.0 image (2026-10-13, k95): tile-fix image tf-20261011-b45fe867-5dad364d plus plan 33d9b32e (303 records) and the
+# torch AOT cache of the tile-fix boots (local base on dgx-01, CI build-b0-warm). The same image is also tagged 1x-v2.3.0.
+container: ghcr.io/ursuciprian/spark-vllm-b12x:k95-20261013-b45fe867-5dad364d-warm
 runtime: vllm
 
 build_args: []
@@ -165,6 +189,11 @@ defaults:
   gpu_memory_utilization: 0.01
 
 env:
+  # v2.3.0: vLLM's torch AOT cache key does not include the b12x build, and the AOT graphs hold b12x plan handles, so
+  # the v2.2.0 artifacts stored under the same keys crash this image at load ("ValueError: plan belongs to moe.decode,
+  # not norm.hyperconnection", k95 upgrade-path boot). A compile cache root of its own keeps v2.3.0 and v2.2.0 apart
+  # in both directions (upgrade and rollback). The b12x plan cache stays shared: v2.3.0 adds one record to it.
+  VLLM_CACHE_ROOT: "/cache/runtime/vllm-b12x-b45fe867"
   VLLM_B12X_NVFP4_MXFP8_MIN_TOKENS: "41"
   VLLM_B12X_NVFP4_MXFP8_CHECKPOINT: "/cache/huggingface/hub/models--local-inference-lab--Qwen3.8-Flash-Next-NVFP4/snapshots/7c4f1bc1a2d6847e0cbc01ac6b823f00251de8dd"
   VLLM_GDN_SHARED_PREFILL_STAGING: "1"
@@ -192,7 +221,7 @@ env:
 
 command: |
   S=/opt/b12x-seed/preparation; D="$XDG_CACHE_HOME/b12x/compile/preparation"; if [ -d "$S" ] && [ -n "$XDG_CACHE_HOME" ]; then mkdir -p "$D" && for f in "$S"/*.json; do [ -e "$D/$(basename "$f")" ] || cp "$f" "$D/"; done; fi
-  A=/opt/b12x-seed/torch_compile_cache; if [ -d "$A" ] && [ -n "$XDG_CACHE_HOME" ]; then mkdir -p "$XDG_CACHE_HOME/vllm/torch_compile_cache" && cp -rn "$A/." "$XDG_CACHE_HOME/vllm/torch_compile_cache/" || true; fi
+  A=/opt/b12x-seed/torch_compile_cache; if [ -d "$A" ] && [ -n "$VLLM_CACHE_ROOT" ]; then mkdir -p "$VLLM_CACHE_ROOT/torch_compile_cache" && cp -rn "$A/." "$VLLM_CACHE_ROOT/torch_compile_cache/" || true; fi
   M=/cache/huggingface/hub/models--local-inference-lab--Qwen3.8-Flash-Next-NVFP4/snapshots/7c4f1bc1a2d6847e0cbc01ac6b823f00251de8dd; [ -s $M/model-00035-of-00036.safetensors ] && [ -s $M/model.safetensors.index.json ] || HF_HUB_OFFLINE=0 python3 -c "from huggingface_hub import snapshot_download as d; d('local-inference-lab/Qwen3.8-Flash-Next-NVFP4', revision='7c4f1bc1a2d6847e0cbc01ac6b823f00251de8dd', allow_patterns=['model-00035-of-00036.safetensors', 'model.safetensors.index.json'])" || exit 1
   vllm serve ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE \
     --revision 03f4a0570496bbe741189f4a2a7d611679e85406 \
@@ -224,6 +253,7 @@ command: |
     --reasoning-parser qwen3 \
     --tool-call-parser qwen3_xml \
     --enable-auto-tool-choice \
+    --enable-prompt-tokens-details \
     --default-chat-template-kwargs '{{"reasoning_effort":"medium"}}' \
     --compilation-config '{{"pass_config":{{"fuse_act_quant":true}}}}' \
     --kv-cache-memory-bytes {kv_cache_memory_bytes} \
