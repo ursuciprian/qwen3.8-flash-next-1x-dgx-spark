@@ -26,9 +26,11 @@
 #     adds no record to it.
 #   - Image: the k103 test image (CI build-b12x-overlay on the v2.3.0 image: b12x a1ad1b69 and the vLLM 10d0acc8 files)
 #     plus one layer with the torch AOT cache of the k103 arm boots (keys 246a576d, 5af689ee, f5d573a4); local base on
-#     dgx-01, CI build-b0-warm. Plan seed 33d9b32e (303 records) is v2.3.0's. Tagged 1x-v2.4.0. Digest {DIGEST}.
+#     dgx-01, CI build-b0-warm. Plan seed 33d9b32e (303 records) is v2.3.0's. Tagged 1x-v2.4.0. Digest
+#     sha256:30fe678ed7ae5d4deb277be137497bcf597e46e829471b7bed24edd4294a84f1.
 #   - Ship check (k106s-1x-ship-check): plain `sparkrun run` of this recipe with the plan file and the new root moved out
-#     of the runtime cache: up in {BOOT_S} s, AOT loaded from the image, 0 plans measured.
+#     of the runtime cache: up in 256 s, AOT loaded from the image, 0 plans measured, acceptance and llama-benchy inside
+#     the k103 arm bands (results/k106s-1x-ship-check-20261016-1819).
 #   Results: results/k103-1x-prefill-combo-ab-20261016-1206, results/k105-1x-gdn-views-c1-recheck-20261016-1507,
 #   results/k103g-1x-combo-gate-20261016-1641, results/k100ab-1x-hc-a16-bf16-ab-20261015-2047,
 #   results/k101s-1x-gdn-prefill-views-ab-20261015-1600.
@@ -196,7 +198,7 @@ model: ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE
 model_revision: 03f4a0570496bbe741189f4a2a7d611679e85406
 # v2.3.0 image (2026-10-13, k95): tile-fix image tf-20261011-b45fe867-5dad364d plus plan 33d9b32e (303 records) and the
 # torch AOT cache of the tile-fix boots (local base on dgx-01, CI build-b0-warm). The same image is also tagged 1x-v2.3.0.
-# v2.4.0 image (2026-10-17, k106s): the k103 test image k103-20261015-a1ad1b69-10d0acc8 plus the torch AOT cache of the
+# v2.4.0 image (2026-10-16, k106s; the tag says 20261017): the k103 test image k103-20261015-a1ad1b69-10d0acc8 plus the torch AOT cache of the
 # k103 arm boots (local base on dgx-01, CI build-b0-warm). The same image is also tagged 1x-v2.4.0.
 container: ghcr.io/ursuciprian/spark-vllm-b12x:k106s-20261017-a1ad1b69-5dad364d-10d0acc8-warm
 runtime: vllm

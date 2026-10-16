@@ -122,8 +122,12 @@ files, but the artifacts are not: v2.3.0's artifacts under the same keys would c
 AOT cache there. The plan seed `33d9b32e` (303 records) is v2.3.0's; v2.4.0 adds no plan record.
 
 Ship check (k106s-1x-ship-check, plain `sparkrun run` of the release recipe on Spark 1 after moving the plan file and
-the new compile cache root out of the runtime cache): up in {BOOT_S} s, AOT loaded from the image with no compile, 0
-b12x plans measured. Image digest `{DIGEST}`. Results: {K106S_RESULTS}.
+the new compile cache root out of the runtime cache): up in 256 s, AOT loaded from the image with no compile (2 loads from the new root), 0
+b12x plans measured, 303 plan records, views path on, KV pool 993,754 tokens. T=0 fresh-c8 acceptance per draft position
+0.856/0.707/0.580/0.467 (k103 arm 0.849/0.700/0.577/0.464); llama-benchy pp2048 c1 1901.5 (−0.7% against the k103
+arm, band 1.0%), tg512 c1 60.7, tg512 c8 144.3 tok/s. The release image keeps all 104 layers of the test image and
+the same vLLM and b12x code; Spark 2 pulled it from ghcr with the same Id. Image digest `sha256:30fe678ed7ae5d4deb277be137497bcf597e46e829471b7bed24edd4294a84f1`. Results:
+[`results/k106s-1x-ship-check-20261016-1819/`](../results/k106s-1x-ship-check-20261016-1819/).
 
 Raw files: [`results/k103-1x-prefill-combo-ab-20261016-1206/`](../results/k103-1x-prefill-combo-ab-20261016-1206/),
 [`results/k105-1x-gdn-views-c1-recheck-20261016-1507/`](../results/k105-1x-gdn-views-c1-recheck-20261016-1507/),
@@ -134,7 +138,7 @@ Raw files: [`results/k103-1x-prefill-combo-ab-20261016-1206/`](../results/k103-1
 
 ## Single Spark v2.3.0: b12x large-row MXFP8 tile fix (2026-10-13)
 
-Release 1× v2.3.0, the default from 2026-10-13 to {MERGE_DATE}. No old build name.
+Release 1× v2.3.0, the default from 2026-10-13 to 2026-10-16. No old build name.
 
 v2.3.0 = v2.2.0 on b12x b45fe867 (`fix/pf-large-m-regime`, base 21e0b201): a packed MXFP8 declaration of 4096+ rows with
 K >= 4096 and N > 1536 (the max_num_batched_tokens capacity regime of GDN out_proj and attention o_proj, K6144 N2560)

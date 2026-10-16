@@ -67,7 +67,7 @@ sparkrun run qwen3.8-flash-next-1x-dgx-spark --hosts <spark> --solo
 ```
 
 First run downloads ~135 GB (a fresh checkpoint download took 3 h 15 min at ~8.6 MB/s on my link; on a slow link,
-pre-fetch it, see below). Boot with model and image on disk: {BOOT_S} s on the v2.4.0 image check, with the plan file and the
+pre-fetch it, see below). Boot with model and image on disk: 256 s on the v2.4.0 image check, with the plan file and the
 compile cache coming from the image (171 s on v2.1.0 with a warm page cache); a cold-page-cache boot was not timed. `sparkrun run` returns before the engine is ready: poll `http://<spark>:8000/health`, then use
 `http://<spark>:8000/v1`, model `qwen3.8-flash-next`:
 
@@ -139,7 +139,7 @@ registries and does not refresh them on `run`.
 | **Concurrent requests** | up to 8 (max_num_seqs) |
 | **KV cache** | 993,754 tokens, 3.79 concurrent 262K requests (v2.1.0 boot log) |
 | **API** | OpenAI-compatible, tool calling, reasoning on (`reasoning_effort` medium); `usage.prompt_tokens_details.cached_tokens` reports prefix-cache hits |
-| **Disk / start time** | ~135 GB / ~3 min warm ({BOOT_S} s on the v2.4.0 image check) |
+| **Disk / start time** | ~135 GB / ~3 min warm (256 s on the v2.4.0 image check) |
 | **License** | Recipe Apache-2.0; weights Qwen Community License 1.0 |
 
 | Task | Section |

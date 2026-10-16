@@ -1,5 +1,5 @@
 # Release: v2.3.0
-# Rollback since {MERGE_DATE}: the single-Spark v2.3.0 recipe that was the default from 2026-10-13 to {MERGE_DATE}.
+# Rollback since 2026-10-16: the single-Spark v2.3.0 recipe that was the default from 2026-10-13 to 2026-10-16.
 # Superseded by v2.4.0 (HC down projection BF16 path, GDN prefill views). Serves
 # ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE @ 03f4a057 with drafter D3 on b12x b45fe867.
 #
