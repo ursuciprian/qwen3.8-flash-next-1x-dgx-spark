@@ -1,0 +1,33 @@
+== acceptance per draft position (T=0 probe cells, pooled)
+  pos 0: control 0.847 arm 0.853 shift +0.006
+  pos 1: control 0.697 arm 0.705 shift +0.008
+  pos 2: control 0.572 arm 0.578 shift +0.006
+  pos 3: control 0.465 arm 0.466 shift +0.001
+== cells: arm vs control % (noise = the cell's noise band, %)
+  probe  fresh-c1      +2.19%  noise  2.64%            n=8 CI [-0.6,+4.7] control boot-to-boot -2.43%, step +0.41%
+  probe  fresh-c4      +1.15%  noise  1.49%            n=32 CI [-0.3,+2.6] control boot-to-boot -0.20%, step +0.66%
+  probe  fresh-c8      +0.00%  noise  1.30%            n=64 CI [-1.3,+1.3] control boot-to-boot -0.43%, step +0.11%
+  probe  d16k-c4      missing
+  probe  count-c8     missing
+  wall   d16k-c8      missing
+  benchy pp2048 (c1)   +6.59%  noise  1.00%  better    control 1797.2 arm 1915.6 t/s (boots 4/4)
+  benchy tg512 (c1)    +0.73%  noise  9.04%            control 58.0 arm 58.4 t/s (boots 4/4)
+  benchy tg512 (c8)    +0.05%  noise  7.13%            control 136.1 arm 136.2 t/s (boots 4/4)
+== logits_equiv (reported, not judged)
+  self  ctl-p1 a/b: 10/20 prompts identical, |dlogprob| mean 0.0421 max 0.6289
+  self  ctl-p2 a/b: 10/20 prompts identical, |dlogprob| mean 0.0321 max 0.3159
+  self  ctl-p3 a/b: 9/20 prompts identical, |dlogprob| mean 0.0339 max 0.4884
+  self  ctl-p4 a/b: 9/20 prompts identical, |dlogprob| mean 0.0411 max 0.5617
+  self  arm-p1 a/b: 13/20 prompts identical, |dlogprob| mean 0.0447 max 1.1647
+  self  arm-p2 a/b: 10/20 prompts identical, |dlogprob| mean 0.0405 max 0.6801
+  self  arm-p3 a/b: 9/20 prompts identical, |dlogprob| mean 0.0343 max 0.4725
+  self  arm-p4 a/b: 9/20 prompts identical, |dlogprob| mean 0.0431 max 0.7333
+  cross ctl-p1/arm-p1: 13/20 prompts identical, |dlogprob| mean 0.0427 max 0.6282
+  cross ctl-p2/arm-p2: 13/20 prompts identical, |dlogprob| mean 0.0421 max 0.6187
+  cross ctl-p3/arm-p3: 12/20 prompts identical, |dlogprob| mean 0.0363 max 0.3581
+  cross ctl-p4/arm-p4: 10/20 prompts identical, |dlogprob| mean 0.0475 max 0.4613
+reason: probe d16k-c4: missing
+reason: probe count-c8: missing
+reason: wall d16k-c8: missing
+better: benchy pp2048 (c1) +6.59% (noise 1.00%)
+VERDICT=INCONCLUSIVE

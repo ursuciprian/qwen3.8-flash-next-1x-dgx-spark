@@ -1,0 +1,10 @@
+ident: 0 prompts stable across 4 control boots, arm identical on 0; 8 control-unstable (not judged)
+  prompt 0: control boots disagree (4 variants), arm matches one: False
+  prompt 1: control boots disagree (4 variants), arm matches one: False
+  prompt 2: control boots disagree (4 variants), arm matches one: False
+  prompt 3: control boots disagree (4 variants), arm matches one: False
+  prompt 4: control boots disagree (4 variants), arm matches one: False
+  prompt 5: control boots disagree (4 variants), arm matches one: False
+  prompt 6: control boots disagree (3 variants), arm matches one: False
+  prompt 7: control boots disagree (4 variants), arm matches one: False
+IDENT=UNSTABLE

@@ -1,0 +1,10 @@
+class                      ctl calls    ctl ms arm calls    arm ms arm-ctl ms
+scatter (GDN output)             288      90.8         0       0.0      -90.8
+gather (index_select)           1560     191.4       408       1.0     -190.4
+memcpy DtoD                      976     120.0       544      15.7     -104.4
+copy kernel                      152       0.3      1784      33.5      +33.2
+fill / memset                   1751      39.6      1607       3.0      -36.7
+conv1d (kept)                    288     162.6       144     185.0      +22.4
+gated norm (kept)                144      91.1       144     169.3      +78.2
+GDN delta rule (kept)            720     394.4       720     402.0       +7.5
+data movement (non-kept rows) arm - ctl: -389.0 ms

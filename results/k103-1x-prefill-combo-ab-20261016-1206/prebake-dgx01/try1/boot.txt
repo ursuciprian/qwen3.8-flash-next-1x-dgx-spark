@@ -1,0 +1,5 @@
+boot 151 s, KV pool 6442450944 bytes, min MemAvailable 22.07 GiB
+      2 Directly load AOT compilation
+plans measured: 0
+views lines: 1
+pong: pong
