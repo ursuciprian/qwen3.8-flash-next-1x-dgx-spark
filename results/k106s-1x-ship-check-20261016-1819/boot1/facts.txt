@@ -1,0 +1,7 @@
+image: ghcr.io/ursuciprian/spark-vllm-b12x:k106s-20261017-a1ad1b69-5dad364d-10d0acc8-warm sha256:d703357dd8c3038946aec1a17be829f4ad2fc23680c660019fb8e57807975b91 
+boot 1: health after 256 s; pong: pong; /v1/models: qwen3.8-flash-next ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE
+serve.log: Directly load AOT 2 (from vllm-b12x-a1ad1b69-10d0acc8 2), compiled again 0, saved AOT 0, Dynamo bytecode transform 0, views lines 1, KV 993,754 lines 1, MXFP8 copies 72, Traceback 0
+/home/nvidia/GEN-AI/qwen3.8-flash-next-dgx-spark-tp-2/results/k106s-1x-ship-check-20261016-1819/boot1/serve.log: attention.gdn 0 measured / 10 cached, attention.qsa 0 measured / 10 cached, gemm.blockscaled_precision 0 measured / 280 cached, moe.decode 0 measured / 280 cached, norm.hyperconnection 0 measured / 280 cached, sequence.gdn_prefill 0 measured / 10 cached, sequence.mtp_feedback 0 measured / 280 cached, sequence.ple_embedding 0 measured / 0 cached seed check PASS 
+plan 33d9b32e995b59bc4b0d3cdfb5fc2247f3c7b2151c09569ffd3dbaf85c4562e3.json: 303 records (seed 303)
+revision: --revision 03f4a0570496bbe741189f4a2a7d611679e85406; env: VLLM_CACHE_ROOT=/cache/runtime/vllm-b12x-a1ad1b69-10d0acc8 VLLM_GDN_PREFILL_VIEWS=1 XDG_CACHE_HOME=/cache/runtime 
+cleared before boot: moved plan

@@ -1,0 +1,23 @@
+k106s 2026-10-16 18:45:45 EEST: 1x v2.4.0 build and fresh-user check boot, image ghcr.io/ursuciprian/spark-vllm-b12x:k106s-20261017-a1ad1b69-5dad364d-10d0acc8-warm: PASS
+digest: sha256:30fe678ed7ae5d4deb277be137497bcf597e46e829471b7bed24edd4294a84f1
+layers: all 104 layers of ghcr.io/ursuciprian/spark-vllm-b12x:k103-20261015-a1ad1b69-10d0acc8 are the first layers of ghcr.io/ursuciprian/spark-vllm-b12x:k106s-20261017-a1ad1b69-5dad364d-10d0acc8-warm
+vllm+b12x python tree sha256: tested 96a006a316319369a48a706f33fbe62d297f1b0fc8a22ee8a59356c5c63e4b98, release 96a006a316319369a48a706f33fbe62d297f1b0fc8a22ee8a59356c5c63e4b98
+vllm/envs.py: release 98fd5d5a9aba3f7d0198972b8c8af9e6ac11edae804e4d0403dd935a4526dd8a, tested 98fd5d5a9aba3f7d0198972b8c8af9e6ac11edae804e4d0403dd935a4526dd8a (patched.sha256 98fd5d5a9aba3f7d0198972b8c8af9e6ac11edae804e4d0403dd935a4526dd8a)
+vllm/model_executor/layers/mamba/gdn/qwen_gdn_linear_attn.py: release 0e04019e85d35ae7ae90e37d0b6461d431f75d24ad0b078eb71b055e64518a84, tested 0e04019e85d35ae7ae90e37d0b6461d431f75d24ad0b078eb71b055e64518a84 (patched.sha256 0e04019e85d35ae7ae90e37d0b6461d431f75d24ad0b078eb71b055e64518a84)
+vllm/model_executor/layers/mamba/ops/b12x_gdn_prefill.py: release 009f3f8d61b978139bf5d7eb588ebd6a568319ccef073e02b502bf84af587a4a, tested 009f3f8d61b978139bf5d7eb588ebd6a568319ccef073e02b502bf84af587a4a (patched.sha256 009f3f8d61b978139bf5d7eb588ebd6a568319ccef073e02b502bf84af587a4a)
+vllm/model_executor/layers/mamba/ops/causal_conv1d.py: release 3e7fd3872f97d5de3ee3c559a94f1608c6a24bd0b2e8fcb00bc4f5125bd23998, tested 3e7fd3872f97d5de3ee3c559a94f1608c6a24bd0b2e8fcb00bc4f5125bd23998 (patched.sha256 3e7fd3872f97d5de3ee3c559a94f1608c6a24bd0b2e8fcb00bc4f5125bd23998)
+vllm/third_party/flash_linear_attention/ops/layernorm_guard.py: release 12c7de5ee6136ad7da6a58c7aee52ded0710fde139268cf726d6dd0ebfccd7f7, tested 12c7de5ee6136ad7da6a58c7aee52ded0710fde139268cf726d6dd0ebfccd7f7 (patched.sha256 12c7de5ee6136ad7da6a58c7aee52ded0710fde139268cf726d6dd0ebfccd7f7)
+vllm/v1/attention/backends/b12x_gdn_metadata.py: release 7d0643f7f91c504abe716f62e64733dd7e82467adef6c49ec8bcef761df7c11d, tested 7d0643f7f91c504abe716f62e64733dd7e82467adef6c49ec8bcef761df7c11d (patched.sha256 7d0643f7f91c504abe716f62e64733dd7e82467adef6c49ec8bcef761df7c11d)
+markers (b12x-source-commit vllm-overlay-commit): a1ad1b69d491333c00c603b10d1cf46f8bf8fc22 10d0acc85fb450472230558eda063c9059c20234 
+seed: AOT 246a576d 4b3ea32b413a, 5af689ee 8ebe11761d77, f5d573a4 20e0a466bb10, plan 33d9b32e 1351cce24cdfa6eb (303 records, same as tested)
+digest ghcr.io/ursuciprian/spark-vllm-b12x@sha256:30fe678ed7ae5d4deb277be137497bcf597e46e829471b7bed24edd4294a84f1; Id sha256:d703357dd8c3038946aec1a17be829f4ad2fc23680c660019fb8e57807975b91 on both Sparks
+image: ghcr.io/ursuciprian/spark-vllm-b12x:k106s-20261017-a1ad1b69-5dad364d-10d0acc8-warm sha256:d703357dd8c3038946aec1a17be829f4ad2fc23680c660019fb8e57807975b91 
+boot 1: health after 256 s; pong: pong; /v1/models: qwen3.8-flash-next ursuciprian/Qwen3.8-Flash-Next-NVFP4-GDN-MSE
+serve.log: Directly load AOT 2 (from vllm-b12x-a1ad1b69-10d0acc8 2), compiled again 0, saved AOT 0, Dynamo bytecode transform 0, views lines 1, KV 993,754 lines 1, MXFP8 copies 72, Traceback 0
+/home/nvidia/GEN-AI/qwen3.8-flash-next-dgx-spark-tp-2/results/k106s-1x-ship-check-20261016-1819/boot1/serve.log: attention.gdn 0 measured / 10 cached, attention.qsa 0 measured / 10 cached, gemm.blockscaled_precision 0 measured / 280 cached, moe.decode 0 measured / 280 cached, norm.hyperconnection 0 measured / 280 cached, sequence.gdn_prefill 0 measured / 10 cached, sequence.mtp_feedback 0 measured / 280 cached, sequence.ple_embedding 0 measured / 0 cached seed check PASS 
+plan 33d9b32e995b59bc4b0d3cdfb5fc2247f3c7b2151c09569ffd3dbaf85c4562e3.json: 303 records (seed 303)
+revision: --revision 03f4a0570496bbe741189f4a2a7d611679e85406; env: VLLM_CACHE_ROOT=/cache/runtime/vllm-b12x-a1ad1b69-10d0acc8 VLLM_GDN_PREFILL_VIEWS=1 XDG_CACHE_HOME=/cache/runtime 
+cleared before boot: moved plan
+fresh-c8 acceptance per position (T=0): 0.856 0.707 0.580 0.467 (k103 dgx-01 arm 0.849 0.700 0.577 0.464)
+benchy (boots 1): OK | pp2048 (c1) 1901.5 -> 1901.5 (-0.7% vs k103 arm 1915.6, band 1.0%); tg512 (c1) 60.7 -> 60.7 (+3.9% vs k103 arm 58.4, band 9.04%); tg512 (c8) 144.3 -> 144.3 (+6.0% vs k103 arm 136.2, band 7.13%)
+reference, not judged: k105 dgx-01 views-on arm (6 boots, reported only): pp2048 (c1) 1887.0, tg512 (c1) 59.0
